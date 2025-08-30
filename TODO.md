@@ -1,27 +1,59 @@
-# MLM Dashboard UI Update Tasks
+# INOUT_STAKING Contract Implementation Plan
 
-## Phase 1: Function Fixes
-- [ ] Fix buy function to use `stakingInteractions.makeStake` instead of `stakingInteractions.stake`
-- [ ] Fix sell function to use `stakingInteractions.makeUnstake` instead of `stakingInteractions.unstake`
+## Information Gathered
 
-## Phase 2: UI Layout Reorganization
-- [ ] Move buy/sell section to right side
-- [ ] Move all statistics cards to left side
-- [ ] Create proper grid layout with left/right columns
+1. **Current State**: 
+   - `src/services/selfmintStakingService.ts` already implements most contract functions
+   - `src/pages/Home.jsx` uses these functions extensively
+   - The ABI in the service file is comprehensive and matches the Solidity contract
 
-## Phase 3: Error Handling Improvements
-- [ ] Add better error messages for buy/sell operations
-- [ ] Add validation for input amounts
-- [ ] Improve error display with user-friendly messages
+2. **Functions Used in Home.jsx**:
+   - `getUserInfo()` - ✅ Implemented
+   - `getBonusInfo()` - ✅ Implemented  
+   - `getRankQualify()` - ✅ Implemented
+   - `getDirectUser()` - ✅ Implemented
+   - `getMatureOrder()` - ✅ Implemented
+   - `getUnStakePotential()` - ✅ Implemented
+   - `findLeaderUser()` - ✅ Implemented
+   - `activeUser()` - ✅ Implemented
+   - `getPrice()` - ✅ Implemented
+   - `userStakeView()` - ✅ Implemented
+   - `getTotalRemainTPR()` - ✅ Implemented
+   - `approveUSDT()` - ✅ Implemented
+   - `regUser()` - ✅ Implemented
+   - `makeStake()` - ✅ Implemented
+   - `makeUnstake()` - ✅ Implemented
+   - `userSelfUpdate()` - ✅ Implemented
 
-## Phase 4: UI Enhancements
-- [ ] Improve card styling and layout
-- [ ] Add proper loading states
-- [ ] Enhance visual hierarchy
-- [ ] Add better spacing and typography
+3. **Potential Missing Functions**:
+   - `stakeGrowth()` - View function for individual stake growth
+   - `teamGrowthTime()` - View function for team growth time
+   - `userLiveStatus()` - View function for user live status
+   - `levelDist()` - Pure function for level distribution
+   - `avUnStake()` - View function for available unstake amount
 
-## Phase 5: Testing
-- [ ] Test buy functionality
-- [ ] Test sell functionality
-- [ ] Verify error handling works
-- [ ] Check responsive design
+## Plan
+
+### 1. Verify and Implement Missing Functions
+- [ ] Check if `stakeGrowth()` function is needed and implement if missing
+- [ ] Check if `teamGrowthTime()` function is needed and implement if missing  
+- [ ] Check if `userLiveStatus()` function is needed and implement if missing
+- [ ] Check if `levelDist()` function is needed and implement if missing
+- [ ] Check if `avUnStake()` function is needed and implement if missing
+
+### 2. Test Integration
+- [ ] Verify all functions work correctly with Home.jsx
+- [ ] Test contract interactions in the browser
+
+### 3. Documentation
+- [ ] Add proper JSDoc comments for all functions
+- [ ] Ensure error handling is consistent
+
+## Dependent Files
+- `src/services/selfmintStakingService.ts` - Main implementation file
+- `src/pages/Home.jsx` - Primary consumer of the service
+
+## Followup Steps
+- Run the application to test functionality
+- Verify all contract calls work as expected
+- Handle any missing or incomplete implementations

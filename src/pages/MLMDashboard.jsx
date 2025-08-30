@@ -52,7 +52,9 @@ const MLMDashboard = () => {
     teamGrowthWallet: 0,
     referralEarn: 0,
     levelEarn: 0,
-    growthEarn: 0
+    growthEarn: 0,
+    leaderEarn: 0,
+    developmentEarn: 0
   });
 
   const fetchMlmData = async () => {
@@ -90,6 +92,9 @@ const MLMDashboard = () => {
         const referralEarn = parseFloat(formatEther(bonusInfo.referralGains));
         const levelEarn = parseFloat(formatEther(bonusInfo.levelGains));
         const growthEarn = parseFloat(formatEther(bonusInfo.growthGains));
+        const leaderEarn = parseFloat(formatEther(bonusInfo.leaderGains));
+        const developmentEarn = parseFloat(formatEther(bonusInfo.developmentGains));
+        const teamGrowthWallet = parseFloat(formatEther(bonusInfo.teamGrowthGains));
 
         setMlmData({
           directTeam,
@@ -99,13 +104,14 @@ const MLMDashboard = () => {
           totalIn,
           totalOut,
           activePortfolio,
-          teamGrowthWallet: growthEarn,
+          teamGrowthWallet,
           referralEarn,
           levelEarn,
-          growthEarn
+          growthEarn,
+          leaderEarn,
+          developmentEarn
         });
 
-        // Fetch order history
         setOrderLoading(true);
         const orders = [];
         const stakeViewResponse = await stakingInteractions.userStakeView(wallet.account, BigInt(0));
@@ -241,7 +247,7 @@ const MLMDashboard = () => {
   }
 
   return (
-    <Container maxWidth="xl" sx={{ py: 3 }}>
+    <Container maxWidth="xl" sx={{ py: 3, display: 'flex', flexDirection: 'column', gap: 3 }}>
       {error && (
         <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError('')}>
           {error}
@@ -256,10 +262,10 @@ const MLMDashboard = () => {
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box>
           <Typography variant="h4" gutterBottom sx={{ color: 'primary.main', fontWeight: 'bold' }}>
-            Dashboard
+            MLM Dashboard
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            Manage your team, track earnings, and monitor growth
+            Monitor your team performance and manage your investments
           </Typography>
         </Box>
         <Button
@@ -272,321 +278,256 @@ const MLMDashboard = () => {
         </Button>
       </Box>
 
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item xs={12} md={8}>
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
+        {/* First Box: Statistics and Earnings Cards */}
+        <Box sx={{ flex: 2, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: 'background.paper' }}>
+          <Typography variant="h5" gutterBottom sx={{ color: 'primary.main', fontWeight: 'bold', mb: 4 }}>
+            Performance Overview
+          </Typography>
+
           {/* Team Statistics */}
-          <Grid container spacing={3} sx={{ mb: 4 }}>
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom sx={{ color: 'primary.main' }}>
-                Team Statistics
-              </Typography>
-            </Grid>
-            
-            <Grid item xs={12} sm={6} lg={3}>
-              <Card sx={{ p: 2, boxShadow: 3 }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <PeopleIcon sx={{ color: 'primary.main', mr: 1 }} />
-                    <Typography variant="h6">My Direct</Typography>
-                  </Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                    {formatNumber(mlmData.directTeam)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Direct Referrals
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-      
-            <Grid item xs={12} sm={6} lg={3}>
-              <Card sx={{ p: 2, boxShadow: 3 }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <DiamondIcon sx={{ color: 'secondary.main', mr: 1 }} />
-                    <Typography variant="h6">Strong Teams</Typography>
-                  </Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'secondary.main' }}>
-                    {formatNumber(mlmData.strongTeam)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Active Strong Teams
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-      
-            <Grid item xs={12} sm={6} lg={3}>
-              <Card sx={{ p: 2, boxShadow: 3 }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <PeopleIcon sx={{ color: 'info.main', mr: 1 }} />
-                    <Typography variant="h6">Other Teams</Typography>
-                  </Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'info.main' }}>
-                    {formatNumber(mlmData.otherTeams)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Additional Team Members
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-      
-            <Grid item xs={12} sm={6} lg={3}>
-              <Card sx={{ p: 2, boxShadow: 3 }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <TimelineIcon sx={{ color: 'warning.main', mr: 1 }} />
-                    <Typography variant="h6">Levels</Typography>
-                  </Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'warning.main' }}>
-                    {formatNumber(mlmData.levels)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Achievement Levels
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-      
+          <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', mb: 3 }}>
+            Team Statistics
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 4 }}>
+            {[
+              { icon: <PeopleIcon />, title: 'My Direct', value: formatNumber(mlmData.directTeam), subtitle: 'Direct Referrals', color: 'primary.main' },
+              { icon: <DiamondIcon />, title: 'Strong Teams', value: formatNumber(mlmData.strongTeam), subtitle: 'Active Strong Teams', color: 'secondary.main' },
+              { icon: <PeopleIcon />, title: 'Other Teams', value: formatNumber(mlmData.otherTeams), subtitle: 'Additional Team Members', color: 'info.main' },
+              { icon: <TimelineIcon />, title: 'Levels', value: formatNumber(mlmData.levels), subtitle: 'Achievement Levels', color: 'warning.main' },
+            ].map((card, index) => (
+              <Box key={index} sx={{ flex: '0 0 calc(33.33% - 16px)', minWidth: 0 }}>
+                <Card sx={{ p: 2, boxShadow: 2, height: '100%' }}>
+                  <CardContent>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                      {React.cloneElement(card.icon, { sx: { color: card.color, mr: 1 } })}
+                      <Typography variant="h6">{card.title}</Typography>
+                    </Box>
+                    <Typography variant="h4" sx={{ fontWeight: 'bold', color: card.color }}>
+                      {card.value}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {card.subtitle}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Box>
+            ))}
+          </Box>
+
           {/* Financial Overview */}
-          <Grid container spacing={3} sx={{ mb: 4 }}>
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom sx={{ color: 'primary.main' }}>
-                Financial Overview
-              </Typography>
-            </Grid>
-            
-            <Grid item xs={12} sm={6} lg={3}>
-              <Card sx={{ p: 2, boxShadow: 3 }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <TrendingUpIcon sx={{ color: 'success.main', mr: 1 }} />
-                    <Typography variant="h6">Total In</Typography>
-                  </Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'success.main' }}>
-                    {formatCurrency(mlmData.totalIn)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Total Investments
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item xs={12} sm={6} lg={3}>
-              <Card sx={{ p: 2, boxShadow: 3 }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <MonetizationOnIcon sx={{ color: 'info.main', mr: 1 }} />
-                    <Typography variant="h6">Total Out</Typography>
-                  </Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'info.main' }}>
-                    {formatCurrency(mlmData.totalOut)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Total Withdrawals
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item xs={12} sm={6} lg={3}>
-              <Card sx={{ p: 2, boxShadow: 3 }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <AccountBalanceWalletIcon sx={{ color: 'primary.main', mr: 1 }} />
-                    <Typography variant="h6">Active Portfolio</Typography>
-                  </Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                    {formatCurrency(mlmData.activePortfolio)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Current Investment Value
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item xs={12} sm={6} lg={3}>
-              <Card sx={{ p: 2, boxShadow: 3 }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <EmojiEventsIcon sx={{ color: 'secondary.main', mr: 1 }} />
-                    <Typography variant="h6">Team Growth</Typography>
-                  </Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'secondary.main' }}>
-                    {formatCurrency(mlmData.teamGrowthWallet)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Growth Wallet Balance
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
+          <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', mb: 3 }}>
+            Financial Overview
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, mb: 4 }}>
+            {[
+              { icon: <TrendingUpIcon />, title: 'Total In', value: formatCurrency(mlmData.totalIn), subtitle: 'Total Investments', color: 'success.main' },
+              { icon: <MonetizationOnIcon />, title: 'Total Out', value: formatCurrency(mlmData.totalOut), subtitle: 'Total Withdrawals', color: 'info.main' },
+              { icon: <AccountBalanceWalletIcon />, title: 'Active Portfolio', value: formatCurrency(mlmData.activePortfolio), subtitle: 'Current Investment Value', color: 'primary.main' },
+              { icon: <EmojiEventsIcon />, title: 'Team Growth', value: formatCurrency(mlmData.teamGrowthWallet), subtitle: 'Growth Wallet Balance', color: 'secondary.main' },
+            ].map((card, index) => (
+              <Box key={index} sx={{ flex: '0 0 calc(33.33% - 16px)', minWidth: 0 }}>
+                <Card sx={{ p: 2, boxShadow: 2, height: '100%' }}>
+                  <CardContent>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                      {React.cloneElement(card.icon, { sx: { color: card.color, mr: 1 } })}
+                      <Typography variant="h6">{card.title}</Typography>
+                    </Box>
+                    <Typography variant="h4" sx={{ fontWeight: 'bold', color: card.color }}>
+                      {card.value}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {card.subtitle}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Box>
+            ))}
+          </Box>
 
           {/* Earnings Breakdown */}
-          <Grid container spacing={3} sx={{ mb: 4 }}>
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom sx={{ color: 'primary.main' }}>
-                Earnings Breakdown
-              </Typography>
-            </Grid>
-            
-            <Grid item xs={12} md={4}>
-              <Card sx={{ p: 2, boxShadow: 3 }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <PeopleIcon sx={{ color: 'primary.main', mr: 1 }} />
-                    <Typography variant="h6">Referral Earn</Typography>
-                  </Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                    {formatCurrency(mlmData.referralEarn)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    From Direct Referrals
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
+          <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', mb: 3 }}>
+            Earnings Breakdown
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            {[
+              { icon: <PeopleIcon />, title: 'Referral Earn', value: formatCurrency(mlmData.referralEarn), subtitle: 'From Direct Referrals', color: 'primary.main' },
+              { icon: <TimelineIcon />, title: 'Level Earn', value: formatCurrency(mlmData.levelEarn), subtitle: 'From Team Levels', color: 'info.main' },
+              { icon: <TrendingUpIcon />, title: 'Growth Earn', value: formatCurrency(mlmData.growthEarn), subtitle: 'From Growth System', color: 'success.main' },
+              { icon: <EmojiEventsIcon />, title: 'Leader Earn', value: formatCurrency(mlmData.leaderEarn), subtitle: 'From Leadership', color: 'warning.main' },
+              { icon: <TimelineIcon />, title: 'Development Earn', value: formatCurrency(mlmData.developmentEarn), subtitle: 'From Development', color: 'info.main' },
+              { icon: <PeopleIcon />, title: 'Team Growth', value: formatCurrency(mlmData.teamGrowthWallet), subtitle: 'Team Growth Wallet', color: 'secondary.main' },
+            ].map((card, index) => (
+              <Box key={index} sx={{ flex: '0 0 calc(33.33% - 16px)', minWidth: 0 }}>
+                <Card sx={{ p: 2, boxShadow: 2, height: '100%' }}>
+                  <CardContent>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                      {React.cloneElement(card.icon, { sx: { color: card.color, mr: 1 } })}
+                      <Typography variant="h6">{card.title}</Typography>
+                    </Box>
+                    <Typography variant="h4" sx={{ fontWeight: 'bold', color: card.color }}>
+                      {card.value}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {card.subtitle}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Box>
+            ))}
+          </Box>
+        </Box>
 
-            <Grid item xs={12} md={4}>
-              <Card sx={{ p: 2, boxShadow: 3 }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <TimelineIcon sx={{ color: 'info.main', mr: 1 }} />
-                    <Typography variant="h6">Level Earn</Typography>
-                  </Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'info.main' }}>
-                    {formatCurrency(mlmData.levelEarn)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    From Team Levels
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
+        {/* Second Box: Buy/Sell, Referral, and Order History */}
+        <Box sx={{ flex: 1, p: 3, boxShadow: 3, borderRadius: 2, bgcolor: 'background.paper' }}>
+          <Typography variant="h5" gutterBottom sx={{ color: 'primary.main', fontWeight: 'bold', mb: 4 }}>
+            Trading & Referrals
+          </Typography>
 
-            <Grid item xs={12} md={4}>
-              <Card sx={{ p: 2, boxShadow: 3 }}>
-                <CardContent>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    <TrendingUpIcon sx={{ color: 'success.main', mr: 1 }} />
-                    <Typography variant="h6">Growth Earn</Typography>
-                  </Box>
-                  <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'success.main' }}>
-                    {formatCurrency(mlmData.growthEarn)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    From Growth System
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-        </Grid>
-
-        <Grid item xs={12} md={4}>
           {/* Buy/Sell Section */}
-          <Card sx={{ p: 3, boxShadow: 3, mb: 4 }}>
-            <Typography variant="h6" gutterBottom sx={{ color: 'primary.main' }}>
-              Buy/Sell Tokens
-            </Typography>
-            
-            <Box sx={{ mb: 3 }}>
-              <TextField
-                fullWidth
-                label="Buy Amount (USDT)"
-                type="number"
-                value={buyAmount}
-                onChange={(e) => setBuyAmount(e.target.value)}
-                sx={{ mb: 2 }}
-              />
-              <Button
-                fullWidth
-                variant="contained"
-                onClick={handleBuy}
-                disabled={orderLoading}
-                sx={{ mb: 2 }}
-              >
-                Buy Tokens
-              </Button>
-            </Box>
+          <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', mb: 3 }}>
+            Buy/Sell Tokens
+          </Typography>
+          <Box sx={{ mb: 4 }}>
+            <TextField
+              fullWidth
+              label="Buy Amount (USDT)"
+              type="number"
+              value={buyAmount}
+              onChange={(e) => setBuyAmount(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+            <Button
+              fullWidth
+              variant="contained"
+              onClick={handleBuy}
+              disabled={orderLoading}
+              sx={{ mb: 2 }}
+            >
+              Buy Tokens
+            </Button>
+            <TextField
+              fullWidth
+              label="Sell Amount (Tokens)"
+              type="number"
+              value={sellAmount}
+              onChange={(e) => setSellAmount(e.target.value)}
+              sx={{ mb: 2 }}
+            />
+            <Button
+              fullWidth
+              variant="outlined"
+              onClick={handleSell}
+              disabled={orderLoading}
+            >
+              Sell Tokens
+            </Button>
+          </Box>
 
-            <Box>
-              <TextField
-                fullWidth
-                label="Sell Amount (Tokens)"
-                type="number"
-                value={sellAmount}
-                onChange={(e) => setSellAmount(e.target.value)}
-                sx={{ mb: 2 }}
-              />
+          {/* Referral Code Section */}
+          <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', mb: 3 }}>
+            Your Referral Code
+          </Typography>
+          <Box sx={{ mb: 4 }}>
+            <TextField
+              fullWidth
+              label="Referral Code"
+              value={wallet.account || ''}
+              InputProps={{
+                readOnly: true,
+              }}
+              sx={{ mb: 2 }}
+            />
+            <Box sx={{ display: 'flex', gap: 1 }}>
               <Button
-                fullWidth
-                variant="outlined"
-                onClick={handleSell}
-                disabled={orderLoading}
+                variant="contained"
+                onClick={() => {
+                  if (wallet.account) {
+                    navigator.clipboard.writeText(wallet.account);
+                    setSuccess('Referral code copied to clipboard!');
+                  }
+                }}
+                disabled={!wallet.account}
+                sx={{ flex: 1 }}
               >
-                Sell Tokens
+                Copy
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  if (wallet.account) {
+                    const shareText = `Join me on UniversalBet! Use my referral code: ${wallet.account}`;
+                    if (navigator.share) {
+                      navigator.share({
+                        title: 'UniversalBet Referral',
+                        text: shareText,
+                        url: window.location.origin
+                      });
+                    } else {
+                      navigator.clipboard.writeText(shareText);
+                      setSuccess('Referral message copied to clipboard!');
+                    }
+                  }
+                }}
+                disabled={!wallet.account}
+                sx={{ flex: 1 }}
+              >
+                Share
               </Button>
             </Box>
-          </Card>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+              Share this code with friends to earn referral bonuses when they join and invest!
+            </Typography>
+          </Box>
 
           {/* Order History */}
-          <Card sx={{ p: 3, boxShadow: 3 }}>
-            <Typography variant="h6" gutterBottom sx={{ color: 'primary.main' }}>
-              Order History
+          <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', mb: 3 }}>
+            Order History
+          </Typography>
+          {orderLoading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+              <CircularProgress />
+            </Box>
+          ) : orderHistory.length === 0 ? (
+            <Typography variant="body2" color="text.secondary" sx={{ p: 2, textAlign: 'center' }}>
+              No orders yet
             </Typography>
-            
-            {orderLoading ? (
-              <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
-                <CircularProgress />
-              </Box>
-            ) : orderHistory.length === 0 ? (
-              <Typography variant="body2" color="text.secondary" sx={{ p: 2, textAlign: 'center' }}>
-                No orders yet
-              </Typography>
-            ) : (
-              <TableContainer>
-                <Table size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Type</TableCell>
-                      <TableCell>Amount</TableCell>
-                      <TableCell>Date</TableCell>
+          ) : (
+            <TableContainer component={Paper}>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Type</TableCell>
+                    <TableCell>Amount</TableCell>
+                    <TableCell>Date</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {orderHistory.map((order, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <Typography variant="body2" color={order.isStake ? 'success.main' : 'error.main'}>
+                          {order.isStake ? 'BUY' : 'SELL'}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">
+                          {formatCurrency(order.amount)}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">
+                          {formatDate(order.timestamp)}
+                        </Typography>
+                      </TableCell>
                     </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {orderHistory.slice(0, 5).map((order, index) => (
-                      <TableRow key={index}>
-                        <TableCell>
-                          <Typography variant="body2" color={order.isStake ? 'success.main' : 'error.main'}>
-                            {order.isStake ? 'BUY' : 'SELL'}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant="body2">
-                            {formatCurrency(order.amount)}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant="body2">
-                            {formatDate(order.timestamp)}
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            )}
-          </Card>
-        </Grid>
-      </Grid>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </Box>
+      </Box>
     </Container>
   );
 };

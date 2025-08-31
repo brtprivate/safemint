@@ -137,12 +137,12 @@ function App() {
                     <Router>
                       <Navbar />
                       <Routes>
-                        <Route path="/usd" element={<LandingPage />} />
+                        {/* <Route path="/usd" element={<LandingPage />} />
                         <Route path="/usd/mlm/" element={<MLMHome />} />
-                        <Route path="/usd/mlm/register" element={<MLMRegister />} />
-                        <Route path="/usd/dashboard" element={<MLMDashboard />} />
+                        <Route path="/usd/mlm/register" element={<MLMRegister />} /> */}
+                        <Route path="/" element={<MLMDashboard />} />
                         <Route path="*" element={<Navigate to="/usd/" replace />} />
-                        <Route path="/usd/safemint" element={<Home />} />
+                        {/* <Route path="/" element={<Home />} /> */}
                       </Routes>
                     </Router>
                   </TransactionHistoryProvider>

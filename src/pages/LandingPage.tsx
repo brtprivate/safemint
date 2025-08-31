@@ -44,7 +44,7 @@ const LandingPage: React.FC = () => {
       setIsRedirecting(true);
       // Small delay to ensure connection is fully established
       const timer = setTimeout(() => {
-        navigate('/usd/safemint');
+        navigate('/');
       }, 1500);
 
       return () => clearTimeout(timer);

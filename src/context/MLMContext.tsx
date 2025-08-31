@@ -7,11 +7,13 @@ import {
   MLM_CONTRACT_ADDRESS,
   POLYGON_CHAIN_ID 
 } from '../services/mlmcontract';
-import { 
+import {
   stakingInteractions,
   STAKING_CONTRACT_ADDRESS,
-  STAKING_ABI
+  STAKING_ABI,
+  USDC_ADDRESS
 } from '../services/selfmintStakingService';
+import { formatEther, parseEther } from 'viem';
 
 interface MLMContextType {
   address: string | null;
@@ -41,13 +43,14 @@ export const MLMProvider: React.FC<MLMProviderProps> = ({ children }) => {
   // Polygon chain id is 137
   const isCorrectNetwork = chain?.id === 137;
 
-  // Check MLM registration status
+  // Check MLM registration status using staking contract
   const checkMLMRegistration = async (): Promise<boolean> => {
     if (!address || !isCorrectNetwork) return false;
     
     try {
       setIsLoading(true);
-      const registered = await mlmContractInteractions.isWhitelisted(address as `0x${string}`);
+      // Use staking contract's activeUser function to check registration status
+      const registered = await stakingInteractions.activeUser(address as `0x${string}`);
       setIsMLMRegistered(registered);
       return registered;
     } catch (error) {
@@ -59,30 +62,75 @@ export const MLMProvider: React.FC<MLMProviderProps> = ({ children }) => {
     }
   };
 
-  // Register in
+  // Register user with proper error handling, DAI approval, and validation
   const handleRegisterMLM = async (referrerAddress?: string): Promise<boolean> => {
     if (!address || !isCorrectNetwork) {
-      throw new Error('Wallet not connected or wrong network');
+      throw new Error('Wallet not connected or wrong network. Please connect your wallet and switch to Polygon network.');
     }
 
-    if (!referrerAddress) {
-      throw new Error('Referrer address is required');
+    // Use default referrer if none provided, matching MLMDashboard.tsx
+    const refAddress = referrerAddress || '0x3FBF4C71e8b3Fbb16808C2fb66A19f414B250297';
+    
+    // Validate referrer address format
+    const ethAddressRegex = /^0x[a-fA-F0-9]{40}$/;
+    if (!ethAddressRegex.test(refAddress)) {
+      throw new Error('Invalid referrer address format. Please provide a valid Ethereum address.');
     }
 
     try {
       setIsLoading(true);
-      const hash = await stakingInteractions.regUser(referrerAddress as `0x${string}`);
-      console.log('Registration transaction hash:', hash);
+      console.log('Starting registration process with referrer:', refAddress);
 
-      // Wait a bit and then check registration status
+      // Approve 1 USDC for registration
+      const approveAmount = parseEther('1'); // 1 USDC (18 decimals)
+      console.log(`Approving ${approveAmount} USDC for contract ${STAKING_CONTRACT_ADDRESS}`);
+      
+      // Check USDC balance
+      const usdcBalance = await stakingInteractions.getUSDCBalance(address as `0x${string}`);
+      if (usdcBalance < approveAmount) {
+        throw new Error(`Insufficient USDC balance. You have ${parseFloat(formatEther(usdcBalance)).toFixed(2)} USDC but need 1 USDC.`);
+      }
+
+      // Perform USDC approval
+      const approvalTx = await stakingInteractions.approveUSDC(approveAmount, address as `0x${string}`);
+      console.log('USDC approval transaction successful:', approvalTx);
+
+      // Register user
+      const hash = await stakingInteractions.regUser(refAddress as `0x${string}`, address as `0x${string}`);
+      console.log('Registration transaction submitted. Hash:', hash);
+
+      // Wait for transaction confirmation and then check registration status
       setTimeout(async () => {
-        await checkMLMRegistration();
-      }, 3000);
+        try {
+          await checkMLMRegistration();
+          console.log('Registration status checked after transaction');
+        } catch (checkError) {
+          console.error('Error checking registration status after transaction:', checkError);
+        }
+      }, 5000); // Increased wait time for blockchain confirmation
 
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error registering MLM:', error);
-      throw error;
+      console.error('Error details:', {
+        name: error.name,
+        message: error.message,
+        code: error.code,
+        data: error.data,
+        shortMessage: error.shortMessage,
+        details: error.details
+      });
+      
+      // Provide more specific error messages
+      if (error.message?.includes('user rejected')) {
+        throw new Error('Transaction was rejected by user. Please approve the transaction to complete registration.');
+      } else if (error.message?.includes('insufficient')) {
+        throw new Error('Insufficient USDC balance or POL for gas fees. Ensure you have ~1 USDC and ~0.2 POL.');
+      } else if (error.message?.includes('already registered')) {
+        throw new Error('This wallet address is already registered in the system.');
+      } else {
+        throw new Error(`Registration failed: ${error.message || 'Unknown error occurred. Please try again.'}`);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -180,4 +228,3 @@ export const useMLM = (): MLMContextType => {
   }
   return context;
 };
-

@@ -82,7 +82,7 @@
 //   };
 
 //   const handleSectionChange = (section: string) => {
-//     navigate(`/usd/safemint?section=${section}`);
+//     navigate(`/?section=${section}`);
 //   };
 
 //   const handleRefresh = async () => {

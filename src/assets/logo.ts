@@ -1,35 +1,21 @@
-// Logo configuration for USDStack
-import logoImage from './usdstack-logo.png';
-
 // Get the base path from Vite config
 const getBasePath = () => {
   const base = import.meta.env.BASE_URL || '/';
   return base.endsWith('/') ? base : base + '/';
 };
 
-// Get the correct logo path for production
-const getLogoPath = () => {
-  // In development, use the imported logo
-  if (import.meta.env.DEV) {
-    return logoImage;
-  }
-
-  // In production, try the imported logo first, then fallback
-  return logoImage;
-};
-
 export const LOGO_CONFIG = {
-  // Main logo image (handles both dev and production)
-  image: getLogoPath(),
+  // Main logo image (public folder path)
+  image: `${getBasePath()}safemint-logo.png`,
 
-  // Alternative fallback (handles base path for production)
-  fallback: `${getBasePath()}usdstack-logo.png`,
-  
+  // Alternative fallback (same path for consistency)
+  fallback: `${getBasePath()}safemint-logo.png`,
+
   // Logo dimensions for different use cases
   sizes: {
     navbar: {
-      width: 40,
-      height: 40,
+      width: 100,
+      height: 100,
     },
     sidebar: {
       width: 40,
@@ -44,10 +30,10 @@ export const LOGO_CONFIG = {
       height: 32,
     }
   },
-  
+
   // Alt text
   alt: 'USDStack Logo',
-  
+
   // Common styles
   styles: {
     borderRadius: '8px',

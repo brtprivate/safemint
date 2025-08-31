@@ -57,7 +57,7 @@ const MLMRegister: React.FC = () => {
   // Check registration status
   useEffect(() => {
     if (wallet.isConnected && mlm.isMLMRegistered) {
-      navigate('/usd/safemint');
+      navigate('/');
     }
   }, [wallet.isConnected, mlm.isMLMRegistered, navigate]);
 
@@ -74,6 +74,11 @@ const MLMRegister: React.FC = () => {
     }
   }, [wallet.isConnected, wallet.isCorrectNetwork, mlm.isMLMRegistered]);
 
+  const validateEthAddress = (address: string): boolean => {
+    const ethAddressRegex = /^0x[a-fA-F0-9]{40}$/;
+    return ethAddressRegex.test(address);
+  };
+
   const handleRegister = async () => {
     if (!wallet.isConnected || !wallet.isCorrectNetwork) return;
 
@@ -81,12 +86,17 @@ const MLMRegister: React.FC = () => {
       setRegistrationStatus('registering');
       setErrorMessage('');
 
+      // Validate referrer address if provided
+      if (referrerAddress && referrerAddress !== OWNER_ADDRESS && !validateEthAddress(referrerAddress)) {
+        throw new Error('Invalid Ethereum address format. Please enter a valid address or leave empty to use the default referrer.');
+      }
+
       const success = await mlm.registerMLM(referrerAddress || undefined);
       
       if (success) {
         setRegistrationStatus('success');
         setTimeout(() => {
-          navigate('/usd/safemint');
+          navigate('/');
         }, 2000);
       } else {
         setRegistrationStatus('error');
@@ -127,7 +137,7 @@ const MLMRegister: React.FC = () => {
       label: 'Welcome to Platform',
       description: 'Registration complete! Welcome to the platform',
       completed: mlm.isMLMRegistered,
-      action: () => navigate('/usd/safemint'),
+      action: () => navigate('/'),
       actionText: 'Go to Dashboard',
       icon: <CheckCircleIcon />
     }

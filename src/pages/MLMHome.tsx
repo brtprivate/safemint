@@ -348,7 +348,7 @@ const MLMHome: React.FC = () => {
                     <Button
                       variant="outlined"
                       size="large"
-                      onClick={() => navigate('/usd/safemint')}
+                      onClick={() => navigate('/')}
                       startIcon={<LoginIcon />}
                       sx={{
                         py: 1.5,
@@ -370,7 +370,7 @@ const MLMHome: React.FC = () => {
                     variant="contained"
                     color="secondary"
                     size="large"
-                    onClick={() => navigate('/usd/safemint')}
+                    onClick={() => navigate('/')}
                     startIcon={<AccountTreeIcon />}
                     sx={{
                       py: 1.5,
@@ -689,7 +689,7 @@ const MLMHome: React.FC = () => {
                       <Button
                         variant="outlined"
                         size="large"
-                        onClick={() => navigate('/usd/safemint')}
+                        onClick={() => navigate('/')}
                         startIcon={<LoginIcon />}
                         fullWidth={isMobile}
                         sx={{
@@ -712,7 +712,7 @@ const MLMHome: React.FC = () => {
                       <Button
                         variant="contained"
                         size="large"
-                        onClick={() => navigate('/usd/safemint')}
+                        onClick={() => navigate('/')}
                         startIcon={<AccountTreeIcon />}
                         fullWidth={isMobile}
                         sx={{
@@ -818,7 +818,7 @@ const MLMHome: React.FC = () => {
                     backgroundColor: '#FFA726',
                     '&:hover': { backgroundColor: '#FF9800' }
                   }}
-                  onClick={() => navigate('/usd/safemint')}
+                  onClick={() => navigate('/')}
                 >
                   Start Investing
                 </Button>
@@ -858,7 +858,7 @@ const MLMHome: React.FC = () => {
                     color: 'black',
                     '&:hover': { backgroundColor: '#B0B0B0' }
                   }}
-                  onClick={() => navigate('/usd/safemint')}
+                  onClick={() => navigate('/')}
                 >
                   Invest Now
                 </Button>
@@ -898,7 +898,7 @@ const MLMHome: React.FC = () => {
                     color: 'black',
                     '&:hover': { backgroundColor: '#FFC107' }
                   }}
-                  onClick={() => navigate('/usd/safemint')}
+                  onClick={() => navigate('/')}
                 >
                   Go Premium
                 </Button>
@@ -938,7 +938,7 @@ const MLMHome: React.FC = () => {
                     color: 'black',
                     '&:hover': { backgroundColor: '#D1AED7' }
                   }}
-                  onClick={() => navigate('/usd/safemint')}
+                  onClick={() => navigate('/')}
                 >
                   Elite Access
                 </Button>

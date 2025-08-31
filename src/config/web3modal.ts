@@ -1,5 +1,5 @@
 import { createWeb3Modal, defaultWagmiConfig } from '@web3modal/wagmi/react';
-import { polygon } from 'viem/chains';
+import { bscTestnet } from 'wagmi/chains';
 
 const projectId = 'b0cebcda95846f0aabc833a9f05dca99';
 const metadata = {
@@ -8,7 +8,7 @@ const metadata = {
   url: 'https://safemin.io/',
   icons: ['https://safemin.io/favicon.ico']
 };
-const chains = [polygon] as const;
+const chains = [bscTestnet] as const;
 
 export const config = defaultWagmiConfig({ chains, projectId, metadata });
 
@@ -32,6 +32,6 @@ createWeb3Modal({
     '--w3m-accent': '#FFA000',
     '--w3m-border-radius-master': '12px'
   },
-  // Default to Polygon for development
-  defaultChain: polygon
+  // Default to BSC Testnet for development
+  defaultChain: bscTestnet
 });

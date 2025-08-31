@@ -92,7 +92,7 @@ const Navbar: React.FC<NavbarProps> = ({ selectedSection, onSectionChange }) => 
     <>
       <AppBar position="sticky" sx={appBarStyle} elevation={0}>
         <Container maxWidth="lg" sx={{ px: { xs: 0.25, sm: 0.5, md: 1 } }}>
-          <Toolbar disableGutters sx={{ minHeight: { xs: 44, sm: 52 } }}>
+          <Toolbar disableGutters sx={{ minHeight: { xs: 120, sm: 130 } }}>
             {/* Logo */}
             <Typography
               variant="h6"
@@ -146,7 +146,7 @@ const Navbar: React.FC<NavbarProps> = ({ selectedSection, onSectionChange }) => 
                   Home
                 </Button>
 
-                {currentWallet.isConnected && (
+                {/* {currentWallet.isConnected && (
                   <>
                     {!currentWallet.isRegistered && (
                       <Button
@@ -196,7 +196,7 @@ const Navbar: React.FC<NavbarProps> = ({ selectedSection, onSectionChange }) => 
                       </>
                     )}
                   </>
-                )}
+                )} */}
               </Box>
             )}
 
@@ -209,7 +209,7 @@ const Navbar: React.FC<NavbarProps> = ({ selectedSection, onSectionChange }) => 
             }}>
               {currentWallet.isConnected && (
                 <>
-                  {!currentWallet.isCorrectNetwork && (
+                  {/* {!currentWallet.isCorrectNetwork && (
                     <Tooltip title="Click to switch to the correct network">
                       <Chip
                         label={isMobile ? "Wrong Net" : "Wrong Network"}
@@ -226,7 +226,7 @@ const Navbar: React.FC<NavbarProps> = ({ selectedSection, onSectionChange }) => 
                         }}
                       />
                     </Tooltip>
-                  )}
+                  )} */}
                   {!isMobile && (
                     <Chip
                       avatar={<Avatar sx={{
@@ -328,31 +328,31 @@ const Navbar: React.FC<NavbarProps> = ({ selectedSection, onSectionChange }) => 
                 label="Dashboard"
                 value="dashboard"
                 icon={<DashboardIcon sx={{ fontSize: 18 }} />}
-                onClick={() => navigate('/usd/safemint?section=dashboard')}
+                onClick={() => navigate('/?section=dashboard')}
               />
               <BottomNavigationAction
                 label="Packages"
                 value="packages"
                 icon={<DiamondIcon sx={{ fontSize: 18 }} />}
-                onClick={() => navigate('/usd/safemint?section=packages')}
+                onClick={() => navigate('/?section=packages')}
               />
               <BottomNavigationAction
                 label="My Plans"
                 value="my-investments"
                 icon={<AccountBalanceWalletIcon sx={{ fontSize: 18 }} />}
-                onClick={() => navigate('/usd/safemint?section=my-investments')}
+                onClick={() => navigate('/?section=my-investments')}
               />
               <BottomNavigationAction
                 label="ROI"
                 value="daily-roi"
                 icon={<TrendingUpIcon sx={{ fontSize: 18 }} />}
-                onClick={() => navigate('/usd/safemint?section=daily-roi')}
+                onClick={() => navigate('/?section=daily-roi')}
               />
               <BottomNavigationAction
                 label="Team"
                 value="team-structure"
                 icon={<PeopleIcon sx={{ fontSize: 18 }} />}
-                onClick={() => navigate('/usd/safemint?section=team-structure')}
+                onClick={() => navigate('/?section=team-structure')}
               />
             </BottomNavigation>
           </Box>

@@ -23,7 +23,7 @@ export { USDC_ABI };
 // Staking Contract configuration - BSC Testnet
 export const STAKING_CONTRACT_ADDRESS =
   "0xd5017C72215F927F8e9386006f3fede65aeBa405" as Address;
-export const BSC_TESTNET_CHAIN_ID = 97;
+export const BSC_TESTNET_CHAIN_ID = 56;
 
 // Token addresses on BSC Testnet (placeholders where necessary)
 export const TOKEN_ADDRESS =

@@ -105,7 +105,7 @@ const MLMDashboard = () => {
         abi: USDC_ABI,
         address: USDC_ADDRESS,
         functionName: 'decimals',
-        chainId: 97,
+        chainId: 56,
       });
 
       const directTeam = directReferrals?.length || 0;
@@ -200,13 +200,13 @@ const MLMDashboard = () => {
         abi: USDC_ABI,
         address: USDC_ADDRESS,
         functionName: 'decimals',
-        chainId: 97,
+        chainId: 56,
       });
       const approveAmount = parseUnits('1', Number(decimals)); // 1 USDC for registration
       console.log('Approving 1 USDC for registration...');
       const approvalTx = await stakingInteractions.approveUSDC(approveAmount, wallet.account);
       console.log('USDC approval transaction:', approvalTx);
-      await waitForTransactionReceipt(config, { hash: approvalTx, chainId: 97 });
+      await waitForTransactionReceipt(config, { hash: approvalTx, chainId: 56 });
       console.log('USDC approval confirmed');
 
       const refCode = referralCode || '0x3FBF4C71e8b3Fbb16808C2fb66A19f414B250297';
@@ -240,114 +240,114 @@ const MLMDashboard = () => {
   };
 
 
-const handleMakestake = async (amount) => {
-  console.log("🚀 [Stake] Initiating stake for:", amount, "USDC");
+  const handleMakestake = async (amount) => {
+    console.log("🚀 [Stake] Initiating stake for:", amount, "USDC");
 
-  try {
-    const txHash = await stakingInteractions.makeStake(
-      amount, // pass plain USDC (e.g., "100")
-      wallet.account
-    );
+    try {
+      const txHash = await stakingInteractions.makeStake(
+        amount, // pass plain USDC (e.g., "100")
+        wallet.account
+      );
 
-    console.log("✅ [Stake] Success. Tx Hash:", txHash);
-    setSuccess(`Staked ${amount} USDC successfully!`);
-  } catch (error) {
-    console.error("❌ [Stake] Failed:", error);
-    setError(`Stake failed: ${error.message || error}`);
-  }
-};
+      console.log("✅ [Stake] Success. Tx Hash:", txHash);
+      setSuccess(`Staked ${amount} USDC successfully!`);
+    } catch (error) {
+      console.error("❌ [Stake] Failed:", error);
+      setError(`Stake failed: ${error.message || error}`);
+    }
+  };
 
 
-const handleBuy = async () => {
-  console.log("🛒 [Buy] Buy button clicked");
+  const handleBuy = async () => {
+    console.log("🛒 [Buy] Buy button clicked");
 
-  if (!wallet.isConnected || !wallet.account) {
-    setError("Wallet not connected. Please connect your wallet.");
-    console.warn("⚠️ [Buy] Wallet not connected");
-    return;
-  }
-
-  if (!buyAmount || parseFloat(buyAmount) <= 0) {
-    setError("Please enter a valid amount to buy");
-    console.warn("⚠️ [Buy] Invalid buy amount:", buyAmount);
-    return;
-  }
-
-  try {
-    setOrderLoading(true);
-    setError("");
-    setSuccess("");
-
-    console.log("🔹 [Buy] Starting buy process for:", buyAmount, "USDC");
-
-    // 1. Verify network
-    if (chainId !== 97) {
-      setError("Please switch to BSC Testnet.");
-      console.warn("⚠️ [Buy] Wrong network:", chainId);
-      await switchChain({ chainId: 97 });
+    if (!wallet.isConnected || !wallet.account) {
+      setError("Wallet not connected. Please connect your wallet.");
+      console.warn("⚠️ [Buy] Wallet not connected");
       return;
     }
 
-    // 2. Verify registration status
-    const userInfo = await stakingInteractions.getUserInfo(wallet.account);
-    console.log("ℹ️ [Buy] User Info:", userInfo);
-    if (!userInfo.joined) {
-      setError("User is not registered. Please register first.");
-      console.warn("⚠️ [Buy] User not registered");
+    if (!buyAmount || parseFloat(buyAmount) <= 0) {
+      setError("Please enter a valid amount to buy");
+      console.warn("⚠️ [Buy] Invalid buy amount:", buyAmount);
       return;
     }
 
-    // 3. Get USDC decimals
-    const decimals = await readContract(config, {
-      abi: USDC_ABI,
-      address: USDC_ADDRESS,
-      functionName: "decimals",
-      chainId: 97,
-    });
-    console.log("ℹ️ [Buy] USDC Decimals:", decimals);
+    try {
+      setOrderLoading(true);
+      setError("");
+      setSuccess("");
 
-    // 4. Convert buyAmount to wei
-    const amountInWei = parseUnits(buyAmount, Number(decimals));
-    console.log("ℹ️ [Buy] Amount in Wei:", amountInWei.toString());
+      console.log("🔹 [Buy] Starting buy process for:", buyAmount, "USDC");
 
-    // 5. Verify contract’s USDC address
-    const contractUSDAddress = await stakingInteractions.getUSDAddress();
-    console.log("ℹ️ [Buy] Contract USD Address:", contractUSDAddress);
+      // 1. Verify network
+      if (chainId !== 56) {
+        setError("Please switch to BSC Testnet.");
+        console.warn("⚠️ [Buy] Wrong network:", chainId);
+        await switchChain({ chainId: 56 });
+        return;
+      }
 
-    // 6. Check USDC balance
-    // (You can add a balance check here if needed)
+      // 2. Verify registration status
+      const userInfo = await stakingInteractions.getUserInfo(wallet.account);
+      console.log("ℹ️ [Buy] User Info:", userInfo);
+      if (!userInfo.joined) {
+        setError("User is not registered. Please register first.");
+        console.warn("⚠️ [Buy] User not registered");
+        return;
+      }
 
-    // 7. Check and approve USDC allowance
-    // const allowance = await readContract(config, {
-    //   abi: USDC_ABI,
-    //   address: USDC_ADDRESS,
-    //   functionName: "allowance",
-    //   args: [wallet.account, STAKING_CONTRACT_ADDRESS],
-    //   chainId: 97,
-    // });
-    // console.log("ℹ️ [Buy] Current Allowance:", formatUnits(allowance, Number(decimals)));
+      // 3. Get USDC decimals
+      const decimals = await readContract(config, {
+        abi: USDC_ABI,
+        address: USDC_ADDRESS,
+        functionName: "decimals",
+        chainId: 56,
+      });
+      console.log("ℹ️ [Buy] USDC Decimals:", decimals);
 
-    console.log("🔄 [Buy] Sending approval transaction...");
-    const approvalTx = await stakingInteractions.approveUSDC(
-      amountInWei,
-      wallet.account
-    );
-    console.log("✅ [Buy] Approval successful. Tx Hash:", approvalTx);
+      // 4. Convert buyAmount to wei
+      const amountInWei = parseUnits(buyAmount, Number(decimals));
+      console.log("ℹ️ [Buy] Amount in Wei:", amountInWei.toString());
 
-    // 8. Stake after short delay (to ensure approval is mined)
-    setTimeout(() => {
-      console.log("⏳ [Buy] Proceeding to stake after approval...");
-      handleMakestake(buyAmount);
-    }, 5000);
+      // 5. Verify contract’s USDC address
+      const contractUSDAddress = await stakingInteractions.getUSDAddress();
+      console.log("ℹ️ [Buy] Contract USD Address:", contractUSDAddress);
 
-  } catch (error) {
-    console.error("❌ [Buy] Unexpected error:", error);
-    setError(`Unexpected error: ${error.message || "Unknown error"}`);
-  } finally {
-    setOrderLoading(false);
-    console.log("🔚 [Buy] Buy process completed");
-  }
-};
+      // 6. Check USDC balance
+      // (You can add a balance check here if needed)
+
+      // 7. Check and approve USDC allowance
+      // const allowance = await readContract(config, {
+      //   abi: USDC_ABI,
+      //   address: USDC_ADDRESS,
+      //   functionName: "allowance",
+      //   args: [wallet.account, STAKING_CONTRACT_ADDRESS],
+      //   chainId: 97,
+      // });
+      // console.log("ℹ️ [Buy] Current Allowance:", formatUnits(allowance, Number(decimals)));
+
+      console.log("🔄 [Buy] Sending approval transaction...");
+      const approvalTx = await stakingInteractions.approveUSDC(
+        amountInWei,
+        wallet.account
+      );
+      console.log("✅ [Buy] Approval successful. Tx Hash:", approvalTx);
+
+      // 8. Stake after short delay (to ensure approval is mined)
+      setTimeout(() => {
+        console.log("⏳ [Buy] Proceeding to stake after approval...");
+        handleMakestake(buyAmount);
+      }, 5000);
+
+    } catch (error) {
+      console.error("❌ [Buy] Unexpected error:", error);
+      setError(`Unexpected error: ${error.message || "Unknown error"}`);
+    } finally {
+      setOrderLoading(false);
+      console.log("🔚 [Buy] Buy process completed");
+    }
+  };
 
 
   const handleSell = async () => {
@@ -370,7 +370,7 @@ const handleBuy = async () => {
         abi: USDC_ABI,
         address: USDC_ADDRESS,
         functionName: 'decimals',
-        chainId: 97,
+        chainId: 56,
       });
       const amountInWei = parseUnits(sellAmount, Number(decimals));
 
@@ -492,11 +492,13 @@ const handleBuy = async () => {
   return (
     <Container maxWidth="xl" sx={{ py: { xs: 2, sm: 3 } }}>
       {error && (
-        <Alert severity="error" sx={{ mb: 
+        <Alert severity="error" sx={{
+          mb:
 
- 2 }} onClose={() => setError('')}>
-        {error}
-      </Alert>
+            2
+        }} onClose={() => setError('')}>
+          {error}
+        </Alert>
       )}
       {success && (
         <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess('')}>

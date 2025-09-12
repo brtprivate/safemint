@@ -8,7 +8,7 @@ import { parseEther, formatEther } from 'viem';
 // Contract configuration - BSC Testnet
 export const SELFMINT_TOKEN_CONTRACT_ADDRESS = '0xb30D4239A3E29Cd29D5C6fff47137d08a5CC05FA' as Address;
 export const SELFMINT_STAKING_CONTRACT_ADDRESS = '0xb54B2B0Bc772Dedb586DE2685C8941751bebb084' as Address;
-export const BSC_TESTNET_CHAIN_ID = 97;
+export const BSC_TESTNET_CHAIN_ID = 56;
 
 // Polygon Mainnet Chain ID
 export const POLYGON_CHAIN_ID = 137;

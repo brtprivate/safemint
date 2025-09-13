@@ -1,5 +1,0 @@
-- [x] Fix incomplete export statement at the end of mlmcontract.ts
-- [x] Remove undefined 'request' variable usage
-- [x] Add missing functions to the export
-- [x] Verify no other syntax errors
-- [x] Remove checkWhitelistStatus call from useEffect in MLMDashboard.jsx

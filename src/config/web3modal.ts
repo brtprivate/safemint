@@ -3,9 +3,9 @@ import { bscTestnet, bsc } from "wagmi/chains";
 
 const projectId = "b0cebcda95846f0aabc833a9f05dca99";
 const metadata = {
-  name: "safemin MLM",
-  description: "safemin MLM Platform",
-  url: "https://safemin.io/",
+  name: "safemint ",
+  description: "safemint",
+  url: "https://safemint.live/",
   icons: ["https://safemin.io/favicon.ico"],
 };
 const chains = [bsc] as const;

@@ -19,7 +19,7 @@ export const NETWORK_CONFIG = {
   name: "BSC Maninnet",
   chainId: 56,
   rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545/",
-  explorerUrl: "https://testnet.bscscan.com",
+  explorerUrl: "https://bscscan.com",
   nativeCurrency: {
     name: "Binance Coin",
     symbol: "BNB",

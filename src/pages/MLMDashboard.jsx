@@ -448,7 +448,7 @@ const MLMDashboard = () => {
             gutterBottom
             sx={{ color: 'primary.main', fontWeight: 'bold', mb: { xs: 2, sm: 3 }, fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
           >
-            Register to Join MLM
+            Register 
           </Typography>
           <Typography
             variant="body1"

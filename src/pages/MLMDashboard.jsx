@@ -107,6 +107,7 @@ const MLMDashboard = () => {
         functionName: 'decimals',
         chainId: 56,
       });
+      console.log("USDC Decimals fetched:", decimals);
 
       const directTeam = directReferrals?.length || 0;
       const strongTeam = Number(rankQualify?.strongTeam || 0);
@@ -159,13 +160,22 @@ const MLMDashboard = () => {
       for (let i = 0; i < totalCount; i++) {
         const orderResponse = await stakingInteractions.userStakeView(wallet.account, BigInt(i)).catch(() => ({}));
         const stakeInfo = orderResponse?.stakeInfo || {};
+        const orderValue = stakeInfo?.orderValue || BigInt(0);
+        // Try with 6 decimals (standard for USDC) if the fetched decimals seem wrong
+        const actualDecimals = Number(decimals) === 18 ? 6 : Number(decimals);
+        const formattedAmount = parseFloat(formatUnits(orderValue, actualDecimals)) || 0;
+        console.log(`Order ${i}: orderValue=${orderValue.toString()}, fetchedDecimals=${decimals}, actualDecimals=${actualDecimals}, formattedAmount=${formattedAmount}`);
+
         orders.push({
           ...stakeInfo,
-          amount: parseFloat(formatUnits(stakeInfo?.orderValue || BigInt(0), Number(decimals))) || 0,
+          amount: formattedAmount,
           timestamp: Number(stakeInfo?.orderTime || 0) * 1000,
           isStake: !stakeInfo?.isComplete,
         });
       }
+
+      console.log("Order history:", orders);
+      console.log("Sample order:", orders[0]);
       setOrderHistory(orders);
     } catch (error) {
       console.error('Error fetching MLM data:', error);
@@ -209,7 +219,7 @@ const MLMDashboard = () => {
       await waitForTransactionReceipt(config, { hash: approvalTx, chainId: 56 });
       console.log('USDC approval confirmed');
 
-      const refCode = referralCode || '0x3FBF4C71e8b3Fbb16808C2fb66A19f414B250297';
+      const refCode = referralCode;
       console.log('Registering with referral code:', refCode);
       const registerTx = await stakingInteractions.regUser(refCode, wallet.account);
       console.log('Registration transaction:', registerTx);
@@ -455,7 +465,7 @@ const MLMDashboard = () => {
             color="text.secondary"
             sx={{ mb: { xs: 2, sm: 3 }, fontSize: { xs: '0.875rem', sm: '1rem' } }}
           >
-            Enter a referral code to join the MLM system or leave blank to use the default.
+            Enter a referral code .
           </Typography>
           {error && (
             <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>
@@ -469,7 +479,7 @@ const MLMDashboard = () => {
           )}
           <TextField
             fullWidth
-            label="Referral Code (Optional)"
+            label="Referral Code"
             value={referralCode}
             onChange={(e) => setReferralCode(e.target.value)}
             sx={{ mb: 2, '& .MuiInputBase-input': { fontSize: { xs: '0.875rem', sm: '1rem' } } }}
@@ -889,7 +899,7 @@ const MLMDashboard = () => {
                           </TableCell>
                           <TableCell>
                             <Typography variant="body2" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
-                              {formatCurrency(order.amount)}
+                              {order.orderValue?.toString() || 'N/A'}
                             </Typography>
                           </TableCell>
                           <TableCell>

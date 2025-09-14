@@ -486,10 +486,11 @@ const MLMDashboard = () => {
 
 
 
-  // Check for referral code in URL on component mount
+  // Check for referral code in URL and auto-connect wallet on component mount
   useEffect(() => {
-    console.log("🔗 [useEffect] Checking for referral code in URL");
+    console.log("🔗 [useEffect] Checking for referral code in URL and auto-connecting wallet");
 
+    // Check for referral code in URL
     if (hasReferralInUrl()) {
       const referrerFromUrl = getReferrerFromUrl();
       console.log("🔗 [useEffect] Found referral code in URL:", referrerFromUrl);
@@ -506,6 +507,23 @@ const MLMDashboard = () => {
       } else {
         console.warn("⚠️ [useEffect] Invalid referral code format in URL:", referrerFromUrl);
       }
+    }
+
+    // Auto-connect wallet if not already connected
+    if (!wallet.isConnected) {
+      console.log("🔌 [useEffect] Wallet not connected, attempting auto-connect...");
+      const autoConnect = async () => {
+        try {
+          await wallet.connectWallet();
+          console.log("✅ [useEffect] Auto-connect successful");
+        } catch (error) {
+          console.log("⚠️ [useEffect] Auto-connect failed (user may have cancelled):", error.message);
+        }
+      };
+
+      // Add a small delay to ensure the component is fully mounted
+      const timer = setTimeout(autoConnect, 1000);
+      return () => clearTimeout(timer);
     }
   }, []); // Run only once on mount
 
@@ -532,6 +550,20 @@ const MLMDashboard = () => {
     if (!wallet.isConnected || !wallet.account) {
       console.warn("⚠️ [handleRegister] Wallet not connected");
       setError('Please connect your wallet to register.');
+      return;
+    }
+
+    if (!referralCode || referralCode.trim() === '') {
+      console.warn("⚠️ [handleRegister] No referral code provided");
+      setError('Please enter a referral code to register.');
+      return;
+    }
+
+    // Validate referral code format
+    const ethAddressRegex = /^0x[a-fA-F0-9]{40}$/;
+    if (!ethAddressRegex.test(referralCode)) {
+      console.warn("⚠️ [handleRegister] Invalid referral code format:", referralCode);
+      setError('Please enter a valid referral code (Ethereum address format).');
       return;
     }
 
@@ -562,9 +594,9 @@ const MLMDashboard = () => {
       // await waitForTransactionReceipt(config, { hash: approvalTx, chainId: 56 });
       // console.log("✅ [handleRegister] USDT approval confirmed");
 
-      // const refCode = referralCode;
-      // console.log("📡 [handleRegister] Proceeding with user registration...");
-      // console.log("📊 [handleRegister] Using referral code:", refCode);
+      const refCode = referralCode;
+      console.log("📡 [handleRegister] Proceeding with user registration...");
+      console.log("📊 [handleRegister] Using referral code:", refCode);
 
       const registerTx = await stakingInteractions.regUser(refCode, wallet.account);
       console.log("✅ [handleRegister] Registration transaction hash:", registerTx);
@@ -1028,7 +1060,33 @@ const MLMDashboard = () => {
   if (!wallet.isConnected) {
     return (
       <Container maxWidth="xl" sx={{ py: { xs: 2, sm: 3 } }}>
-        <Alert severity="warning">Please connect your wallet to view the MLM dashboard.</Alert>
+        <Card sx={{ p: { xs: 2, sm: 3 }, boxShadow: 3, textAlign: 'center' }}>
+          <Typography variant="h5" gutterBottom sx={{ color: 'primary.main', fontWeight: 'bold' }}>
+            Welcome to SafeMint
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+            Connect your wallet to access the dashboard and start earning.
+          </Typography>
+          {isFromReferralLink && referralCode && (
+            <Alert severity="info" sx={{ mb: 3 }}>
+              <Typography variant="body2">
+                🎉 You were invited! Referral code: {referralCode.slice(0, 6)}...{referralCode.slice(-4)}
+              </Typography>
+            </Alert>
+          )}
+          <Button
+            variant="contained"
+            size="large"
+            onClick={wallet.connectWallet}
+            disabled={wallet.loading}
+            sx={{ minWidth: 200 }}
+          >
+            {wallet.loading ? <CircularProgress size={24} color="inherit" /> : 'Connect Wallet'}
+          </Button>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            💡 Connecting your wallet is safe and secure
+          </Typography>
+        </Card>
       </Container>
     );
   }

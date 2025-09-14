@@ -23,11 +23,11 @@ const customizeModalContent = () => {
     const modal = document.querySelector('w3m-modal');
     if (!modal) return;
 
-    console.log('✅ Modal found, applying Trust Wallet priority...');
+    // console.log('✅ Modal found, applying Trust Wallet priority...');
 
     // Check if mobile device
     const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    console.log('📱 Mobile device:', isMobile);
+    // console.log('📱 Mobile device:', isMobile);
 
     // Simple Trust Wallet priority
     const trustWalletButton = modal.querySelector('wui-wallet-button[data-wallet-id="4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0"]');
@@ -78,12 +78,12 @@ const reorderWallets = () => {
   const metaMaskButton = document.querySelector(`w3m-modal wui-wallet-button[data-wallet-id="${metaMaskId}"]`);
   const coinbaseButton = document.querySelector(`w3m-modal wui-wallet-button[data-wallet-id="${coinbaseId}"]`);
 
-  console.log('Found wallets:', {
-    total: allWalletButtons.length,
-    trustWallet: !!trustWalletButton,
-    metaMask: !!metaMaskButton,
-    coinbase: !!coinbaseButton
-  });
+  // console.log('Found wallets:', {
+  //   total: allWalletButtons.length,
+  //   trustWallet: !!trustWalletButton,
+  //   metaMask: !!metaMaskButton,
+  //   coinbase: !!coinbaseButton
+  // });
 
   // FORCE Trust Wallet styling
   if (trustWalletButton) {

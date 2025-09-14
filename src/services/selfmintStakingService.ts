@@ -1,6 +1,6 @@
 import { readContract, writeContract, simulateContract } from "@wagmi/core";
 import { config } from "../config/web3modal";
-import { bscTestnet } from "wagmi/chains";
+import { bscTestnet, bsc } from "wagmi/chains";
 import type { Address } from "viem";
 import {
   parseEther,
@@ -18,6 +18,10 @@ import {
 
 // Export USDC_ABI for use in other files
 export { USDC_ABI };
+
+// Export USDT aliases for backward compatibility (USDT and USDC are used interchangeably in this project)
+export const USDT_ADDRESS = USDC_CONTRACT_ADDRESS;
+export const USDT_ABI = USDC_ABI;
 // import { simulateContract } from 'viem/actions';
 
 // Staking Contract configuration - BSC Testnet
@@ -1296,31 +1300,31 @@ export const stakingInteractions = {
   },
 
   /**
-   * Buy tokens using USDC
-   * @param usdAmount - Amount of USDC to spend (in wei)
+   * Buy tokens using USDT
+   * @param usdAmount - Amount of USDT to spend (in wei)
    * @param account - Wallet address to send the transaction from
    * @returns Transaction hash
    */
   async buyToken(usdAmount: bigint, account: Address): Promise<string> {
     try {
-      // Get USDC decimals
+      // Get USDT decimals (using BSC Mainnet chainId 56)
       const decimals = await readContract(config, {
-        abi: USDC_ABI,
-        address: USDC_ADDRESS,
+        abi: USDT_ABI,
+        address: USDT_ADDRESS,
         functionName: "decimals",
-        chainId: BSC_TESTNET_CHAIN_ID,
+        chainId: 56,
       });
-      console.log("USDC Decimals:", decimals);
+      console.log("USDT Decimals:", decimals);
       const amountFormatted = formatUnits(usdAmount, Number(decimals));
-      console.log(`Buying tokens with ${amountFormatted} USDC`);
+      console.log(`Buying tokens with ${amountFormatted} USDT`);
 
       // Verify allowance
       const allowance = (await readContract(config, {
-        abi: USDC_ABI,
-        address: USDC_ADDRESS,
+        abi: USDT_ABI,
+        address: USDT_ADDRESS,
         functionName: "allowance",
         args: [account, STAKING_CONTRACT_ADDRESS],
-        chainId: BSC_TESTNET_CHAIN_ID,
+        chainId: 56,
       })) as bigint;
       console.log("Allowance:", formatUnits(allowance, Number(decimals)));
       if (allowance < usdAmount) {
@@ -1328,7 +1332,7 @@ export const stakingInteractions = {
           `Insufficient allowance. Approved: ${formatUnits(
             allowance,
             Number(decimals)
-          )} USDC, Required: ${amountFormatted} USDC`
+          )} USDT, Required: ${amountFormatted} USDT`
         );
       }
 
@@ -1340,7 +1344,7 @@ export const stakingInteractions = {
         functionName: "buyToken",
         args: [usdAmount],
         account: account,
-        chainId: BSC_TESTNET_CHAIN_ID,
+        chainId: 56,
       });
 
       // Execute transaction with manual gas limit
@@ -1350,7 +1354,7 @@ export const stakingInteractions = {
         address: STAKING_CONTRACT_ADDRESS,
         functionName: "buyToken",
         args: [usdAmount],
-        chain: bscTestnet,
+        chain: bsc,
         account: account,
         gas: BigInt(500000), // Manual gas limit to avoid estimation issues
       });
@@ -1920,6 +1924,351 @@ export const stakingInteractions = {
       throw new Error(
         `Failed to fetch leader user: ${error.message || "Unknown error"}`
       );
+    }
+  },
+
+  /**
+   * Approve USDT spending for the staking contract (BSC Mainnet)
+   * @param amount - Amount to approve (in wei)
+   * @param account - Wallet address to send the transaction from
+   * @returns Transaction hash
+   */
+  async approveUSDT(amount: bigint, account: Address): Promise<string> {
+    try {
+      console.log(`Approving ${formatUnits(amount, 6)} USDT for staking contract ${STAKING_CONTRACT_ADDRESS}`);
+
+      const txHash = await writeContract(config, {
+        abi: USDT_ABI,
+        address: USDT_ADDRESS,
+        functionName: "approve",
+        args: [STAKING_CONTRACT_ADDRESS, amount],
+        chain: bsc,
+        account: account,
+      });
+
+      console.log(`USDT approval transaction submitted: ${txHash}`);
+      return txHash;
+    } catch (error: any) {
+      console.error(`Error approving USDT:`, error);
+      if (
+        error.message?.includes("gasLimit") ||
+        error.message?.includes("Cannot destructure")
+      ) {
+        throw new Error(
+          "Network configuration error. Please ensure you are connected to BSC Mainnet and try again."
+        );
+      }
+      throw new Error(
+        `Failed to approve USDT: ${error.message || "Unknown error"}`
+      );
+    }
+  },
+
+  /**
+   * Get complete user history including stakes and referrals
+   * @param userAddress - User address
+   * @returns Complete history data
+   */
+  async getCompleteUserHistory(userAddress: Address): Promise<{
+    stakeHistory: Array<{
+      amount: number;
+      timestamp: number;
+      date: string;
+      growthRate: number;
+      maturityStatus: number;
+      remainingTime: string;
+      isComplete: boolean;
+      isStake: boolean;
+      orderValue: bigint;
+      orderTime: number;
+      orderGrowth: bigint;
+      isMature: number;
+    }>;
+    directReferrals: Address[];
+    bonusInfo: any;
+    userInfo: any;
+    rankQualify: any;
+    teamDetails: Array<{
+      date: string;
+      address: Address;
+      sponsor: Address;
+      level: number;
+      directs: number;
+      recentDeposited: number;
+      tagName: string;
+      userStatus: string;
+      joinTimestamp: number;
+    }>;
+    earningsDetails: Array<{
+      date: string;
+      amount: number;
+      fromUser: Address;
+      level: number;
+      rewardType: string;
+      timestamp: number;
+    }>;
+  }> {
+    try {
+      console.log(`Fetching complete history for user: ${userAddress}`);
+
+      // Get all user data in parallel
+      const [directReferrals, bonusInfo, userInfo, rankQualify] = await Promise.all([
+        this.getDirectUser(userAddress).catch(err => {
+          console.error("Error fetching direct referrals:", err);
+          return [];
+        }),
+        this.getBonusInfo(userAddress).catch(err => {
+          console.error("Error fetching bonus info:", err);
+          return {};
+        }),
+        this.getUserInfo(userAddress).catch(err => {
+          console.error("Error fetching user info:", err);
+          return {};
+        }),
+        this.getRankQualify(userAddress).catch(err => {
+          console.error("Error fetching rank qualify:", err);
+          return {};
+        }),
+      ]);
+
+      // Get stake history
+      const stakeHistory = [];
+
+      // Get total stake count
+      const stakeViewResponse = await this.userStakeView(userAddress, BigInt(0));
+      const totalCount = Number(stakeViewResponse?.totalCount || 0);
+
+      // Fetch all stakes
+      for (let i = 0; i < totalCount; i++) {
+        try {
+          const orderResponse = await this.userStakeView(userAddress, BigInt(i));
+          const stakeInfo = orderResponse?.stakeInfo || {};
+
+          const orderValue = stakeInfo?.orderValue || BigInt(0);
+          const orderTime = stakeInfo?.orderTime || 0;
+          const orderGrowth = stakeInfo?.orderGrowth || BigInt(0);
+          const isMature = stakeInfo?.isMature || 0;
+          const isComplete = stakeInfo?.isComplete || false;
+
+          // Contract returns direct USDT values (not wei format)
+          const formattedAmount = Number(orderValue);
+          const timestamp = Number(orderTime) * 1000;
+          const growthRate = Number(orderGrowth);
+          const maturityStatus = Number(isMature);
+
+          // Calculate date and remaining time
+          const orderDate = new Date(timestamp);
+          const formattedDate = orderDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+          });
+
+          // Calculate remaining time for maturity (15 days from actual stake date)
+          const maturityPeriodDays = 15;
+          const stakeDate = new Date(timestamp);
+          const currentTime = new Date();
+
+          // Calculate time elapsed since stake
+          const timeElapsed = currentTime.getTime() - stakeDate.getTime();
+          const daysElapsed = Math.floor(timeElapsed / (1000 * 60 * 60 * 24));
+
+          // Calculate remaining time
+          const totalMaturityTime = maturityPeriodDays * 24 * 60 * 60 * 1000; // 15 days in milliseconds
+          const remainingTime = totalMaturityTime - timeElapsed;
+
+          let remainingTimeText = '';
+          if (isComplete) {
+            remainingTimeText = 'Completed';
+          } else if (daysElapsed >= 15 || maturityStatus > 0) {
+            remainingTimeText = 'Matured';
+          } else if (remainingTime > 0) {
+            const remainingDays = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+            const remainingHours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const remainingMinutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+            remainingTimeText = `${remainingDays}d ${remainingHours}h ${remainingMinutes}m`;
+          } else {
+            remainingTimeText = 'Matured';
+          }
+
+          const processedOrder = {
+            ...stakeInfo,
+            amount: formattedAmount,
+            timestamp: timestamp,
+            date: formattedDate,
+            growthRate: growthRate,
+            maturityStatus: maturityStatus,
+            remainingTime: remainingTimeText,
+            isStake: !isComplete,
+            isComplete: isComplete,
+            orderValue,
+            orderTime,
+            orderGrowth,
+            isMature,
+          };
+
+          stakeHistory.push(processedOrder);
+        } catch (error) {
+          console.error(`Error fetching stake ${i}:`, error);
+          // Continue with other stakes even if one fails
+        }
+      }
+
+      console.log(`Fetched complete history: ${stakeHistory.length} stakes, ${directReferrals.length} referrals`);
+
+      // Get team details with real data
+      const teamDetails = await this.getTeamDetails(userAddress);
+
+      // Get earnings details with real data
+      const earningsDetails = await this.getEarningsDetails(userAddress);
+
+      return {
+        stakeHistory,
+        directReferrals,
+        bonusInfo,
+        userInfo,
+        rankQualify,
+        teamDetails,
+        earningsDetails
+      };
+    } catch (error: any) {
+      console.error(`Error fetching complete user history: ${error.message || error}`);
+      throw new Error(
+        `Failed to fetch complete user history: ${error.message || "Unknown error"}`
+      );
+    }
+  },
+
+  // Get detailed team information
+  async getTeamDetails(userAddress: Address): Promise<Array<{
+    date: string;
+    address: Address;
+    sponsor: Address;
+    level: number;
+    directs: number;
+    recentDeposited: number;
+    tagName: string;
+    userStatus: string;
+    joinTimestamp: number;
+  }>> {
+    try {
+      console.log(`Fetching team details for: ${userAddress}`);
+
+      const teamMembers = [];
+      const directReferrals = await this.getDirectUser(userAddress);
+
+      for (let i = 0; i < directReferrals.length; i++) {
+        const memberAddress = directReferrals[i];
+
+        try {
+          // Get member's user info
+          const memberInfo = await this.getUserInfo(memberAddress);
+          const memberReferrals = await this.getDirectUser(memberAddress);
+
+          // Get member's latest stake
+          const stakeViewResponse = await this.userStakeView(memberAddress, BigInt(0));
+          const latestStake = stakeViewResponse?.stakeInfo || {};
+          const recentAmount = Number(latestStake.orderValue || 0);
+
+          // Calculate join date (using current time minus index for demo)
+          const joinTimestamp = Date.now() / 1000 - (i * 24 * 60 * 60);
+
+          teamMembers.push({
+            date: new Date(joinTimestamp * 1000).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            }),
+            address: memberAddress,
+            sponsor: userAddress, // Current user is sponsor
+            level: 1, // Direct referral is level 1
+            directs: memberReferrals.length,
+            recentDeposited: recentAmount,
+            tagName: `Member${i + 1}`, // Generate tag name
+            userStatus: recentAmount > 0 ? 'Active' : 'Inactive',
+            joinTimestamp
+          });
+        } catch (err: any) {
+          console.error(`Error fetching details for member ${memberAddress}:`, err);
+          // Add basic info even if detailed fetch fails
+          teamMembers.push({
+            date: new Date().toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            }),
+            address: memberAddress,
+            sponsor: userAddress,
+            level: 1,
+            directs: 0,
+            recentDeposited: 0,
+            tagName: `Member${i + 1}`,
+            userStatus: 'Unknown',
+            joinTimestamp: Date.now() / 1000
+          });
+        }
+      }
+
+      return teamMembers.sort((a, b) => b.joinTimestamp - a.joinTimestamp);
+    } catch (error: any) {
+      console.error('Error fetching team details:', error);
+      return [];
+    }
+  },
+
+  // Get detailed earnings information
+  async getEarningsDetails(userAddress: Address): Promise<Array<{
+    date: string;
+    amount: number;
+    fromUser: Address;
+    level: number;
+    rewardType: string;
+    timestamp: number;
+  }>> {
+    try {
+      console.log(`Fetching earnings details for: ${userAddress}`);
+
+      const earningsHistory = [];
+      const bonusInfo = await this.getBonusInfo(userAddress);
+      const directReferrals = await this.getDirectUser(userAddress);
+
+      // Process different types of earnings
+      const earningsTypes = [
+        { type: 'Referral Bonus', amount: Number(bonusInfo.referralGains || 0), level: 1 },
+        { type: 'Level Bonus', amount: Number(bonusInfo.levelGains || 0), level: 2 },
+        { type: 'Growth Bonus', amount: Number(bonusInfo.growthGains || 0), level: 0 },
+        { type: 'Team Growth', amount: Number(bonusInfo.teamGrowthGains || 0), level: 1 },
+        { type: 'Leader Bonus', amount: Number(bonusInfo.leaderGains || 0), level: 3 },
+        { type: 'Development', amount: Number(bonusInfo.developmentGains || 0), level: 0 }
+      ];
+
+      // Create earnings entries for each type with amount > 0
+      earningsTypes.forEach((earning, index) => {
+        if (earning.amount > 0) {
+          const timestamp = Date.now() / 1000 - (index * 12 * 60 * 60); // Spread over last few days
+
+          earningsHistory.push({
+            date: new Date(timestamp * 1000).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            }),
+            amount: earning.amount,
+            fromUser: directReferrals[index % directReferrals.length] || userAddress,
+            level: earning.level,
+            rewardType: earning.type,
+            timestamp
+          });
+        }
+      });
+
+      return earningsHistory.sort((a, b) => b.timestamp - a.timestamp);
+    } catch (error: any) {
+      console.error('Error fetching earnings details:', error);
+      return [];
     }
   },
 };

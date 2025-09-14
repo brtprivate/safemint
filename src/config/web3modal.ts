@@ -1,5 +1,5 @@
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/react";
-import { bscTestnet, bsc } from "wagmi/chains";
+import { bsc } from "wagmi/chains";
 
 const projectId = "b0cebcda95846f0aabc833a9f05dca99";
 const metadata = {
@@ -32,6 +32,6 @@ createWeb3Modal({
     "--w3m-accent": "#FFA000",
     "--w3m-border-radius-master": "12px",
   },
-  // Default to BSC Testnet for development
-  defaultChain: bscTestnet,
+  // Default to BSC Mainnet
+  defaultChain: bsc,
 });

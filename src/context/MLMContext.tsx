@@ -2,16 +2,11 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useAccount } from 'wagmi';
 import { readContract } from '@wagmi/core';
 import { config } from '../config/web3modal';
-import { 
-  mlmContractInteractions, 
-  MLM_CONTRACT_ADDRESS,
-  POLYGON_CHAIN_ID 
-} from '../services/mlmcontract';
 import {
   stakingInteractions,
   STAKING_CONTRACT_ADDRESS,
   STAKING_ABI,
-  USDC_ADDRESS
+  BSC_MAINNET_CHAIN_ID
 } from '../services/selfmintStakingService';
 import { formatEther, parseEther } from 'viem';
 
@@ -40,8 +35,8 @@ export const MLMProvider: React.FC<MLMProviderProps> = ({ children }) => {
   const [isMLMRegistered, setIsMLMRegistered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Polygon chain id is 137
-  const isCorrectNetwork = chain?.id === 137;
+  // BSC chain id is 56
+  const isCorrectNetwork = chain?.id === 56;
 
   // Check MLM registration status using staking contract
   const checkMLMRegistration = async (): Promise<boolean> => {
@@ -81,19 +76,19 @@ export const MLMProvider: React.FC<MLMProviderProps> = ({ children }) => {
       setIsLoading(true);
       console.log('Starting registration process with referrer:', refAddress);
 
-      // Approve 1 USDC for registration
-      const approveAmount = parseEther('1'); // 1 USDC (18 decimals)
-      console.log(`Approving ${approveAmount} USDC for contract ${STAKING_CONTRACT_ADDRESS}`);
+      // Approve 1 USDTfor registration
+      const approveAmount = parseEther('1'); // 1 USDT(18 decimals)
+      console.log(`Approving ${approveAmount} USDTfor contract ${STAKING_CONTRACT_ADDRESS}`);
       
-      // Check USDC balance
+      // Check USDTbalance
       const usdcBalance = await stakingInteractions.getUSDCBalance(address as `0x${string}`);
       if (usdcBalance < approveAmount) {
-        throw new Error(`Insufficient USDC balance. You have ${parseFloat(formatEther(usdcBalance)).toFixed(2)} USDC but need 1 USDC.`);
+        throw new Error(`Insufficient USDTbalance. You have ${parseFloat(formatEther(usdcBalance)).toFixed(2)} USDTbut need 1 USDC.`);
       }
 
-      // Perform USDC approval
+      // Perform USDTapproval
       const approvalTx = await stakingInteractions.approveUSDC(approveAmount, address as `0x${string}`);
-      console.log('USDC approval transaction successful:', approvalTx);
+      console.log('USDTapproval transaction successful:', approvalTx);
 
       // Register user
       const hash = await stakingInteractions.regUser(refAddress as `0x${string}`, address as `0x${string}`);
@@ -125,7 +120,7 @@ export const MLMProvider: React.FC<MLMProviderProps> = ({ children }) => {
       if (error.message?.includes('user rejected')) {
         throw new Error('Transaction was rejected by user. Please approve the transaction to complete registration.');
       } else if (error.message?.includes('insufficient')) {
-        throw new Error('Insufficient USDC balance or POL for gas fees. Ensure you have ~1 USDC and ~0.2 POL.');
+        throw new Error('Insufficient USDTbalance or POL for gas fees. Ensure you have ~1 USDTand ~0.2 POL.');
       } else if (error.message?.includes('already registered')) {
         throw new Error('This wallet address is already registered in the system.');
       } else {
@@ -178,11 +173,12 @@ export const MLMProvider: React.FC<MLMProviderProps> = ({ children }) => {
   const handleGetTotalRegistered = async (): Promise<number> => {
     try {
       // Read totalReg directly from the staking contract
+      // @ts-ignore - wagmi v2 compatibility
       const total = await readContract(config, {
         abi: STAKING_ABI,
         address: STAKING_CONTRACT_ADDRESS,
         functionName: 'totalReg',
-        chainId: POLYGON_CHAIN_ID,
+        chainId: 56,
       });
       return Number(total);
     } catch (error) {

@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en" dir="">
+  
+<head>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <title>INOUT :: DASHBOARD Welcome to the INOUT Dashboard – your all-in-one hub to track earnings, manage investments, and monitor your team growth. Stay in control, maximize profits, and grow with confidence!</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/site.webmanifest">
+    <link
+      href="https://fonts.googleapis.com/css?family=Nunito:300,400,400i,600,700,800,900"
+      rel="stylesheet"
+    />
+    <link
+      href="dist-assets/css/themes/lite-purple.min.css?v=1.1"
+      rel="stylesheet"
+    />
+    <link
+      href="dist-assets/css/plugins/perfect-scrollbar.min.css"
+      rel="stylesheet"
+    />
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    
+    
+        <style>
+    
+    
+    
+/* Ensure dropdown works properly */
+.dataTables_wrapper .dataTables_length {
+    position: relative;
+    z-index: 1;
+}
+
+.dataTables_wrapper select {
+    z-index: 100;
+    position: relative;
+    pointer-events: auto !important;
+}
+
+/* Fix for FontAwesome icons */
+.fas {
+    font-size: 1.2em;
+}
+
+
+.forfeit-sticker {
+  position: absolute;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.bg-light-danger {
+  background-color: rgba(220, 53, 69, 0.08);
+}
+
+/* For perfect alignment with the dollar amount */
+.card-body .content {
+  padding-bottom: 1.8rem; /* Makes space for the sticker */
+}
+    
+    
+    </style>
+
+  
+  </head>
+    
+    
+
+
+  <body class="text-start" id="home">
+    
+    
+    
+    
+         					<!-------modal for tagName --->
+ 
+                      <div aria-hidden="true" aria-labelledby="tagReceivermySmallModalLabel"  id="tagReceiverModel" class="modal fade bd-example-modal-sm mt-5" role="dialog" tabindex="-1">
+                        <div class="modal-dialog ">
+                           <div class="modal-content">
+                              <div class="modal-header">
+                              
+                                 <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                                 <span aria-hidden="true"> ×</span>
+                                 </button>
+                                 
+                                 </br>
+                                 
+                               
+                                 
+                              </div>
+                                   <span class="mb-0 mb-0 fs-16 text-black text-success" style="text-align:center " >You have not enter your name yet. Please enter it !</span>
+                                   
+                                   
+                                   
+                                <form action="tagPost.php" method="post" >
+                                
+                               <input type="hidden" id="connected_wallet" name="hWallet" value="" />
+                               
+                               
+                               <div class="modal-body text-center">
+
+                                 
+                                  <input class="form-control" type="text" name="userTagName" value="" />
+                                 
+                              </div>
+                              <div class="modal-footer text-center">
+                                 <button class="btn btn-primary "   data-id=""  type="submit">Save Request</button>
+                              </div>
+                                 
+                                </form> 
+                           </div>
+                        </div>
+                     </div>
+    
+    
+     <div class="modal fade " id="transactionPopupModal" tabindex="-1" aria-modal="true" role="dialog" >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Transaction </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+  
+          </button>
+        </div>
+        <div class="modal-body">
+              
+          <input type="hidden" class="trans-result">
+           <div class="containerParent" style="">
+              <div class="container trans-status" style="display:flex; justify-content:center; item:center; align-items:center">
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                    <span class="loading">Proccessing...</span>
+                 </div>
+           </div>
+          <div style="text-align:center">
+            <a  target="_blank" class="btn btn-rounded mt-5 transactionDetails"   href="#" style="background: linear-gradient(to right, #404EB4, #6639B4); color:white
+           ">View Transaction</a>
+                 
+          </div>
+  
+        </div>
+        <div class="modal-footer">
+              
+                  <div style="
+                       text-align: center;
+                       width: 100%;
+                    ">
+        
+                  <span class="validationMsg" style="color:white"></span>
+                   
+        </div>
+        </div>
+        </div>
+      </div>
+      </div>
+    
+    
+    
+    <div class="app-admin-wrap layout-sidebar-large">
+      <div class="main-header">
+        <div class="logo">
+          <img src="dist-assets/images/logo/logo-2.png" alt="" />
+        </div>
+        
+        
+        <div style="margin: auto"></div>
+        <span class="badge rounded-pill fs-5 badge-outline-info p-2 m-1" id="connectWalletBtn">Connect Wallet</span>
+    
+        <div class="header-part-right">
+          <!-- Full screen toggle -->
+          <i
+            class="i-Full-Screen header-icon d-none d-sm-inline-block"
+            data-fullscreen
+          ></i>
+          <!-- Grid menu Dropdown -->
+          <div class="dropdown">
+           
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <div class="menu-icon-grid">
+                <a href="#"><i class="i-Shop-4"></i> Home</a>
+                <a href="#"><i class="i-Library"></i> UI Kits</a>
+                <a href="#"><i class="i-Drop"></i> Apps</a>
+                <a href="#"
+                  ><i class="i-File-Clipboard-File--Text"></i> Forms</a
+                >
+                <a href="#"><i class="i-Checked-User"></i> Sessions</a>
+                <a href="#"><i class="i-Ambulance"></i> Support</a>
+              </div>
+            </div>
+          </div>
+          <!-- Notificaiton -->
+          <div class="dropdown">
+            <div
+              class="badge-top-container user-status"
+              role="button"
+              id="dropdownNotification"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+           
+            </div>
+            <!-- Notification dropdown -->
+            <div
+              class="dropdown-menu dropdown-menu-right rtl-ps-none"
+              aria-labelledby="userDropdown"
+              data-perfect-scrollbar
+              data-suppress-scroll-x="true"
+            >
+            <div class="dropdown-item">
+              <i class="bi bi-person-hearts text-primary text-20 mx-2"></i>
+              <span class="text-primary fw-500" id="userRank"></span>
+            </div>
+              <a class="dropdown-item" href="https://in-out.live/"> 
+                <i class="bi bi-power text-danger text-20 mx-1"></i>
+                <span class="text-danger "> SIGN OUT</span>
+                
+              </a>
+            </div>
+          </div>
+          <!-- Notificaiton End -->
+          <!-- User avatar dropdown -->
+          
+       
+        </div>
+      </div>
+      <!-- =============== Left side End ================-->
+      <div class="main-content-wrap d-flex flex-column">
+        <!-- ============ Body content start ============= -->
+        <div class="main-content">
+          <div class="breadcrumb">
+           
+            <ul>
+              <li><button class="btn btn-outline-primary btn-rounded" type="button">
+                 1 INOUT : <span id="priceToken">0.0000</span>
+              </button>
+              </li>
+              <li>
+                <div class="d-flex  ">
+                <input class="  form-control form-control-rounded w-auto" id="refAddressLink" type="text">
+                <button class="btn btn-success btn-rounded " type="button" id="copyButton">
+                  Copy
+                </button>
+                <button class="btn btn-danger btn-rounded" type="button" id="regBtn"> register</button>
+                <span class="updateLevel"><span>
+
+
+                </div>
+                
+              </li>
+              
+            </ul>
+          </div>
+          <div class="separator-breadcrumb border-top"></div>
+          
+          <div class="row">
+            <div class="col-md-12 col-lg-12 mt-3 mb-3">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-2 col-lg-2">
+                      <div class="ul-widget__content-v4 card-icon-bg">
+                        <i class="i-Business-Mens text-warning"></i>
+                        <h3 class="t-font-boldest" id="userTeam">0</h3>
+                        <span>My Teams</span>
+                      </div>
+                    </div>
+                    <div class="col-md-2 col-lg-2">
+                      <div class="ul-widget__content-v4 card-icon-bg">
+                        <i class="i-Business-Man text-success"></i>
+                        <h3 class="t-font-boldest" id="userDirect">0</h3>
+                        <span>My Direct</span>
+                      </div>
+                    </div>
+                    <div class="col-md-2 col-lg-2">
+                      <div class="ul-widget__content-v4 card-icon-bg">
+                        <i class="i-Business-ManWoman text-danger"></i>
+                        <h3 class="t-font-boldest" id="strongTeam">0</h3>
+                        <span>Strong Teams</span>
+                      </div>
+                    </div>
+                    <div class="col-md-2 col-lg-2">
+                      <div class="ul-widget__content-v4 card-icon-bg">
+                        <i class="i-Affiliate text-primary"></i>
+                        <h3 class="t-font-boldest" id="otherTeam">0</h3>
+                        <span>Other Teams</span>
+                      </div>
+                    </div>
+                    <div class="col-md-2 col-lg-2">
+                      <div class="ul-widget__content-v4 card-icon-bg">
+                        <i class="i-Temperature1 text-info"></i>
+                        <h3 class="t-font-boldest" id="userLevel">0</h3>
+                        <span>Levels</span>
+                      </div>
+                    </div>
+                    <div class="col-md-2 col-lg-2">
+                      <div class="ul-widget__content-v4 card-icon-bg">
+                        <i class="i-Checkout text-warning"></i>
+                        <h3 class="t-font-boldest" id="activeOrder">0</h3>
+                        <span>Active Orders</span>
+                      </div>
+                    </div>
+              
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- ICON BG-->
+            <div class="col-lg-3 col-md-6 col-sm-6">
+              <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+                <div class="card-body text-center">
+                  <i class="i-Car-Coins"></i>
+                  <div class="content">
+                    <p class="text-muted mt-2 mb-0">Total IN</p>
+                    <p class="text-primary text-24 line-height-1 mb-2" >$ <span id="totaIN">0</span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+                 
+                 
+<div class="col-lg-3 col-md-6 col-sm-6">
+  <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+    <div class="card-body text-center position-relative">
+      <i class="i-Billing"></i>
+      <div class="content">
+        <p class="text-muted mt-2 mb-0">Total OUT</p>
+        <p class="text-primary text-24 line-height-1 mb-2">$<span id="totaOut">0</span></p>
+      </div>
+      
+      <!-- Forfeit Sticker with Right Arrow Icon -->
+      <div class="forfeit-sticker d-inline-flex align-items-center px-2 py-1 bg-light-danger rounded" 
+           data-bs-toggle="tooltip" data-bs-placement="bottom" title="Forfeited Amount (Non-recoverable)">
+        <i class="bi bi-arrow-right-circle-fill text-danger small me-1"></i><b style="color:grey" ></b>
+        <span class="text-danger small fw-bold">$<span id="forfeitAmount">0</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+              <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+                <div class="card-body text-center">
+                  <i class="i-Bank "></i>
+                  <div class="content">
+                    <p class="text-muted mt-2 mb-0">Active Portfolio</p>
+                    <p class="text-primary text-24 line-height-1 mb-2" >$ <span id="activeDeposit">0</span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+               <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+                <div class="card-body text-center">
+                  <i class="i-Cash-Register"></i>
+                  <div class="content">
+                    <p class="text-muted mt-2 mb-0">Total Withdrawan</p>
+                    <p class="text-primary text-24 line-height-1 mb-2" >$ <span id="withdrwan">0</span></p>
+                  </div>
+                </div>
+                </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6 col-md-12">
+              <!-- CARD ICON-->
+                 <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+                      <div class="card-body text-center">
+                        <i class="i-Wallet"></i>
+                        <div class="content">
+                          <p class="text-muted mt-2 mb-0">Team Growth Wallet</p>
+                          <p class="text-primary text-24 line-height-1 mb-2">$ <span id="teamStacke">0</span></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+                      <div class="card-body text-center">
+                        <i class="i-Folder-Trash"></i>
+                        <div class="content">
+                          <p class="text-muted mt-2 mb-0">Team Growth Laps</p>
+                          <p class="text-primary text-24 line-height-1 mb-2" >$ <span id="totalLaps">0</span></p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                  <div class="card card-icon-big mb-4">
+                    <div class="card-body text-center">
+                      <i class="i-Coins-3"></i>
+                      <p class="text-muted mt-2 mb-2">Referral Earn</p>
+                      <p class="text-primary text-24 line-height-1 m-0" >$ <span id="referralEarn">0</span></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                  <div class="card card-icon-big mb-4">
+                    <div class="card-body text-center">
+                      <i class="i-Coins"></i>
+                      <p class="text-muted mt-2 mb-2">Level Earn</p>
+                      <p class="text-primary text-24 line-height-1 m-0">$ <span id="levelEarn">0</span></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                  <div class="card card-icon-big mb-4">
+                    <div class="card-body text-center">
+                      <i class="i-Money"></i>
+                      <p class="text-muted mt-2 mb-2">Growth Earn</p>
+                      <p class="text-primary text-24 line-height-1 m-0">$ <span id="growthEarn">0</span></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                  <div class="card card-icon-big mb-4">
+                    <div class="card-body text-center">
+                      <i class="i-Money-2"></i>
+                      <span class="isLeader"></span>
+                      <p class="text-muted mt-2 mb-2">Leader Earn</p>
+                      <p class="text-primary text-24 line-height-1 m-0">
+                      $ <span id="leaderEran">0</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                  <div class="card card-icon-big mb-4">
+                    <div class="card-body text-center">
+                      <i class="i-Bag-Coins"></i>
+                      <span class="isDevelopment"></span>
+                      <p class="text-muted mt-2 mb-2">Development Earn</p>
+                      <p class="text-primary text-24 line-height-1 m-0">
+                      $ <span id="developEran">0</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                  <div class="card card-icon-big mb-4">
+                    <div class="card-body text-center">
+                      <i class="i-Money-Bag"></i>
+                      <p class="text-muted mt-2 mb-2">Team Growth</p>
+                      <p class="text-primary text-24 line-height-1 m-0" >
+                      $ <span id="teamEran">0</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                  <div class="card mb-4">
+                    <div class="card-body p-0">
+                      <div class="row px-3">
+                        <div class="col-lg-6 col-md-12" id="newStacke">
+                           <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-2 mt-4">
+                            <div class="card-body text-center">
+                              <i class="i-Financial  "></i>
+                              <div class="content">
+                                <p class="text-muted mt-2 mb-0">InOut Buy Potential</p>
+                                <p class="text-primary text-24 line-height-1 mb-2">$ <span id="inoutBuy">0</span></p>
+                              </div>
+                            </div>
+                           </div>
+                          <h5 class="card-title m-0 p-3" >Deposit Box
+                          <p class="small text-primary mt-1" style="float:right;">POL : <span id="myEth">0.0</span></p>
+                          </h5>
+                          
+                          <div class="card-body py-3 pt-2">
+                          
+                                <label for="validationCustom04">DAI (Stable Crypto)</label>
+                                <input class="form-control" id="depositInUSDT" type="number" placeholder="Enter DAI" value=" ">
+                                <p class="small text-secondary  mb-1">BAL: <span id="myUsdt">0</span></p>
+                               
+                              
+                                <label for="validationCustom05">In-Out (Token)</label>
+                                <input class="form-control" id="depositInToken" type="number" placeholder="Enter INOUT" value=" ">
+                                 <p class="small text-secondary  mb-1">BAL: <span id="myInout">0.0</span></p>
+                                <div class="mt-3 text-center">
+
+                                <div class="d-flex flex-column flex-sm-row align-items-sm-center mb-3">
+                                    <div class="flex-grow-1">
+                                      <h5 class=" text-primary m-0"> 
+                                        <span id="instasave">0.0</span>
+                                        <small class="text-small">/Instant Save</small>
+                                      </h5>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                      <h5 class=" text-primary m-0"> 
+                                        <span id="eraningPotantial">0.0</span>
+                                        <small class="text-small">/Earn Potential</small>
+                                      </h5>
+                                    </div>
+
+                                  </div>
+                                 
+                                </div>
+                          </div>
+                          <div class="d-flex flex-column flex-sm-row align-items-sm-center mb-4 px-3">
+                                  
+                              <div class="flex-grow-1">
+                               <button class="btn btn-lg btn-primary btn-rounded m-1" type="button" id="btnBuyToken" onclick="btnBuyToken(this)">
+                                  Buy InOut
+                                </button>
+                              </div>
+                              <div>
+                              <button class="btn btn-lg btn-danger btn-rounded m-1" type="button" id="btnDepositStake" onclick="btnDepositStake(this)">
+                                    Deposit Now
+                              </button>
+                                
+                              </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                           <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-3 mt-4">
+                            <div class="card-body text-center">
+                              <i class="i-Physics "></i>
+                              <div class="content ">
+                                <div class="row py-2">
+                                  <div class="col-auto">
+                                    <span class="text-muted mt-2 mb-0">Growth fuels</span>
+                                    <h5 class="text-primary text-18 line-height-1 mb-2">$ <span id="leftGrowth">0</span></h5>
+                                  </div>
+                                  <div class="col">
+                                    <span class="text-muted mt-2 mb-0">Total fuels</span>
+                                    <h5 class="text-primary text-18 line-height-1 mb-2">$ <span id="leftEran">0</span></h5>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                           </div>
+                           <h5 class="card-title m-0 p-2 ps-0">Withdrawal Info</h5>
+                            <table class="table">
+                              <thead class="table-light">
+                                <tr>
+                                  <th scope="col">Portfolio Order</th>
+                                  <th scope="col"> <span id="matureStake"></span></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>Portfolio Out </td>
+                                  <td class="fw-bold text-success">+ $ <span id="portfolioOut">0.0</span> </td>
+                                </tr>
+                                <tr>
+                                  <td>Growth Out</td>
+                                  <td class="fw-bold text-success">+ $ <span id="selfGrowth">0.0</span></td>
+                                </tr>
+                                <tr>
+                                  <td>Team Growth</td>
+                                  <td class="fw-bold text-success">+ $ <span id="teamGrowth">0.0</span></td>
+                                </tr>
+                                <tr>
+                                  <td>Team Growth Laps</td>
+                                  <td class="text-danger">- $ <span id="teamLaps">0.0</span></td>
+                                </tr>
+                                <tr>
+                                  <td>Other Earns</td>
+                                  <td class="text-warning fw-bold">+ $ <span id="otherGain">0.0</span></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <div class="d-flex flex-column flex-sm-row align-items-sm-center ms-4">
+                                  
+                              <div class="flex-grow-1">
+                                <p class="text-primary text-24 line-height-1 m-0">$ <span id="avWithdrwan">0.0</span></p>
+                                <p class="text-muted mt-2 mb-2">Withdrawal Amount</p>
+                              </div>
+                              <div>
+                                <button class="btn btn-lg btn-primary btn-rounded m-1" type="button" id="btn_withdrwal" onclick="btn_withdrwal(this)">
+                                  Withdraw
+                                </button>
+                              </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+          </div>
+      
+          <div class="row mb-5">
+            <div class="col-lg-12 col-md-12 mb-5">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="card o-hidden mb-4">
+                    <div class="card-header d-flex align-items-center border-0">
+                      <h3 class="w-50 float-start card-title m-0">Orders</h3>
+                     
+                    </div>
+                    <div class="p-5">
+                      <div class="table-responsive">
+                        <table class="table text-center" id="depositsTable">
+<thead>
+    <tr class="">
+        <th scope="col">Date</th>
+        <th scope="col">Order ID</th> <!-- New column for Order ID -->
+        <th scope="col">Amount</th>
+        <th scope="col">Growth Rate</th>
+        <th scope="col">Transaction</th>
+        <th scope="col">Status</th> <!-- Column for lock/unlock icon -->
+        <th scope="col">Remaining Time</th> <!-- Column for remaining time -->
+
+        <th scope="col">Forfiet</th> <!-- Column for remaining time -->
+
+		
+   
+
+    </tr>
+</thead>
+
+                          <tbody>
+                           
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            
+          </div>
+          <!-- end of main-content -->
+        </div>
+        <!-- Footer Start -->
+      
+        <footer class="adminuiux-mobile-footer hide-on-scrolldown style-2 main-header">
+          <div class="container">
+            <ul class="nav nav-pills nav-justified">
+              
+              
+              <li class="nav-item">
+                <a href="#newStacke" class="nav-link">
+                  <span>
+                    <i class="bi bi-cart-plus"></i>
+                    <span class="nav-text">Deposit</span>
+                  </span>
+                </a>
+              </li>
+               <li class="nav-item">
+                <a class="nav-link historyLink">
+                  <span>
+                    <i class="bi bi-list-check"></i>
+                    <span class="nav-text">History</span>
+                  </span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="#home">
+                  <span>
+                    <i class="bi bi-speedometer"></i>
+                    <span class="nav-text">Home</span>
+                  </span>
+                </a>
+              </li>
+             <li class="nav-item">
+                <a class="nav-link"  href="https://in-out.live/inOut/wallet.html" target="_blank">
+                  <span>
+                    <i class="bi bi-currency-exchange"></i>
+                    <span class="nav-text">Swap</span>
+                  </span>
+                </a>
+              </li>
+             
+              <li class="nav-item">
+                <a class="nav-link" href="https://t.me/in_out_Official">
+                  <span>
+                    <i class="bi bi-share"></i>
+                    <span class="nav-text">Social</span>
+                  </span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </footer>
+        <!-- fotter end -->
+      </div>
+    </div>
+    <!-- ============ Search UI Start ============= -->
+    <div class="search-ui">
+      <div class="search-header">
+        <img src="dist-assets/images/logo.png" alt="" class="logo" />
+        <button class="search-close btn btn-icon bg-transparent float-end mt-2">
+          <i class="i-Close-Window text-22 text-muted"></i>
+        </button>
+      </div>
+      <input
+        type="text"
+        placeholder="Type here"
+        class="search-input"
+        autofocus
+      />
+      <div class="search-title">
+        <span class="text-muted">Search results</span>
+      </div>
+      <div class="search-results list-horizontal">
+        <div class="list-item col-md-12 p-0">
+          <div class="card o-hidden flex-row mb-4 d-flex">
+            <div class="list-thumb d-flex">
+              <!-- TUMBNAIL -->
+              <img
+                src="dist-assets/images/products/headphone-1.jpg"
+                alt=""
+              />
+            </div>
+            <div class="flex-grow-1 ps-2 d-flex">
+              <div
+                class="card-body align-self-center d-flex flex-column justify-content-between align-items-lg-center flex-lg-row"
+              >
+                <!-- OTHER DATA -->
+                <a href="#" class="w-40 w-sm-100">
+                  <div class="item-title">Headphone 1</div>
+                </a>
+                <p class="m-0 text-muted text-small w-15 w-sm-100">Gadget</p>
+                <p class="m-0 text-muted text-small w-15 w-sm-100">
+                  $300
+                  <del class="text-secondary">$400</del>
+                </p>
+                <p
+                  class="m-0 text-muted text-small w-15 w-sm-100 d-none d-lg-block item-badges"
+                >
+                  <span class="badge bg-danger">Sale</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="list-item col-md-12 p-0">
+          <div class="card o-hidden flex-row mb-4 d-flex">
+            <div class="list-thumb d-flex">
+              <!-- TUMBNAIL -->
+              <img
+                src="dist-assets/images/products/headphone-2.jpg"
+                alt=""
+              />
+            </div>
+            <div class="flex-grow-1 ps-2 d-flex">
+              <div
+                class="card-body align-self-center d-flex flex-column justify-content-between align-items-lg-center flex-lg-row"
+              >
+                <!-- OTHER DATA -->
+                <a href="#" class="w-40 w-sm-100">
+                  <div class="item-title">Headphone 1</div>
+                </a>
+                <p class="m-0 text-muted text-small w-15 w-sm-100">Gadget</p>
+                <p class="m-0 text-muted text-small w-15 w-sm-100">
+                  $300
+                  <del class="text-secondary">$400</del>
+                </p>
+                <p
+                  class="m-0 text-muted text-small w-15 w-sm-100 d-none d-lg-block item-badges"
+                >
+                  <span class="badge bg-primary">New</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="list-item col-md-12 p-0">
+          <div class="card o-hidden flex-row mb-4 d-flex">
+            <div class="list-thumb d-flex">
+              <!-- TUMBNAIL -->
+              <img
+                src="dist-assets/images/products/headphone-3.jpg"
+                alt=""
+              />
+            </div>
+            <div class="flex-grow-1 ps-2 d-flex">
+              <div
+                class="card-body align-self-center d-flex flex-column justify-content-between align-items-lg-center flex-lg-row"
+              >
+                <!-- OTHER DATA -->
+                <a href="#" class="w-40 w-sm-100">
+                  <div class="item-title">Headphone 1</div>
+                </a>
+                <p class="m-0 text-muted text-small w-15 w-sm-100">Gadget</p>
+                <p class="m-0 text-muted text-small w-15 w-sm-100">
+                  $300
+                  <del class="text-secondary">$400</del>
+                </p>
+                <p
+                  class="m-0 text-muted text-small w-15 w-sm-100 d-none d-lg-block item-badges"
+                >
+                  <span class="badge bg-primary">New</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="list-item col-md-12 p-0">
+          <div class="card o-hidden flex-row mb-4 d-flex">
+            <div class="list-thumb d-flex">
+              <!-- TUMBNAIL -->
+              <img
+                src="dist-assets/images/products/headphone-4.jpg"
+                alt=""
+              />
+            </div>
+            <div class="flex-grow-1 ps-2 d-flex">
+              <div
+                class="card-body align-self-center d-flex flex-column justify-content-between align-items-lg-center flex-lg-row"
+              >
+                <!-- OTHER DATA -->
+                <a href="#" class="w-40 w-sm-100">
+                  <div class="item-title">Headphone 1</div>
+                </a>
+                <p class="m-0 text-muted text-small w-15 w-sm-100">Gadget</p>
+                <p class="m-0 text-muted text-small w-15 w-sm-100">
+                  $300
+                  <del class="text-secondary">$400</del>
+                </p>
+                <p
+                  class="m-0 text-muted text-small w-15 w-sm-100 d-none d-lg-block item-badges"
+                >
+                  <span class="badge bg-primary">New</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- PAGINATION CONTROL -->
+      <div class="col-md-12 mt-5 text-center">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination d-inline-flex">
+            <li class="page-item">
+              <a class="page-link" href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+              <a class="page-link" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+    <!-- ============ Search UI End ============= -->
+    <script src="dist-assets/js/plugins/jquery-3.3.1.min.js"></script>
+
+
+    <script src="dist-assets/js/plugins/bootstrap.bundle.min.js"></script>
+
+    <script src="dist-assets/js/plugins/perfect-scrollbar.min.js"></script>
+    <script src="dist-assets/js/scripts/script.min.js"></script>
+    <script src="dist-assets/js/scripts/sidebar.large.script.min.js"></script>
+    <script src="dist-assets/js/plugins/echarts.min.js"></script>
+    <script src="dist-assets/js/scripts/echart.options.min.js"></script>
+    <script src="dist-assets/js/scripts/dashboard.v1.script.min.js"></script>
+    <script src="dist-assets/js/scripts/customizer.script.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.9.0/web3.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                     
+    <!-- Main JavaScript -->
+    <script src="dist-assets/web3/config.js?v=1.44"></script>
+    <script type="text/javascript" src="dist-assets/web3/script.js?v=85.46"></script>
+  </body>
+
+</html>

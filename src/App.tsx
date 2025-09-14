@@ -10,7 +10,6 @@ import './utils/web3modal-customizer';
 import { config } from './config/web3modal';
 import { WalletProvider } from './context/WalletContext';
 import { MLMProvider } from './context/MLMContext';
-// import { InvestmentProvider } from './context/InvestmentContext';
 import { TransactionHistoryProvider } from './context/TransactionHistoryContext';
 import { ToastProvider } from './components/common/ToastNotification';
 
@@ -18,11 +17,9 @@ import { ToastProvider } from './components/common/ToastNotification';
 import Navbar from './components/Navbar';
 
 // Pages
-import LandingPage from './pages/LandingPage';
 import MLMDashboard from './pages/MLMDashboard';
-import MLMHome from './pages/MLMHome';
-import MLMRegister from './pages/MLMRegister';
-import Home from './pages/Home';
+import HistoryPage from './pages/HistoryPage';
+import SwapPage from './pages/SwapPage';
 
 // Create a colorful theme
 const theme = createTheme({
@@ -132,21 +129,17 @@ function App() {
           <WalletProvider>
             <ToastProvider>
               <MLMProvider>
-                {/* <InvestmentProvider> */}
-                  <TransactionHistoryProvider>
-                    <Router>
-                      <Navbar />
-                      <Routes>
-                        {/* <Route path="/usd" element={<LandingPage />} />
-                        <Route path="/usd/mlm/" element={<MLMHome />} />
-                        <Route path="/usd/mlm/register" element={<MLMRegister />} /> */}
-                        <Route path="/" element={<MLMDashboard />} />
-                        <Route path="*" element={<Navigate to="/usd/" replace />} />
-                        {/* <Route path="/" element={<Home />} /> */}
-                      </Routes>
-                    </Router>
-                  </TransactionHistoryProvider>
-                {/* </InvestmentProvider> */}
+                <TransactionHistoryProvider>
+                  <Router>
+                    <Navbar />
+                    <Routes>
+                      <Route path="/" element={<MLMDashboard />} />
+                      <Route path="/history" element={<HistoryPage />} />
+                      <Route path="/swap" element={<SwapPage />} />
+                      <Route path="*" element={<Navigate to="/" replace />} />
+                    </Routes>
+                  </Router>
+                </TransactionHistoryProvider>
               </MLMProvider>
             </ToastProvider>
           </WalletProvider>

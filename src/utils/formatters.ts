@@ -57,6 +57,28 @@ export const formatNumber = (value: number | string, maxDecimals: number = 2): s
 };
 
 /**
+ * Format currency with $ symbol and commas
+ * @param value - Number or string to format as currency
+ * @param maxDecimals - Maximum decimal places (default: 2)
+ * @returns Formatted currency string
+ */
+export const formatCurrency = (value: number | string, maxDecimals: number = 2): string => {
+  const num = typeof value === 'string' ? parseFloat(value) : value;
+
+  if (isNaN(num)) {
+    return '$0.00';
+  }
+
+  // Format with currency symbol and commas
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: maxDecimals,
+  }).format(num);
+};
+
+/**
  * Format BigInt amount with commas and USDT suffix
  * @param amount - BigInt amount to format
  * @param decimals - Number of decimals in the BigInt (default: 18)

@@ -31,10 +31,67 @@ export const BSC_TESTNET_CHAIN_ID = 56;
 
 // Token addresses on BSC Testnet (placeholders where necessary)
 export const TOKEN_ADDRESS =
-  "0xC0746bd0380190B899440bC33C647cE2426C8cCb" as Address; // INOUT token (BEP-20 test token, replace if needed)
+  "0xC0746bd0380190B899440bC33C647cE2426C8cCb" as Address; // SafeMint token address
 export const USDC_ADDRESS = USDC_CONTRACT_ADDRESS; // USDC on BSC Testnet
 export const SHARE_ADDRESS =
   "0xD8b5a05538bfB72221a75Ed6b5570d5E7d858228" as Address; // Placeholder for share token, replace with actual
+
+// SafeMint Token ABI - includes rateInUSDT and getReserves functions
+export const SAFEMINT_TOKEN_ABI = [
+  {
+    "inputs": [],
+    "name": "rateInUSDT",
+    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getReserves",
+    "outputs": [
+      {"internalType": "uint256", "name": "_reserve0", "type": "uint256"},
+      {"internalType": "uint256", "name": "_reserve1", "type": "uint256"},
+      {"internalType": "uint256", "name": "_blockTimestampLast", "type": "uint256"}
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalSupply",
+    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{"internalType": "address", "name": "account", "type": "address"}],
+    "name": "balanceOf",
+    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "decimals",
+    "outputs": [{"internalType": "uint8", "name": "", "type": "uint8"}],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "name",
+    "outputs": [{"internalType": "string", "name": "", "type": "string"}],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "symbol",
+    "outputs": [{"internalType": "string", "name": "", "type": "string"}],
+    "stateMutability": "pure",
+    "type": "function"
+  }
+] as const;
 
 // Staking Contract ABI (fetched from https://testnet.bscscan.com/address/0xb54B2B0Bc772Dedb586DE2685C8941751bebb084#code)
 // export const STAKING_ABI = [
@@ -1301,16 +1358,12 @@ export const stakingInteractions = {
 
   /**
    * Buy tokens using USDT
-   * @param usdAmount - Amount of USDT to spend (plain amount, e.g., "10" for 10 USDT)
+   * @param usdAmount - Amount of USDT to spend (in wei)
    * @param account - Wallet address to send the transaction from
    * @returns Transaction hash
    */
-  async buyToken(usdAmount: string | number, account: Address): Promise<string> {
+  async buyToken(usdAmount: bigint, account: Address): Promise<string> {
     try {
-      // Convert plain amount to number for logging
-      const plainAmount = typeof usdAmount === 'string' ? parseFloat(usdAmount) : usdAmount;
-      console.log(`Buying tokens with ${plainAmount} USDT (plain amount)`);
-
       // Get USDT decimals (using BSC Mainnet chainId 56)
       const decimals = await readContract(config, {
         abi: USDT_ABI,
@@ -1319,10 +1372,8 @@ export const stakingInteractions = {
         chainId: 56,
       });
       console.log("USDT Decimals:", decimals);
-
-      // Convert to wei for allowance check
-      const amountInWei = parseUnits(plainAmount.toString(), Number(decimals));
-      console.log("Amount in wei (for allowance check):", amountInWei.toString());
+      const amountFormatted = formatUnits(usdAmount, Number(decimals));
+      console.log(`Buying tokens with ${amountFormatted} USDT`);
 
       // Verify allowance
       const allowance = (await readContract(config, {
@@ -1333,33 +1384,33 @@ export const stakingInteractions = {
         chainId: 56,
       })) as bigint;
       console.log("Allowance:", formatUnits(allowance, Number(decimals)));
-      if (allowance < amountInWei) {
+      if (allowance < usdAmount) {
         throw new Error(
           `Insufficient allowance. Approved: ${formatUnits(
             allowance,
             Number(decimals)
-          )} USDT, Required: ${plainAmount} USDT`
+          )} USDT, Required: ${amountFormatted} USDT`
         );
       }
 
-      // Simulate transaction with PLAIN AMOUNT (not wei)
-      console.log("Simulating buyToken transaction with plain amount:", plainAmount);
+      // Simulate transaction
+      console.log("Simulating buyToken transaction...");
       await simulateContract(config, {
         abi: STAKING_ABI,
         address: STAKING_CONTRACT_ADDRESS,
         functionName: "buyToken",
-        args: [plainAmount], // Pass plain amount, not wei
+        args: [usdAmount],
         account: account,
         chainId: 56,
       });
 
-      // Execute transaction with PLAIN AMOUNT (not wei) and manual gas limit
-      console.log("Executing buyToken transaction with plain amount:", plainAmount);
+      // Execute transaction with manual gas limit
+      console.log("Executing buyToken transaction...");
       const txHash = await writeContract(config, {
         abi: STAKING_ABI,
         address: STAKING_CONTRACT_ADDRESS,
         functionName: "buyToken",
-        args: [plainAmount], // Pass plain amount, not wei
+        args: [usdAmount],
         chain: bsc,
         account: account,
         gas: BigInt(500000), // Manual gas limit to avoid estimation issues
@@ -1874,6 +1925,87 @@ export const stakingInteractions = {
       console.error(`Error updating user status:`, error);
       throw new Error(
         `Failed to update user status: ${error.message || "Unknown error"}`
+      );
+    }
+  },
+
+  /**
+   * Get SafeMint token rate in USDT
+   * @returns Rate in wei (18 decimals)
+   */
+  async getSafeMintRateInUSDT(): Promise<bigint> {
+    try {
+      console.log("Fetching SafeMint token rate in USDT...");
+      const rate = (await readContract(config, {
+        abi: SAFEMINT_TOKEN_ABI,
+        address: TOKEN_ADDRESS,
+        functionName: "rateInUSDT",
+        chainId: BSC_TESTNET_CHAIN_ID,
+      })) as bigint;
+      console.log(`SafeMint rate in USDT: ${formatEther(rate)}`);
+      return rate;
+    } catch (error: any) {
+      console.error(`Error fetching SafeMint rate:`, error);
+      throw new Error(
+        `Failed to fetch SafeMint rate: ${error.message || "Unknown error"}`
+      );
+    }
+  },
+
+  /**
+   * Get SafeMint token reserves
+   * @returns Reserves object with token supply, USDT balance, and timestamp
+   */
+  async getSafeMintReserves(): Promise<{
+    tokenSupply: bigint;
+    usdtBalance: bigint;
+    blockTimestampLast: bigint;
+  }> {
+    try {
+      console.log("Fetching SafeMint token reserves...");
+      const [reserve0, reserve1, blockTimestampLast] = (await readContract(config, {
+        abi: SAFEMINT_TOKEN_ABI,
+        address: TOKEN_ADDRESS,
+        functionName: "getReserves",
+        chainId: BSC_TESTNET_CHAIN_ID,
+      })) as [bigint, bigint, bigint];
+
+      console.log(`SafeMint Reserves: Token Supply=${formatEther(reserve0)}, USDT Balance=${formatEther(reserve1)}, Timestamp=${blockTimestampLast}`);
+
+      return {
+        tokenSupply: reserve0,
+        usdtBalance: reserve1,
+        blockTimestampLast,
+      };
+    } catch (error: any) {
+      console.error(`Error fetching SafeMint reserves:`, error);
+      throw new Error(
+        `Failed to fetch SafeMint reserves: ${error.message || "Unknown error"}`
+      );
+    }
+  },
+
+  /**
+   * Get SafeMint token balance for an address
+   * @param account - Wallet address
+   * @returns Token balance in wei
+   */
+  async getSafeMintBalance(account: Address): Promise<bigint> {
+    try {
+      console.log(`Fetching SafeMint balance for ${account}...`);
+      const balance = (await readContract(config, {
+        abi: SAFEMINT_TOKEN_ABI,
+        address: TOKEN_ADDRESS,
+        functionName: "balanceOf",
+        args: [account],
+        chainId: BSC_TESTNET_CHAIN_ID,
+      })) as bigint;
+      console.log(`SafeMint balance for ${account}: ${formatEther(balance)} SELFMINT`);
+      return balance;
+    } catch (error: any) {
+      console.error(`Error fetching SafeMint balance:`, error);
+      throw new Error(
+        `Failed to fetch SafeMint balance: ${error.message || "Unknown error"}`
       );
     }
   },

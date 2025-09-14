@@ -23,6 +23,8 @@ import TradingSection from '../components/common/TradingSection';
 import ReferralSection from '../components/common/ReferralSection';
 import OrderHistoryTable from '../components/common/OrderHistoryTable';
 import RegistrationForm from '../components/common/RegistrationForm';
+import TokenPriceCard from '../components/common/TokenPriceCard';
+import SafeMintTokenStats from '../components/common/SafeMintTokenStats';
 
 // Import utility functions
 import { formatCurrency, formatNumber, formatDate } from '../utils/formatters';
@@ -1192,6 +1194,16 @@ const MLMDashboard = () => {
               Team Statistics
             </Typography>
             <Grid container spacing={2} sx={{ mb: { xs: 3, sm: 4 } }}>
+              {/* SafeMint Token Price Card */}
+              <Grid item xs={12} sm={6} md={4}>
+                <TokenPriceCard autoRefresh={true} refreshInterval={30000} />
+              </Grid>
+
+              {/* SafeMint Token Comprehensive Stats */}
+              <Grid item xs={12} sm={6} md={8}>
+                <SafeMintTokenStats autoRefresh={true} refreshInterval={30000} />
+              </Grid>
+
               {[
                 { icon: <PeopleIcon />, title: 'My Direct', value: formatNumber(mlmData.directTeam), subtitle: 'Direct Referrals', color: 'primary.main' },
                 {
@@ -1271,7 +1283,7 @@ const MLMDashboard = () => {
                 },
                 {
                   icon: <AccountBalanceWalletIcon />,
-                  title: 'InOut Buy Potential',
+                  title: 'SafeMint Buy Potential',
                   value: formatCurrency(mlmData.inOutBuy),
                   subtitle: 'Buy Potential Value',
                   color: 'info.main',

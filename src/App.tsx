@@ -20,6 +20,7 @@ import Navbar from './components/Navbar';
 import MLMDashboard from './pages/MLMDashboard';
 import HistoryPage from './pages/HistoryPage';
 import SwapPage from './pages/SwapPage';
+import TokenTest from './pages/TokenTest';
 
 // Create a colorful theme
 const theme = createTheme({
@@ -136,6 +137,7 @@ function App() {
                       <Route path="/" element={<MLMDashboard />} />
                       <Route path="/history" element={<HistoryPage />} />
                       <Route path="/swap" element={<SwapPage />} />
+                      <Route path="/token-test" element={<TokenTest />} />
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                   </Router>

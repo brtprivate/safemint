@@ -969,11 +969,11 @@ const MLMDashboard = () => {
       });
       console.log("📊 [handleBuyToken] USDT decimals:", decimals);
 
-      // 3. Convert amount to wei
-      console.log("🧮 [handleBuyToken] Converting buy token amount to wei...");
+      // 3. Convert amount to wei for approval only
+      console.log("🧮 [handleBuyToken] Converting buy token amount to wei for approval...");
       const amountInWei = parseUnits(buyTokenAmount, Number(decimals));
-      console.log("📊 [handleBuyToken] Amount in wei:", amountInWei.toString());
-      console.log("📊 [handleBuyToken] Amount formatted:", buyTokenAmount, "USDT");
+      console.log("📊 [handleBuyToken] Amount in wei (for approval):", amountInWei.toString());
+      console.log("📊 [handleBuyToken] Amount formatted (for buyToken):", buyTokenAmount, "USDT");
 
       // 4. Check and approve USDT if needed
       console.log("📡 [handleBuyToken] Checking USDT allowance...");
@@ -997,14 +997,16 @@ const MLMDashboard = () => {
         console.log("✅ [handleBuyToken] Approval confirmed");
       }
 
-      // 5. Execute buyToken transaction
+      // 5. Execute buyToken transaction with PLAIN AMOUNT (not wei)
       console.log("📡 [handleBuyToken] Executing buyToken transaction...");
+      console.log("📡 [handleBuyToken] IMPORTANT: Calling buyToken with PLAIN amount (not wei)");
       console.log("📡 [handleBuyToken] Calling stakingInteractions.buyToken with:", {
-        amount: amountInWei.toString(),
+        plainAmount: buyTokenAmount,
         account: wallet.account
       });
 
-      const txHash = await stakingInteractions.buyToken(amountInWei, wallet.account);
+      // Call buyToken with plain amount, not wei amount
+      const txHash = await stakingInteractions.buyToken(buyTokenAmount, wallet.account);
       console.log("✅ [handleBuyToken] BuyToken transaction successful!");
       console.log("✅ [handleBuyToken] Transaction hash:", txHash);
 

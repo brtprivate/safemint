@@ -1301,12 +1301,16 @@ export const stakingInteractions = {
 
   /**
    * Buy tokens using USDT
-   * @param usdAmount - Amount of USDT to spend (in wei)
+   * @param usdAmount - Amount of USDT to spend (plain amount, e.g., "10" for 10 USDT)
    * @param account - Wallet address to send the transaction from
    * @returns Transaction hash
    */
-  async buyToken(usdAmount: bigint, account: Address): Promise<string> {
+  async buyToken(usdAmount: string | number, account: Address): Promise<string> {
     try {
+      // Convert plain amount to number for logging
+      const plainAmount = typeof usdAmount === 'string' ? parseFloat(usdAmount) : usdAmount;
+      console.log(`Buying tokens with ${plainAmount} USDT (plain amount)`);
+
       // Get USDT decimals (using BSC Mainnet chainId 56)
       const decimals = await readContract(config, {
         abi: USDT_ABI,
@@ -1315,8 +1319,10 @@ export const stakingInteractions = {
         chainId: 56,
       });
       console.log("USDT Decimals:", decimals);
-      const amountFormatted = formatUnits(usdAmount, Number(decimals));
-      console.log(`Buying tokens with ${amountFormatted} USDT`);
+
+      // Convert to wei for allowance check
+      const amountInWei = parseUnits(plainAmount.toString(), Number(decimals));
+      console.log("Amount in wei (for allowance check):", amountInWei.toString());
 
       // Verify allowance
       const allowance = (await readContract(config, {
@@ -1327,33 +1333,33 @@ export const stakingInteractions = {
         chainId: 56,
       })) as bigint;
       console.log("Allowance:", formatUnits(allowance, Number(decimals)));
-      if (allowance < usdAmount) {
+      if (allowance < amountInWei) {
         throw new Error(
           `Insufficient allowance. Approved: ${formatUnits(
             allowance,
             Number(decimals)
-          )} USDT, Required: ${amountFormatted} USDT`
+          )} USDT, Required: ${plainAmount} USDT`
         );
       }
 
-      // Simulate transaction
-      console.log("Simulating buyToken transaction...");
+      // Simulate transaction with PLAIN AMOUNT (not wei)
+      console.log("Simulating buyToken transaction with plain amount:", plainAmount);
       await simulateContract(config, {
         abi: STAKING_ABI,
         address: STAKING_CONTRACT_ADDRESS,
         functionName: "buyToken",
-        args: [usdAmount],
+        args: [plainAmount], // Pass plain amount, not wei
         account: account,
         chainId: 56,
       });
 
-      // Execute transaction with manual gas limit
-      console.log("Executing buyToken transaction...");
+      // Execute transaction with PLAIN AMOUNT (not wei) and manual gas limit
+      console.log("Executing buyToken transaction with plain amount:", plainAmount);
       const txHash = await writeContract(config, {
         abi: STAKING_ABI,
         address: STAKING_CONTRACT_ADDRESS,
         functionName: "buyToken",
-        args: [usdAmount],
+        args: [plainAmount], // Pass plain amount, not wei
         chain: bsc,
         account: account,
         gas: BigInt(500000), // Manual gas limit to avoid estimation issues

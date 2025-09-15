@@ -40,12 +40,12 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
 }) => {
   return (
     <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-      <Typography
+      {/* <Typography
         variant="h6"
         sx={{ color: 'primary.main', mb: { xs: 2, sm: 3 }, fontSize: { xs: '1rem', sm: '1.25rem' } }}
       >
         Order History
-      </Typography>
+      </Typography> */}
       {orderLoading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', p: 3, flexGrow: 1 }}>
           <CircularProgress />

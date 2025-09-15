@@ -1278,6 +1278,30 @@ export const stakingInteractions = {
   },
 
   /**
+   * Get USDT balance for an address (BSC Mainnet)
+   * @param account - Wallet address
+   * @returns USDT balance in wei
+   */
+  async getUSDTBalance(account: Address): Promise<bigint> {
+    try {
+      const balance = (await readContract(config, {
+        abi: USDT_ABI,
+        address: USDT_ADDRESS,
+        functionName: "balanceOf",
+        args: [account],
+        chainId: 56, // BSC Mainnet
+      })) as bigint;
+      console.log(`USDT balance for ${account}: ${formatUnits(balance, 6)} USDT`);
+      return balance;
+    } catch (error: any) {
+      console.error(`Error fetching USDT balance: ${error.message || error}`);
+      throw new Error(
+        `Failed to fetch USDT balance: ${error.message || "Unknown error"}`
+      );
+    }
+  },
+
+  /**
    * Get the USD token address configured in the staking contract
    * @returns USD token address
    */
@@ -1357,13 +1381,15 @@ export const stakingInteractions = {
   },
 
   /**
-   * Buy tokens using USDT
-   * @param usdAmount - Amount of USDT to spend (in wei)
+   * Swap USDT for tokens
+   * @param usdAmount - Amount of USDT to spend (plain amount, e.g., 1.5 for 1.5 USDT)
    * @param account - Wallet address to send the transaction from
    * @returns Transaction hash
    */
-  async buyToken(usdAmount: bigint, account: Address): Promise<string> {
+  async buyToken(usdAmount: number, account: Address): Promise<string> {
     try {
+      console.log(`🔄 [buyToken] Swapping ${usdAmount} USDT for tokens (plain amount)`);
+
       // Get USDT decimals (using BSC Mainnet chainId 56)
       const decimals = await readContract(config, {
         abi: USDT_ABI,
@@ -1371,11 +1397,14 @@ export const stakingInteractions = {
         functionName: "decimals",
         chainId: 56,
       });
-      console.log("USDT Decimals:", decimals);
-      const amountFormatted = formatUnits(usdAmount, Number(decimals));
-      console.log(`Buying tokens with ${amountFormatted} USDT`);
+      console.log("🔍 [buyToken] USDT Decimals:", decimals);
 
-      // Verify allowance
+      // Convert plain amount to wei for allowance check
+      const amountInWei = parseUnits(usdAmount.toString(), Number(decimals));
+      console.log("🔍 [buyToken] Amount in wei (for allowance check):", amountInWei.toString());
+      console.log(`🔍 [buyToken] Swapping ${usdAmount} USDT for tokens`);
+
+      // Verify allowance (using wei amount)
       const allowance = (await readContract(config, {
         abi: USDT_ABI,
         address: USDT_ADDRESS,
@@ -1383,34 +1412,28 @@ export const stakingInteractions = {
         args: [account, STAKING_CONTRACT_ADDRESS],
         chainId: 56,
       })) as bigint;
-      console.log("Allowance:", formatUnits(allowance, Number(decimals)));
-      if (allowance < usdAmount) {
+      console.log("🔍 [buyToken] Current allowance:", formatUnits(allowance, Number(decimals)), "USDT");
+
+      if (allowance < amountInWei) {
         throw new Error(
           `Insufficient allowance. Approved: ${formatUnits(
             allowance,
             Number(decimals)
-          )} USDT, Required: ${amountFormatted} USDT`
+          )} USDT, Required: ${usdAmount} USDT`
         );
       }
 
-      // Simulate transaction
-      console.log("Simulating buyToken transaction...");
-      await simulateContract(config, {
-        abi: STAKING_ABI,
-        address: STAKING_CONTRACT_ADDRESS,
-        functionName: "buyToken",
-        args: [usdAmount],
-        account: account,
-        chainId: 56,
-      });
+      // Execute transaction with manual gas limit (skipping simulation to avoid import issues)
+      console.log("🔄 [buyToken] Executing swap transaction...");
+      console.log("🔍 [buyToken] Contract address:", STAKING_CONTRACT_ADDRESS);
+      console.log("🔍 [buyToken] Plain amount for swap:", usdAmount);
+      console.log("🔍 [buyToken] Amount type:", typeof usdAmount);
 
-      // Execute transaction with manual gas limit
-      console.log("Executing buyToken transaction...");
       const txHash = await writeContract(config, {
         abi: STAKING_ABI,
         address: STAKING_CONTRACT_ADDRESS,
         functionName: "buyToken",
-        args: [usdAmount],
+        args: [usdAmount], // Pass plain amount directly
         chain: bsc,
         account: account,
         gas: BigInt(500000), // Manual gas limit to avoid estimation issues
@@ -1563,22 +1586,51 @@ export const stakingInteractions = {
    */
   async makeUnstake(amount: bigint, account: Address): Promise<string> {
     try {
-      console.log(`Unstaking ${formatEther(amount)} DAI for ${account}`);
+      console.log(`Unstaking ${formatEther(amount)} USDT for ${account}`);
       const txHash = await writeContract(config, {
         abi: STAKING_ABI,
         address: STAKING_CONTRACT_ADDRESS,
         functionName: "makeUnstake",
         args: [amount],
-        chain: bscTestnet,
+        chain: bsc,
         account: account,
-        gas: undefined,
+        gas: BigInt(500000), // Manual gas limit to avoid estimation issues
       });
       console.log(`Unstake transaction successful: ${txHash}`);
       return txHash;
     } catch (error: any) {
       console.error(`Error unstaking tokens:`, error);
+      if (error.cause?.data) {
+        const decodedError = decodeErrorResult({
+          abi: STAKING_ABI,
+          data: error.cause.data,
+        });
+        throw new Error(
+          `Unstake failed: ${decodedError.errorName || "Unknown error"} - ${
+            decodedError.args?.join(", ") || ""
+          }`
+        );
+      }
       throw new Error(
         `Failed to unstake tokens: ${error.message || "Unknown error"}`
+      );
+    }
+  },
+
+  /**
+   * Sell tokens back to USDT (alias for makeUnstake for swap functionality)
+   * @param tokenAmount - Amount of tokens to sell (in USDT equivalent wei)
+   * @param account - Wallet address
+   * @returns Transaction hash
+   */
+  async sellToken(tokenAmount: bigint, account: Address): Promise<string> {
+    try {
+      console.log(`Selling tokens worth ${formatUnits(tokenAmount, 6)} USDT for ${account}`);
+      return await this.makeUnstake(tokenAmount, account);
+    } catch (error: any) {
+      console.error(`Error selling tokens:`, error);
+      throw new Error(
+        `Failed to sell tokens: ${error.message || "Unknown error"}`
       );
     }
   },

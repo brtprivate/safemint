@@ -18,6 +18,7 @@ import Navbar from './components/Navbar';
 
 // Pages
 import MLMDashboard from './pages/MLMDashboard';
+import Dashboard from './pages/Dashboard';
 import HistoryPage from './pages/HistoryPage';
 import SwapPage from './pages/SwapPage';
 import TokenTest from './pages/TokenTest';
@@ -134,7 +135,8 @@ function App() {
                   <Router>
                     <Navbar />
                     <Routes>
-                      <Route path="/" element={<MLMDashboard />} />
+                      <Route path="/dashboard" element={<MLMDashboard />} />
+                      <Route path="/" element={<Dashboard />} />
                       <Route path="/history" element={<HistoryPage />} />
                       <Route path="/swap" element={<SwapPage />} />
                       <Route path="/token-test" element={<TokenTest />} />

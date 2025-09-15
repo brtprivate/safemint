@@ -23,6 +23,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import HistoryIcon from '@mui/icons-material/History';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 const Navbar: React.FC = () => {
   const wallet = useWallet();
@@ -85,6 +86,20 @@ const Navbar: React.FC = () => {
                 >
                   Dashboard
                 </Button>
+{/* 
+                <Button
+                  color="inherit"
+                  component={RouterLink}
+                  to="/dashboard"
+                  sx={{
+                    borderRadius: '20px',
+                    px: 2,
+                    backgroundColor: isActive('/dashboard') ? 'rgba(255, 255, 255, 0.15)' : 'transparent'
+                  }}
+                  startIcon={<DashboardIcon />}
+                >
+                  New Dashboard
+                </Button> */}
 
                 {wallet.isConnected && (
                   <>
@@ -208,6 +223,12 @@ const Navbar: React.FC = () => {
               icon={<HomeIcon sx={{ fontSize: 18 }} />}
               onClick={() => navigate('/')}
             />
+            {/* <BottomNavigationAction
+              label="New"
+              value="/dashboard"
+              icon={<DashboardIcon sx={{ fontSize: 18 }} />}
+              onClick={() => navigate('/dashboard')}
+            /> */}
             <BottomNavigationAction
               label="History"
               value="/history"

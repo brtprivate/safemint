@@ -1123,7 +1123,13 @@ const MLMDashboard = () => {
   }
 
   return (
-    <Container maxWidth="xl" sx={{ py: { xs: 2, sm: 3 } }}>
+    <Container
+      maxWidth="xl"
+      sx={{
+        py: { xs: 1.5, sm: 2, md: 3 },
+        px: { xs: 1, sm: 2, md: 3 }
+      }}
+    >
       {error && (
         <Alert severity="error" sx={{
           mb:
@@ -1141,46 +1147,84 @@ const MLMDashboard = () => {
 
       <Box
         sx={{
-          mb: { xs: 2, sm: 4 },
+          mb: { xs: 2, sm: 3, md: 4 },
           display: 'flex',
           flexDirection: { xs: 'column', sm: 'row' },
           justifyContent: 'space-between',
-          alignItems: { xs: 'stretch', sm: 'center' },
-          gap: 2,
+          alignItems: { xs: 'flex-start', sm: 'center' },
+          gap: { xs: 1.5, sm: 2 },
+          p: { xs: 1.5, sm: 2 },
+          borderRadius: { xs: 2, sm: 3 },
+          backgroundColor: 'background.paper',
+          boxShadow: { xs: 1, sm: 2 }
         }}
       >
-        <Box>
+        <Box sx={{ flex: 1, minWidth: 0 }}>
           <Typography
             variant="h4"
             gutterBottom
-            sx={{ color: 'primary.main', fontWeight: 'bold', fontSize: { xs: '1.5rem', sm: '2rem' } }}
+            sx={{
+              color: 'primary.main',
+              fontWeight: 'bold',
+              fontSize: { xs: '1.3rem', sm: '1.5rem', md: '2rem' },
+              lineHeight: 1.2,
+              mb: { xs: 0.5, sm: 1 }
+            }}
           >
             Dashboard
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            sx={{
+              fontSize: { xs: '0.8rem', sm: '0.875rem', md: '1rem' },
+              lineHeight: 1.4
+            }}
+          >
             Monitor your team performance and manage your investments
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', gap: 1, flexDirection: { xs: 'column', sm: 'row' } }}>
+        <Box sx={{
+          display: 'flex',
+          gap: { xs: 1, sm: 1.5 },
+          flexDirection: { xs: 'row', sm: 'row' },
+          flexShrink: 0,
+          width: { xs: '100%', sm: 'auto' }
+        }}>
           <Button
             variant="outlined"
             startIcon={<RefreshIcon />}
             onClick={fetchMlmData}
             disabled={isLoading || orderLoading}
-            sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+            size="medium"
+            sx={{
+              fontSize: { xs: '0.8rem', sm: '0.875rem', md: '1rem' },
+              flex: { xs: 1, sm: 'none' },
+              borderRadius: { xs: 1.5, sm: 2 }
+            }}
           >
             Refresh
           </Button>
-
         </Box>
       </Box>
 
       {/* Performance Overview - Top Section */}
-      <Card sx={{ p: { xs: 2, sm: 3 }, boxShadow: 3, mb: 3 }}>
+      <Card sx={{
+        p: { xs: 1.5, sm: 2, md: 3 },
+        boxShadow: { xs: 2, sm: 3 },
+        mb: { xs: 2, sm: 3 },
+        borderRadius: { xs: 2, sm: 3 }
+      }}>
         <Typography
           variant="h5"
           gutterBottom
-          sx={{ color: 'primary.main', fontWeight: 'bold', mb: { xs: 2, sm: 3 }, fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
+          sx={{
+            color: 'primary.main',
+            fontWeight: 'bold',
+            mb: { xs: 1.5, sm: 2, md: 3 },
+            fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.5rem' },
+            textAlign: { xs: 'center', sm: 'left' }
+          }}
         >
           Performance Overview
         </Typography>
@@ -1189,18 +1233,24 @@ const MLMDashboard = () => {
             <Typography
               variant="h6"
               gutterBottom
-              sx={{ color: 'primary.main', mb: { xs: 2, sm: 3 }, fontSize: { xs: '1rem', sm: '1.25rem' } }}
+              sx={{
+                color: 'primary.main',
+                mb: { xs: 1.5, sm: 2, md: 3 },
+                fontSize: { xs: '0.95rem', sm: '1rem', md: '1.25rem' },
+                fontWeight: 'bold',
+                textAlign: { xs: 'center', sm: 'left' }
+              }}
             >
               Team Statistics
             </Typography>
-            <Grid container spacing={2} sx={{ mb: { xs: 3, sm: 4 } }}>
+            <Grid container spacing={{ xs: 1, sm: 1.5, md: 2, lg: 3 }} sx={{ mb: { xs: 3, sm: 4 } }}>
               {/* SafeMint Token Price Card */}
-              <Grid item xs={12} sm={6} md={4}>
+              <Grid item xs={12} sm={6} md={4} lg={3}>
                 <TokenPriceCard autoRefresh={true} refreshInterval={30000} />
               </Grid>
 
               {/* SafeMint Token Comprehensive Stats */}
-              <Grid item xs={12} sm={6} md={8}>
+              <Grid item xs={12} sm={6} md={8} lg={9}>
                 <SafeMintTokenStats autoRefresh={true} refreshInterval={30000} />
               </Grid>
 
@@ -1229,7 +1279,7 @@ const MLMDashboard = () => {
                   color: 'success.main',
                 },
               ].map((card, index) => (
-                <Grid item xs={12} sm={6} md={4} key={`team-stats-${index}`}>
+                <Grid item xs={12} sm={6} md={4} lg={2.4} xl={2} key={`team-stats-${index}`}>
                   <StatCard
                     icon={card.icon}
                     title={card.title}
@@ -1245,11 +1295,17 @@ const MLMDashboard = () => {
             <Typography
               variant="h6"
               gutterBottom
-              sx={{ color: 'primary.main', mb: { xs: 2, sm: 3 }, fontSize: { xs: '1rem', sm: '1.25rem' } }}
+              sx={{
+                color: 'primary.main',
+                mb: { xs: 1.5, sm: 2, md: 3 },
+                fontSize: { xs: '0.95rem', sm: '1rem', md: '1.25rem' },
+                fontWeight: 'bold',
+                textAlign: { xs: 'center', sm: 'left' }
+              }}
             >
               Financial Overview
             </Typography>
-            <Grid container spacing={2} sx={{ mb: { xs: 3, sm: 4 } }}>
+            <Grid container spacing={{ xs: 1, sm: 1.5, md: 2, lg: 3 }} sx={{ mb: { xs: 3, sm: 4 } }}>
               {[
                 { icon: <TrendingUpIcon />, title: 'Total In', value: formatCurrency(mlmData.totalIn), subtitle: 'Total Investments', color: 'success.main' },
                 { icon: <MonetizationOnIcon />, title: 'Total Out', value: formatCurrency(mlmData.totalOut), subtitle: 'Total Withdrawals', color: 'info.main' },
@@ -1303,7 +1359,7 @@ const MLMDashboard = () => {
                   color: 'primary.main',
                 },
               ].map((card, index) => (
-                <Grid item xs={12} sm={6} md={4} key={`financial-${index}`}>
+                <Grid item xs={12} sm={6} md={4} lg={3} xl={2.4} key={`financial-${index}`}>
                   <StatCard
                     icon={card.icon}
                     title={card.title}
@@ -1319,11 +1375,17 @@ const MLMDashboard = () => {
             <Typography
               variant="h6"
               gutterBottom
-              sx={{ color: 'primary.main', mb: { xs: 2, sm: 3 }, fontSize: { xs: '1rem', sm: '1.25rem' } }}
+              sx={{
+                color: 'primary.main',
+                mb: { xs: 1.5, sm: 2, md: 3 },
+                fontSize: { xs: '0.95rem', sm: '1rem', md: '1.25rem' },
+                fontWeight: 'bold',
+                textAlign: { xs: 'center', sm: 'left' }
+              }}
             >
               Earnings Breakdown
             </Typography>
-            <Grid container spacing={2}>
+            <Grid container spacing={{ xs: 1.5, sm: 2, md: 3 }}>
               {[
                 { icon: <PeopleIcon />, title: 'Referral Earn', value: formatCurrency(mlmData.referralEarn), subtitle: 'From Direct Referrals', color: 'primary.main' },
                 { icon: <TimelineIcon />, title: 'Level Earn', value: formatCurrency(mlmData.levelEarn), subtitle: 'From Team Levels', color: 'info.main' },
@@ -1344,7 +1406,7 @@ const MLMDashboard = () => {
                   color: 'secondary.main',
                 },
               ].map((card, index) => (
-                <Grid item xs={12} sm={6} md={4} key={`earnings-${index}`}>
+                <Grid item xs={12} sm={6} md={4} lg={3} xl={2} key={`earnings-${index}`}>
                   <StatCard
                     icon={card.icon}
                     title={card.title}
@@ -1358,15 +1420,26 @@ const MLMDashboard = () => {
       </Card>
 
       {/* Cards Grid Layout */}
-      <Grid container spacing={3}>
+      <Grid container spacing={{ xs: 2, sm: 3, md: 4 }}>
 
         {/* Trading & Referrals Card */}
-        <Grid item xs={12} md={6}>
-          <Card sx={{ p: { xs: 2, sm: 3 }, boxShadow: 3, height: 'fit-content' }}>
+        <Grid item xs={12} lg={6}>
+          <Card sx={{
+            p: { xs: 1.5, sm: 2, md: 3 },
+            boxShadow: { xs: 2, sm: 3 },
+            height: 'fit-content',
+            borderRadius: { xs: 2, sm: 3 }
+          }}>
             <Typography
               variant="h5"
               gutterBottom
-              sx={{ color: 'primary.main', fontWeight: 'bold', mb: 3, fontSize: { xs: '1.25rem', sm: '1.5rem' } }}
+              sx={{
+                color: 'primary.main',
+                fontWeight: 'bold',
+                mb: { xs: 2, sm: 3 },
+                fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.5rem' },
+                textAlign: { xs: 'center', sm: 'left' }
+              }}
             >
               Trading & Referrals
             </Typography>

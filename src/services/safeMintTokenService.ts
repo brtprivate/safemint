@@ -1,6 +1,7 @@
-import { readContract } from '@wagmi/core';
+import { readContract, writeContract } from '@wagmi/core';
 import { config } from '../config/web3modal';
-import { formatEther } from 'viem';
+import { formatEther, formatUnits } from 'viem';
+import { bsc } from 'viem/chains';
 import type { Address } from 'viem';
 
 // SafeMint Token Configuration
@@ -60,6 +61,26 @@ export const SAFEMINT_TOKEN_ABI = [
     "name": "symbol",
     "outputs": [{"internalType": "string", "name": "", "type": "string"}],
     "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {"internalType": "address", "name": "owner", "type": "address"},
+      {"internalType": "address", "name": "spender", "type": "address"}
+    ],
+    "name": "allowance",
+    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {"internalType": "address", "name": "spender", "type": "address"},
+      {"internalType": "uint256", "name": "amount", "type": "uint256"}
+    ],
+    "name": "approve",
+    "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ] as const;
@@ -160,13 +181,70 @@ export const safeMintTokenService = {
         args: [account],
         chainId: BSC_MAINNET_CHAIN_ID,
       }) as bigint;
-      
+
       console.log(`✅ [SafeMintTokenService] SafeMint balance for ${account}: ${formatEther(balance)} SELFMINT`);
       return balance;
     } catch (error: any) {
       console.error(`❌ [SafeMintTokenService] Error fetching SafeMint balance:`, error);
       throw new Error(
         `Failed to fetch SafeMint balance: ${error.message || "Unknown error"}`
+      );
+    }
+  },
+
+  /**
+   * Get SafeMint token allowance for a spender
+   * @param owner - Token owner address
+   * @param spender - Spender address (usually the staking contract)
+   * @returns Allowance amount in wei
+   */
+  async getAllowance(owner: Address, spender: Address): Promise<bigint> {
+    try {
+      console.log(`🔄 [SafeMintTokenService] Fetching allowance for ${owner} → ${spender}...`);
+      const allowance = await readContract(config, {
+        abi: SAFEMINT_TOKEN_ABI,
+        address: SAFEMINT_TOKEN_ADDRESS,
+        functionName: "allowance",
+        args: [owner, spender],
+        chainId: BSC_MAINNET_CHAIN_ID,
+      }) as bigint;
+
+      console.log(`✅ [SafeMintTokenService] Allowance: ${formatEther(allowance)} SMT`);
+      return allowance;
+    } catch (error: any) {
+      console.error(`❌ [SafeMintTokenService] Error fetching allowance:`, error);
+      throw new Error(
+        `Failed to fetch allowance: ${error.message || "Unknown error"}`
+      );
+    }
+  },
+
+  /**
+   * Approve SafeMint token spending for a spender
+   * @param spender - Spender address (usually the staking contract)
+   * @param amount - Amount to approve (in wei)
+   * @param account - Wallet address to send the transaction from
+   * @returns Transaction hash
+   */
+  async approve(spender: Address, amount: bigint, account: Address): Promise<string> {
+    try {
+      console.log(`🔄 [SafeMintTokenService] Approving ${formatEther(amount)} SMT for ${spender}...`);
+
+      const txHash = await writeContract(config, {
+        abi: SAFEMINT_TOKEN_ABI,
+        address: SAFEMINT_TOKEN_ADDRESS,
+        functionName: "approve",
+        args: [spender, amount],
+        chain: bsc,
+        account: account,
+      });
+
+      console.log(`✅ [SafeMintTokenService] Approval transaction successful: ${txHash}`);
+      return txHash;
+    } catch (error: any) {
+      console.error(`❌ [SafeMintTokenService] Error approving tokens:`, error);
+      throw new Error(
+        `Failed to approve SafeMint tokens: ${error.message || "Unknown error"}`
       );
     }
   },

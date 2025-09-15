@@ -10,11 +10,12 @@ import {
   Tooltip,
   IconButton
 } from '@mui/material';
-import { 
+import {
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,
   Refresh as RefreshIcon,
-  Info as InfoIcon
+  Info as InfoIcon,
+  Token as TokenIcon
 } from '@mui/icons-material';
 import { formatEther } from 'viem';
 import safeMintTokenService, { SafeMintTokenInfo } from '../../services/safeMintTokenService';
@@ -152,95 +153,197 @@ const TokenPriceCard: React.FC<TokenPriceCardProps> = ({
   }
 
   return (
-    <Card sx={{ p: { xs: 1.5, sm: 2 }, boxShadow: 2, height: '100%', backgroundColor: 'white' }}>
-      <CardContent>
-        {/* Header */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Typography variant="h6" sx={{ fontSize: { xs: '0.9rem', sm: '1rem' }, fontWeight: 'bold' }}>
-              {tokenInfo.symbol} Price
-            </Typography>
-            <Tooltip title="SafeMint Token Exchange Rate">
-              <InfoIcon sx={{ ml: 0.5, fontSize: '1rem', color: 'text.secondary' }} />
-            </Tooltip>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+    <Card sx={{
+      p: { xs: 1, sm: 1.5, md: 2 },
+      boxShadow: { xs: 1, sm: 2 },
+      height: 'auto',
+      minHeight: { xs: '160px', sm: '180px', md: '200px' },
+      backgroundColor: 'white',
+      borderRadius: { xs: 2, sm: 3 },
+      transition: 'all 0.3s ease',
+      '&:hover': {
+        boxShadow: { xs: 2, sm: 4 },
+        transform: 'translateY(-2px)'
+      }
+    }}>
+      <CardContent sx={{
+        p: { xs: 1, sm: 1.5, md: 2 },
+        '&:last-child': { pb: { xs: 1, sm: 1.5, md: 2 } },
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%'
+      }}>
+        {/* Header with Refresh Button */}
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          mb: { xs: 1, sm: 1.5 }
+        }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1 } }}>
+            <TokenIcon sx={{
+              color: 'primary.main',
+              fontSize: { xs: '1.2rem', sm: '1.5rem', md: '1.8rem' }
+            }} />
             {getTrendIcon()}
-            <IconButton 
-              size="small" 
-              onClick={handleRefresh} 
-              disabled={loading}
-              sx={{ p: 0.5 }}
-            >
-              <RefreshIcon sx={{ fontSize: '1rem' }} />
-            </IconButton>
           </Box>
+          <IconButton
+            size="small"
+            onClick={handleRefresh}
+            disabled={loading}
+            sx={{
+              p: { xs: 0.3, sm: 0.5 },
+              minWidth: 'auto',
+              '& .MuiSvgIcon-root': {
+                fontSize: { xs: '0.9rem', sm: '1rem' }
+              }
+            }}
+          >
+            <RefreshIcon />
+          </IconButton>
         </Box>
 
-        {/* Price Display */}
-        <Box sx={{ mb: 2 }}>
-          <Typography 
-            variant="h4" 
-            sx={{ 
-              fontWeight: 'bold', 
+        {/* Price Display - First Row */}
+        <Box sx={{ textAlign: 'center', mb: { xs: 1, sm: 1.5 } }}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 'bold',
               color: getTrendColor(),
-              fontSize: { xs: '1.25rem', sm: '1.5rem' },
+              fontSize: { xs: '1.3rem', sm: '1.5rem', md: '1.8rem' },
               display: 'flex',
               alignItems: 'center',
-              gap: 0.5
+              justifyContent: 'center',
+              gap: 0.5,
+              lineHeight: 1.2,
+              mb: 0.5
             }}
           >
             ${safeMintTokenService.formatRate(tokenInfo.rateInUSDT)}
             {loading && <CircularProgress size={16} />}
           </Typography>
-          <Typography 
-            variant="body2" 
-            color="text.secondary" 
-            sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.85rem' }
+            }}
           >
-            per {tokenInfo.symbol} token
+            SELFMINT Price
+          </Typography>
+        </Box>
+
+        {/* Token Name - Second Row */}
+        <Box sx={{ textAlign: 'center', mb: { xs: 1, sm: 1.5 } }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1.1rem' },
+              fontWeight: 'bold',
+              color: 'text.primary',
+              lineHeight: 1.2
+            }}
+          >
+            SELFMINT TOKEN 
           </Typography>
         </Box>
 
         {/* Token Stats */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: { xs: 0.8, sm: 1 },
+          mb: { xs: 1, sm: 1.5 }
+        }}>
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 0.5
+          }}>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+            >
               Total Supply:
             </Typography>
-            <Typography variant="body2" sx={{ fontSize: '0.75rem', fontWeight: 'medium' }}>
+            <Typography
+              variant="body2"
+              sx={{
+                fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                fontWeight: 'medium',
+                textAlign: 'right'
+              }}
+            >
               {safeMintTokenService.formatBalance(tokenInfo.totalSupply)}
             </Typography>
           </Box>
-          
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 0.5
+          }}>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}
+            >
               USDT Pool:
             </Typography>
-            <Typography variant="body2" sx={{ fontSize: '0.75rem', fontWeight: 'medium' }}>
+            <Typography
+              variant="body2"
+              sx={{
+                fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                fontWeight: 'medium',
+                textAlign: 'right'
+              }}
+            >
               ${safeMintTokenService.formatBalance(tokenInfo.reserves.usdtBalance)}
             </Typography>
           </Box>
         </Box>
 
         {/* Status Chips */}
-        <Box sx={{ display: 'flex', gap: 1, mt: 2, flexWrap: 'wrap' }}>
-          <Chip 
-            label="Live" 
-            size="small" 
-            color="success" 
+        {/* <Box sx={{
+          display: 'flex',
+          gap: { xs: 0.5, sm: 1 },
+          mt: { xs: 1, sm: 2 },
+          flexWrap: 'wrap',
+          justifyContent: 'center'
+        }}>
+          <Chip
+            label="Live"
+            size="small"
+            color="success"
             variant="outlined"
-            sx={{ fontSize: '0.7rem', height: 20 }}
+            sx={{
+              fontSize: { xs: '0.6rem', sm: '0.7rem' },
+              height: { xs: 18, sm: 20 },
+              '& .MuiChip-label': {
+                px: { xs: 0.5, sm: 1 }
+              }
+            }}
           />
           {lastUpdated && (
-            <Chip 
-              label={formatTimeAgo(lastUpdated)} 
-              size="small" 
+            <Chip
+              label={formatTimeAgo(lastUpdated)}
+              size="small"
               variant="outlined"
-              sx={{ fontSize: '0.7rem', height: 20 }}
+              sx={{
+                fontSize: { xs: '0.6rem', sm: '0.7rem' },
+                height: { xs: 18, sm: 20 },
+                '& .MuiChip-label': {
+                  px: { xs: 0.5, sm: 1 }
+                }
+              }}
             />
           )}
-        </Box>
+        </Box> */}
       </CardContent>
     </Card>
   );

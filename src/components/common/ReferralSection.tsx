@@ -72,9 +72,9 @@ const ReferralSection: React.FC<ReferralSectionProps> = ({ account, onCopy, onSh
 
   return (
     <Box sx={{ mb: { xs: 3, sm: 4 }, display: 'flex', flexDirection: 'column', gap: 2 }}>
-      <Typography variant="h6" sx={{ color: 'primary.main', fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+      {/* <Typography variant="h6" sx={{ color: 'primary.main', fontSize: { xs: '1rem', sm: '1.25rem' } }}>
         Your Referral System
-      </Typography>
+      </Typography> */}
 
       {copySuccess && (
         <Alert severity="success" sx={{ mb: 1 }}>

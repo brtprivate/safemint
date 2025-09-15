@@ -888,10 +888,11 @@ const Dashboard = () => {
           backgroundColor: 'white',
           borderRadius: { xs: 2, sm: 3 },
           boxShadow: { xs: 1, sm: 2 },
-          mb: { xs: 2, sm: 3 }
+          mb: { xs: 2, sm: 3 },
+          width: '100%'
         }}>
           <Typography
-            variant="h5"
+            variant="h6"
             gutterBottom
             sx={{
               color: 'primary.main',
@@ -903,12 +904,71 @@ const Dashboard = () => {
           >
             Token Information
           </Typography>
-          <Grid container spacing={{ xs: 1, sm: 1.5, md: 2 }}>
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <TokenPriceCard autoRefresh={true} refreshInterval={30000} />
+
+          {/* Token Price Card - Full Width on Mobile */}
+          {/* <Grid
+            container
+            spacing={{ xs: 1.5, sm: 2, md: 2 }}
+            sx={{
+              width: '100%',
+              margin: 0,
+              mb: { xs: 2, sm: 3 }
+            }}
+          >
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={12}
+              lg={12}
+              xl={12}
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                width: { xs: '100%', sm: '100%', md: 'auto' },
+                maxWidth: { xs: '100%', sm: '100%', md: 'none' },
+                flexBasis: { xs: '100%', sm: '100%', md: 'auto' }
+              }}
+            >
+              <Box sx={{
+                width: { xs: '100%', sm: '100%', md: '100%' },
+                maxWidth: '100%'
+              }}>
+                <TokenPriceCard autoRefresh={true} refreshInterval={30000} />
+              </Box>
             </Grid>
-            <Grid item xs={12} sm={6} md={8} lg={9}>
-              <SafeMintTokenStats autoRefresh={true} refreshInterval={30000} />
+          </Grid> */}
+
+          {/* Token Stats Cards - Responsive Grid */}
+          <Grid
+            container
+            spacing={{ xs: 1.5, sm: 2, md: 2 }}
+            sx={{
+              width: '100%',
+              margin: 0
+            }}
+          >
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              md={12}
+              lg={12}
+              xl={12}
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                width: { xs: '100%', sm: '100%', md: 'auto' },
+                maxWidth: { xs: '100%', sm: '100%', md: 'none' },
+                flexBasis: { xs: '100%', sm: '100%', md: 'auto' }
+              }}
+            >
+              <Box sx={{
+                width: { xs: '100%', sm: '100%', md: '100%' },
+                maxWidth: '100%'
+              }}>
+                <SafeMintTokenStats autoRefresh={true} refreshInterval={30000} />
+              </Box>
             </Grid>
           </Grid>
         </Card>

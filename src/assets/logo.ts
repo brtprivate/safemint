@@ -14,12 +14,12 @@ export const LOGO_CONFIG = {
   // Logo dimensions for different use cases
   sizes: {
     navbar: {
-      width: 100,
-      height: 100,
+      width: 45,
+      height: 45,
     },
     sidebar: {
-      width: 40,
-      height: 40,
+      width: 32,
+      height: 32,
     },
     large: {
       width: 80,
@@ -32,7 +32,7 @@ export const LOGO_CONFIG = {
   },
 
   // Alt text
-  alt: 'USDStack Logo',
+  alt: 'SafeMint Logo',
 
   // Common styles
   styles: {

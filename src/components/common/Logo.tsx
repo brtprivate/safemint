@@ -7,11 +7,11 @@ interface LogoProps extends Omit<BoxProps, 'component'> {
   fallbackText?: string;
 }
 
-const Logo: React.FC<LogoProps> = ({ 
-  size = 'medium', 
-  fallbackText = 'USD',
+const Logo: React.FC<LogoProps> = ({
+  size = 'medium',
+  fallbackText = 'SM',
   sx,
-  ...props 
+  ...props
 }) => {
   const [imageError, setImageError] = useState(false);
   const [fallbackError, setFallbackError] = useState(false);
@@ -63,13 +63,25 @@ const Logo: React.FC<LogoProps> = ({
           width: sizeConfig.width,
           height: sizeConfig.height,
           borderRadius: LOGO_CONFIG.styles.borderRadius,
-          backgroundColor: '#ff9800',
+          background: 'linear-gradient(45deg, #FFA000 30%, #FF8F00 90%)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           color: '#ffffff',
           fontWeight: 'bold',
-          fontSize: sizeConfig.width * 0.4,
+          fontSize: sizeConfig.width * 0.35,
+          boxShadow: '0 4px 15px rgba(255, 160, 0, 0.4)',
+          border: '2px solid rgba(255, 255, 255, 0.3)',
+          textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+          // Add enhanced styling for navbar fallback
+          ...(size === 'navbar' && {
+            filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2))',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              transform: 'scale(1.05)',
+              filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3))',
+            }
+          }),
           ...sx
         }}
         {...props}
@@ -90,6 +102,15 @@ const Logo: React.FC<LogoProps> = ({
         height: sizeConfig.height,
         borderRadius: LOGO_CONFIG.styles.borderRadius,
         objectFit: LOGO_CONFIG.styles.objectFit,
+        // Add enhanced styling for navbar
+        ...(size === 'navbar' && {
+          filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2))',
+          transition: 'all 0.3s ease',
+          '&:hover': {
+            transform: 'scale(1.05)',
+            filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3))',
+          }
+        }),
         ...sx
       }}
       {...props}

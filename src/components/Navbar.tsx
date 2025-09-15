@@ -63,10 +63,21 @@ const Navbar: React.FC = () => {
                 color: 'white',
                 display: 'flex',
                 alignItems: 'center',
-                fontSize: { xs: '1rem', sm: '1.25rem' }
+                fontSize: { xs: '1.1rem', sm: '1.35rem' },
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  transform: 'translateY(-1px)',
+                  textShadow: '0 2px 8px rgba(0, 0, 0, 0.3)'
+                }
               }}
             >
-              <Logo size="navbar" sx={{ mr: 1 }} />
+              <Logo
+                size="navbar"
+                sx={{
+                  mr: { xs: 1.5, sm: 2 },
+                  flexShrink: 0
+                }}
+              />
               SafeMint
             </Typography>
 

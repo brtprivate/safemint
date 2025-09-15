@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Card, 
-  CardContent, 
-  Box, 
-  Typography, 
-  Grid,
-  CircularProgress, 
+import {
+  Card,
+  CardContent,
+  Box,
+  Typography,
+  CircularProgress,
   Alert,
   Chip,
   Divider,
@@ -128,200 +127,296 @@ const SafeMintTokenStats: React.FC<SafeMintTokenStatsProps> = ({
   }
 
   return (
-    <Card sx={{
-      p: { xs: 1, sm: 1.5, md: 2 },
-      boxShadow: { xs: 1, sm: 2 },
-      height: 'auto',
-      minHeight: { xs: '160px', sm: '180px', md: '200px' },
-      backgroundColor: 'white',
-      borderRadius: { xs: 2, sm: 3 },
-      transition: 'all 0.3s ease',
-      '&:hover': {
-        boxShadow: { xs: 2, sm: 4 },
-        transform: 'translateY(-2px)'
-      }
+    <Box sx={{
+      display: 'grid',
+      gridTemplateColumns: {
+        xs: '1fr',
+        sm: 'repeat(2, 1fr)',
+        md: 'repeat(4, 1fr)'
+      },
+      gap: { xs: 2, sm: 2, md: 3 },
+      width: '100%',
+      p: { xs: 1, sm: 2 }
     }}>
-      <CardContent sx={{
-        p: { xs: 1, sm: 1.5, md: 2 },
-        '&:last-child': { pb: { xs: 1, sm: 1.5, md: 2 } },
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%'
+      {/* USDT Pool Card */}
+      <Card sx={{
+        p: { xs: 1.5, sm: 2 },
+        boxShadow: { xs: 2, sm: 3 },
+        height: '100%',
+        backgroundColor: 'white',
+        borderRadius: { xs: 2, sm: 3 },
+        border: '2px solid rgba(255, 160, 0, 0.2)',
+        background: 'linear-gradient(135deg, rgba(255, 160, 0, 0.05) 0%, rgba(255, 143, 0, 0.05) 100%)',
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          boxShadow: { xs: 3, sm: 6 },
+          transform: 'translateY(-4px)',
+          border: '2px solid rgba(255, 160, 0, 0.4)',
+        }
       }}>
-        {/* Header */}
-        <Box sx={{
+        <CardContent sx={{
+          p: { xs: 1, sm: 1.5 },
+          '&:last-child': { pb: { xs: 1, sm: 1.5 } },
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          mb: { xs: 1, sm: 1.5 }
+          textAlign: 'center',
+          height: '100%',
+          justifyContent: 'center'
         }}>
-          <Box sx={{
-            display: 'flex',
-            alignItems: 'center',
-            minWidth: 0,
-            flex: 1
-          }}>
-            <TokenIcon sx={{
-              mr: { xs: 0.5, sm: 1 },
-              color: 'primary.main',
-              fontSize: { xs: '1.2rem', sm: '1.5rem' }
-            }} />
-            <Typography
-              variant="h6"
-              sx={{
-                fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' },
-                fontWeight: 'bold',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis'
-              }}
-            >
-              Token Stats
-            </Typography>
-          </Box>
-          <IconButton
-            size="small"
-            onClick={handleRefresh}
-            disabled={loading}
+          <AccountBalanceIcon sx={{
+            fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+            color: '#FFA000',
+            mb: 1,
+            filter: 'drop-shadow(0 2px 4px rgba(255, 160, 0, 0.3))'
+          }} />
+          <Typography
+            variant="h4"
             sx={{
-              p: { xs: 0.3, sm: 0.5 },
-              minWidth: 'auto',
-              '& .MuiSvgIcon-root': {
-                fontSize: { xs: '1rem', sm: '1.2rem' }
-              }
+              fontWeight: 800,
+              color: '#FFA000',
+              fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.6rem' },
+              mb: 0.5,
+              textShadow: '0 2px 4px rgba(0,0,0,0.1)'
             }}
           >
-            <RefreshIcon />
-          </IconButton>
-        </Box>
-
-        {/* Compact Token Statistics */}
-        <Grid container spacing={{ xs: 1, sm: 1.5 }} sx={{ mb: { xs: 1, sm: 1.5 }, flex: 1 }}>
-          <Grid item xs={6}>
-            <Box sx={{
-              textAlign: 'center',
-              p: { xs: 0.5, sm: 0.8 },
-              borderRadius: 1,
-              backgroundColor: 'success.light',
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center'
-            }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 'bold',
-                  color: 'success.main',
-                  fontSize: { xs: '0.75rem', sm: '0.85rem', md: '0.95rem' },
-                  lineHeight: 1.1
-                }}
-              >
-                ${safeMintTokenService.formatBalance(tokenInfo.reserves.usdtBalance)}
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ fontSize: { xs: '0.6rem', sm: '0.65rem', md: '0.7rem' } }}
-              >
-                USDT Pool
-              </Typography>
-            </Box>
-          </Grid>
-          <Grid item xs={6}>
-            <Box sx={{
-              textAlign: 'center',
-              p: { xs: 0.5, sm: 0.8 },
-              borderRadius: 1,
-              backgroundColor: 'info.light',
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center'
-            }}>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 'bold',
-                  color: 'info.main',
-                  fontSize: { xs: '0.75rem', sm: '0.85rem', md: '0.95rem' },
-                  lineHeight: 1.1
-                }}
-              >
-                {safeMintTokenService.formatBalance(tokenInfo.totalSupply)}
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ fontSize: { xs: '0.6rem', sm: '0.65rem', md: '0.7rem' } }}
-              >
-                Total Supply
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
-
-        {/* Compact Market Cap */}
-        <Box sx={{
-          textAlign: 'center',
-          p: { xs: 0.5, sm: 0.8 },
-          borderRadius: 1,
-          backgroundColor: 'grey.50',
-          mb: { xs: 1, sm: 1.5 }
-        }}>
+            ${safeMintTokenService.formatBalance(tokenInfo.reserves.usdtBalance)}
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+              color: 'text.primary',
+              fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
+              letterSpacing: '0.5px'
+            }}
+          >
+            USDT Pool
+          </Typography>
           <Typography
             variant="body2"
+            color="text.secondary"
             sx={{
-              fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.8rem' },
-              fontWeight: 'bold',
-              color: 'primary.main'
+              fontSize: { xs: '0.7rem', sm: '0.8rem' },
+              mt: 0.5,
+              fontWeight: 500
             }}
           >
-            Market Cap: ${calculateMarketCap()}
+            Liquidity Reserve
           </Typography>
-        </Box>
+        </CardContent>
+      </Card>
 
-        {/* Status Indicator */}
-        <Box sx={{
+      {/* Total Supply Card */}
+      <Card sx={{
+        p: { xs: 1.5, sm: 2 },
+        boxShadow: { xs: 2, sm: 3 },
+        height: '100%',
+        backgroundColor: 'white',
+        borderRadius: { xs: 2, sm: 3 },
+        border: '2px solid rgba(255, 160, 0, 0.2)',
+        background: 'linear-gradient(135deg, rgba(255, 160, 0, 0.05) 0%, rgba(255, 143, 0, 0.05) 100%)',
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          boxShadow: { xs: 3, sm: 6 },
+          transform: 'translateY(-4px)',
+          border: '2px solid rgba(255, 160, 0, 0.4)',
+        }
+      }}>
+        <CardContent sx={{
+          p: { xs: 1, sm: 1.5 },
+          '&:last-child': { pb: { xs: 1, sm: 1.5 } },
           display: 'flex',
-          gap: { xs: 0.5, sm: 1 },
-          justifyContent: 'center',
-          alignItems: 'center'
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          height: '100%',
+          justifyContent: 'center'
         }}>
-          {loading ? (
-            <Chip
-              label="Updating..."
-              size="small"
-              color="primary"
-              variant="outlined"
-              sx={{
-                fontSize: { xs: '0.6rem', sm: '0.65rem' },
-                height: { xs: 18, sm: 20 },
-                '& .MuiChip-label': {
-                  px: { xs: 0.5, sm: 0.8 }
-                }
-              }}
-              icon={<CircularProgress size={10} />}
-            />
-          ) : (
-            <Chip
-              label="Live"
-              size="small"
-              color="success"
-              variant="outlined"
-              sx={{
-                fontSize: { xs: '0.6rem', sm: '0.65rem' },
-                height: { xs: 18, sm: 20 },
-                '& .MuiChip-label': {
-                  px: { xs: 0.5, sm: 0.8 }
-                }
-              }}
-              icon={<TrendingUpIcon sx={{ fontSize: '0.7rem' }} />}
-            />
-          )}
-        </Box>
-      </CardContent>
-    </Card>
+          <TokenIcon sx={{
+            fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+            color: '#FFA000',
+            mb: 1,
+            filter: 'drop-shadow(0 2px 4px rgba(255, 160, 0, 0.3))'
+          }} />
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 800,
+              color: '#FFA000',
+              fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.6rem' },
+              mb: 0.5,
+              textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            }}
+          >
+            {safeMintTokenService.formatBalance(tokenInfo.totalSupply)}
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+              color: 'text.primary',
+              fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
+              letterSpacing: '0.5px'
+            }}
+          >
+            Total Supply
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              fontSize: { xs: '0.7rem', sm: '0.8rem' },
+              mt: 0.5,
+              fontWeight: 500
+            }}
+          >
+            Circulating Tokens
+          </Typography>
+        </CardContent>
+      </Card>
+
+      {/* Market Cap Card */}
+      <Card sx={{
+        p: { xs: 1.5, sm: 2 },
+        boxShadow: { xs: 2, sm: 3 },
+        height: '100%',
+        backgroundColor: 'white',
+        borderRadius: { xs: 2, sm: 3 },
+        border: '2px solid rgba(255, 160, 0, 0.2)',
+        background: 'linear-gradient(135deg, rgba(255, 160, 0, 0.05) 0%, rgba(255, 143, 0, 0.05) 100%)',
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          boxShadow: { xs: 3, sm: 6 },
+          transform: 'translateY(-4px)',
+          border: '2px solid rgba(255, 160, 0, 0.4)',
+        }
+      }}>
+        <CardContent sx={{
+          p: { xs: 1, sm: 1.5 },
+          '&:last-child': { pb: { xs: 1, sm: 1.5 } },
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          height: '100%',
+          justifyContent: 'center'
+        }}>
+          <TrendingUpIcon sx={{
+            fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+            color: '#FFA000',
+            mb: 1,
+            filter: 'drop-shadow(0 2px 4px rgba(255, 160, 0, 0.3))'
+          }} />
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 800,
+              color: '#FFA000',
+              fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.6rem' },
+              mb: 0.5,
+              textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            }}
+          >
+            ${calculateMarketCap()}
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+              color: 'text.primary',
+              fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
+              letterSpacing: '0.5px'
+            }}
+          >
+            Market Cap
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              fontSize: { xs: '0.7rem', sm: '0.8rem' },
+              mt: 0.5,
+              fontWeight: 500
+            }}
+          >
+            Total Market Value
+          </Typography>
+        </CardContent>
+      </Card>
+
+      {/* Token Price Card */}
+      <Card sx={{
+        p: { xs: 1.5, sm: 2 },
+        boxShadow: { xs: 2, sm: 3 },
+        height: '100%',
+        backgroundColor: 'white',
+        borderRadius: { xs: 2, sm: 3 },
+        border: '2px solid rgba(255, 160, 0, 0.2)',
+        background: 'linear-gradient(135deg, rgba(255, 160, 0, 0.05) 0%, rgba(255, 143, 0, 0.05) 100%)',
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          boxShadow: { xs: 3, sm: 6 },
+          transform: 'translateY(-4px)',
+          border: '2px solid rgba(255, 160, 0, 0.4)',
+        }
+      }}>
+        <CardContent sx={{
+          p: { xs: 1, sm: 1.5 },
+          '&:last-child': { pb: { xs: 1, sm: 1.5 } },
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          height: '100%',
+          justifyContent: 'center'
+        }}>
+          <TrendingUpIcon sx={{
+            fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+            color: '#FFA000',
+            mb: 1,
+            filter: 'drop-shadow(0 2px 4px rgba(255, 160, 0, 0.3))',
+            transform: 'rotate(45deg)'
+          }} />
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 800,
+              color: '#FFA000',
+              fontSize: { xs: '1.2rem', sm: '1.4rem', md: '1.6rem' },
+              mb: 0.5,
+              textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            }}
+          >
+            ${safeMintTokenService.formatBalance(tokenInfo.rateInUSDT)}
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+              color: 'text.primary',
+              fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
+              letterSpacing: '0.5px'
+            }}
+          >
+            Token Price
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              fontSize: { xs: '0.7rem', sm: '0.8rem' },
+              mt: 0.5,
+              fontWeight: 500
+            }}
+          >
+            Current Rate
+          </Typography>
+        </CardContent>
+      </Card>
+
+    
+    </Box>
   );
 };
 

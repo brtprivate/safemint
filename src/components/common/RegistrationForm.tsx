@@ -9,8 +9,7 @@ import {
   Chip,
   Box,
 } from '@mui/material';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import LinkIcon from '@mui/icons-material/Link';
+import { UserPlus, Link } from 'lucide-react';
 
 interface RegistrationFormProps {
   referralCode: string;
@@ -55,7 +54,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
           <Box sx={{ mb: 2 }}>
             <Alert severity="info" sx={{ mb: 2 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <LinkIcon fontSize="small" />
+                <Link size={16} />
                 <Typography variant="body2">
                   You were invited! Referral code auto-detected from link.
                 </Typography>
@@ -105,7 +104,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
         <Button
           fullWidth
           variant="contained"
-          startIcon={<PersonAddIcon />}
+          startIcon={<UserPlus size={18} />}
           onClick={onRegister}
           disabled={isLoading || !referralCode}
           sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}

@@ -14,8 +14,8 @@ export const LOGO_CONFIG = {
   // Logo dimensions for different use cases
   sizes: {
     navbar: {
-      width: 45,
-      height: 45,
+      width: 90,
+      height: 90,
     },
     sidebar: {
       width: 32,

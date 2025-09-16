@@ -18,12 +18,15 @@ import {
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import { useWallet } from '../context/WalletContext';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
-import HomeIcon from '@mui/icons-material/Home';
-import LogoutIcon from '@mui/icons-material/Logout';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import HistoryIcon from '@mui/icons-material/History';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+// Lucide React icons
+import {
+  Home,
+  History,
+  ArrowLeftRight,
+  Wallet,
+  LogOut,
+  Menu
+} from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const wallet = useWallet();
@@ -32,6 +35,11 @@ const Navbar: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const location = useLocation();
+
+  // Don't render navbar on landing page
+  if (location.pathname === '/') {
+    return null;
+  }
 
   // Check if a route is active
   const isActive = (path: string) => {
@@ -55,7 +63,7 @@ const Navbar: React.FC = () => {
             <Typography
               variant="h6"
               component={RouterLink}
-              to="/"
+              to="/app"
               sx={{
                 flexGrow: 1,
                 fontWeight: 700,
@@ -87,13 +95,13 @@ const Navbar: React.FC = () => {
                 <Button
                   color="inherit"
                   component={RouterLink}
-                  to="/"
+                  to="/app"
                   sx={{
                     borderRadius: '20px',
                     px: 2,
-                    backgroundColor: isActive('/') ? 'rgba(255, 255, 255, 0.15)' : 'transparent'
+                    backgroundColor: isActive('/app') ? 'rgba(255, 255, 255, 0.15)' : 'transparent'
                   }}
-                  startIcon={<HomeIcon />}
+                  startIcon={<Home size={18} />}
                 >
                   Dashboard
                 </Button>
@@ -123,7 +131,7 @@ const Navbar: React.FC = () => {
                         px: 2,
                         backgroundColor: isActive('/history') ? 'rgba(255, 255, 255, 0.15)' : 'transparent'
                       }}
-                      startIcon={<HistoryIcon />}
+                      startIcon={<History size={18} />}
                     >
                       History
                     </Button>
@@ -137,7 +145,7 @@ const Navbar: React.FC = () => {
                         px: 2,
                         backgroundColor: isActive('/swap') ? 'rgba(255, 255, 255, 0.15)' : 'transparent'
                       }}
-                      startIcon={<SwapHorizIcon />}
+                      startIcon={<ArrowLeftRight size={18} />}
                     >
                       Swap
                     </Button>
@@ -174,7 +182,7 @@ const Navbar: React.FC = () => {
                     px: { xs: 1, sm: 2 },
                     fontSize: { xs: '0.75rem', sm: '0.875rem' }
                   }}
-                  startIcon={!isMobile ? <LogoutIcon /> : undefined}
+                  startIcon={!isMobile ? <LogOut size={18} /> : undefined}
                 >
                   {isMobile ? 'Exit' : 'Disconnect'}
                 </Button>
@@ -188,7 +196,7 @@ const Navbar: React.FC = () => {
                     px: { xs: 1, sm: 2 },
                     fontSize: { xs: '0.75rem', sm: '0.875rem' }
                   }}
-                  startIcon={!isMobile ? <AccountBalanceWalletIcon /> : undefined}
+                  startIcon={!isMobile ? <Wallet size={18} /> : undefined}
                 >
                   {isMobile ? 'Connect' : 'Connect Wallet'}
                 </Button>
@@ -230,9 +238,9 @@ const Navbar: React.FC = () => {
           >
             <BottomNavigationAction
               label="Dashboard"
-              value="/"
-              icon={<HomeIcon sx={{ fontSize: 18 }} />}
-              onClick={() => navigate('/')}
+              value="/app"
+              icon={<Home size={18} />}
+              onClick={() => navigate('/app')}
             />
             {/* <BottomNavigationAction
               label="New"
@@ -243,13 +251,13 @@ const Navbar: React.FC = () => {
             <BottomNavigationAction
               label="History"
               value="/history"
-              icon={<HistoryIcon sx={{ fontSize: 18 }} />}
+              icon={<History size={18} />}
               onClick={() => navigate('/history')}
             />
             <BottomNavigationAction
               label="Swap"
               value="/swap"
-              icon={<SwapHorizIcon sx={{ fontSize: 18 }} />}
+              icon={<ArrowLeftRight size={18} />}
               onClick={() => navigate('/swap')}
             />
           </BottomNavigation>

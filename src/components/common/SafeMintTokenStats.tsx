@@ -10,13 +10,13 @@ import {
   Divider,
   IconButton
 } from '@mui/material';
-import { 
-  TrendingUp as TrendingUpIcon,
-  AccountBalance as AccountBalanceIcon,
-  Token as TokenIcon,
-  Refresh as RefreshIcon,
-  Schedule as ScheduleIcon
-} from '@mui/icons-material';
+import {
+  TrendingUp,
+  Building2,
+  Coins,
+  RefreshCw,
+  Clock
+} from 'lucide-react';
 import { formatEther } from 'viem';
 import safeMintTokenService, { SafeMintTokenInfo } from '../../services/safeMintTokenService';
 
@@ -106,7 +106,7 @@ const SafeMintTokenStats: React.FC<SafeMintTokenStatsProps> = ({
           </Alert>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <IconButton onClick={handleRefresh} disabled={loading}>
-              <RefreshIcon />
+              <RefreshCw size={20} />
             </IconButton>
           </Box>
         </CardContent>
@@ -164,12 +164,14 @@ const SafeMintTokenStats: React.FC<SafeMintTokenStatsProps> = ({
           height: '100%',
           justifyContent: 'center'
         }}>
-          <AccountBalanceIcon sx={{
-            fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-            color: '#FFA000',
-            mb: 1,
-            filter: 'drop-shadow(0 2px 4px rgba(255, 160, 0, 0.3))'
-          }} />
+          <Building2
+            size={48}
+            style={{
+              color: '#FFA000',
+              marginBottom: 8,
+              filter: 'drop-shadow(0 2px 4px rgba(255, 160, 0, 0.3))'
+            }}
+          />
           <Typography
             variant="h4"
             sx={{
@@ -233,12 +235,14 @@ const SafeMintTokenStats: React.FC<SafeMintTokenStatsProps> = ({
           height: '100%',
           justifyContent: 'center'
         }}>
-          <TokenIcon sx={{
-            fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-            color: '#FFA000',
-            mb: 1,
-            filter: 'drop-shadow(0 2px 4px rgba(255, 160, 0, 0.3))'
-          }} />
+          <Coins
+            size={48}
+            style={{
+              color: '#FFA000',
+              marginBottom: 8,
+              filter: 'drop-shadow(0 2px 4px rgba(255, 160, 0, 0.3))'
+            }}
+          />
           <Typography
             variant="h4"
             sx={{
@@ -302,12 +306,14 @@ const SafeMintTokenStats: React.FC<SafeMintTokenStatsProps> = ({
           height: '100%',
           justifyContent: 'center'
         }}>
-          <TrendingUpIcon sx={{
-            fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-            color: '#FFA000',
-            mb: 1,
-            filter: 'drop-shadow(0 2px 4px rgba(255, 160, 0, 0.3))'
-          }} />
+          <TrendingUp
+            size={48}
+            style={{
+              color: '#FFA000',
+              marginBottom: 8,
+              filter: 'drop-shadow(0 2px 4px rgba(255, 160, 0, 0.3))'
+            }}
+          />
           <Typography
             variant="h4"
             sx={{
@@ -371,13 +377,15 @@ const SafeMintTokenStats: React.FC<SafeMintTokenStatsProps> = ({
           height: '100%',
           justifyContent: 'center'
         }}>
-          <TrendingUpIcon sx={{
-            fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-            color: '#FFA000',
-            mb: 1,
-            filter: 'drop-shadow(0 2px 4px rgba(255, 160, 0, 0.3))',
-            transform: 'rotate(45deg)'
-          }} />
+          <TrendingUp
+            size={48}
+            style={{
+              color: '#FFA000',
+              marginBottom: 8,
+              filter: 'drop-shadow(0 2px 4px rgba(255, 160, 0, 0.3))',
+              transform: 'rotate(45deg)'
+            }}
+          />
           <Typography
             variant="h4"
             sx={{

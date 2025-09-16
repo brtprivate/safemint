@@ -30,20 +30,25 @@ import { stakingInteractions } from '../services/selfmintStakingService';
 import { formatUnits } from 'viem';
 import { formatCurrency, formatDate, formatNumber, formatTimeAgo } from '../utils/formatters';
 
-// Icons
-import HistoryIcon from '@mui/icons-material/History';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import PeopleIcon from '@mui/icons-material/People';
-import GroupsIcon from '@mui/icons-material/Groups';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-import LaunchIcon from '@mui/icons-material/Launch';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
-import PendingIcon from '@mui/icons-material/Pending';
+// Lucide React icons
+import {
+  Clock,
+  Wallet,
+  Users,
+  Users2,
+  DollarSign,
+  RefreshCw,
+  TrendingUp,
+  TrendingDown,
+  ExternalLink,
+  Copy,
+  CheckCircle,
+  X,
+  Clock3,
+  BarChart,
+  Crown,
+  Building2
+} from 'lucide-react';
 // import CancelIcon from '@mui/icons-material/Cancel';
 
 function TabPanel({ children, value, index, ...other }) {
@@ -127,7 +132,7 @@ const HistoryPage = () => {
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box>
           <Typography variant="h4" gutterBottom sx={{ color: 'primary.main', fontWeight: 'bold' }}>
-            <HistoryIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+            <ScheduleIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
             Transaction History
           </Typography>
           <Typography variant="body1" color="text.secondary">
@@ -136,7 +141,7 @@ const HistoryPage = () => {
         </Box>
         <Button
           variant="outlined"
-          startIcon={<RefreshIcon />}
+          startIcon={<RefreshCw size={18} />}
           onClick={fetchHistoryData}
           disabled={loading}
           sx={{
@@ -173,7 +178,7 @@ const HistoryPage = () => {
                       {historyData.stakeHistory?.length || 0}
                     </Typography>
                   </Box>
-                  <AccountBalanceWalletIcon sx={{ fontSize: 40, opacity: 0.8 }} />
+                  <WalletIcon sx={{ fontSize: 40, opacity: 0.8 }} />
                 </Box>
               </CardContent>
             </Card>
@@ -246,27 +251,27 @@ const HistoryPage = () => {
         >
           <Tab 
             label="Deposits" 
-            icon={<TrendingUpIcon />} 
+            icon={<Clock size={18} />}
             iconPosition="start"
           />
           <Tab 
             label="Withdrawals" 
-            icon={<TrendingDownIcon />} 
+            icon={<TrendingDown size={18} />}
             iconPosition="start"
           />
           <Tab 
             label="Direct Team" 
-            icon={<PeopleIcon />} 
+            icon={<Users size={18} />}
             iconPosition="start"
           />
           <Tab 
             label="Team Overview" 
-            icon={<GroupsIcon />} 
+            icon={<Users2 size={18} />}
             iconPosition="start"
           />
           <Tab
             label="Earnings"
-            icon={<MonetizationOnIcon />}
+            icon={<DollarSign size={18} />}
             iconPosition="start"
           />
         </Tabs>
@@ -506,7 +511,7 @@ const DepositHistory = ({ historyData }) => {
                             label={deposit.isComplete ? "Completed" : "Active"}
                             color={deposit.isComplete ? "success" : "primary"}
                             size="small"
-                            icon={deposit.isComplete ? <CheckCircleIcon /> : <PendingIcon />}
+                            icon={deposit.isComplete ? <CheckCircle size={16} /> : <Clock size={16} />}
                           />
                           <Chip
                             label={isMature ? "Mature" : "Growing"}
@@ -542,7 +547,7 @@ const DepositHistory = ({ historyData }) => {
                 }) : (
                   <TableRow>
                     <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
-                      <AccountBalanceWalletIcon sx={{ fontSize: 48, color: 'grey.400', mb: 1 }} />
+                      <WalletIcon sx={{ fontSize: 48, color: 'grey.400', mb: 1 }} />
                       <Typography variant="h6" color="text.secondary">
                         No active deposits found
                       </Typography>
@@ -735,7 +740,7 @@ const WithdrawalHistory = ({ historyData }) => {
                             label="✅ Completed"
                             color="success"
                             size="small"
-                            icon={<CheckCircleIcon />}
+                            icon={<TrendingDown size={16} />}
                             sx={{ mt: 0.5, display: 'block', width: 'fit-content' }}
                           />
                         </Box>
@@ -997,7 +1002,7 @@ const DirectTeamHistory = ({ historyData }) => {
                         label={member.userStatus}
                         color={member.userStatus === 'Active' ? 'success' : member.userStatus === 'Inactive' ? 'error' : 'default'}
                         size="small"
-                        icon={member.userStatus === 'Active' ? <CheckCircleIcon /> : <CancelIcon />}
+                        icon={member.userStatus === 'Active' ? <CheckCircle size={16} /> : <Clock size={16} />}
                         sx={{ fontWeight: 'bold' }}
                       />
                     </TableCell>
@@ -1196,7 +1201,7 @@ const TeamOverview = ({ historyData }) => {
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
-                <AccountBalanceWalletIcon sx={{ mr: 1 }} />
+                <WalletIcon sx={{ mr: 1 }} />
                 Account Information
               </Typography>
 
@@ -1223,7 +1228,7 @@ const TeamOverview = ({ historyData }) => {
                     label={userInfo.joined ? "Verified" : "Pending"}
                     color={userInfo.joined ? "success" : "warning"}
                     size="small"
-                    icon={userInfo.joined ? <CheckCircleIcon /> : <PendingIcon />}
+                    icon={userInfo.joined ? <CheckCircle size={16} /> : <Clock size={16} />}
                   />
                 </Box>
 
@@ -1270,7 +1275,7 @@ const EarningsHistory = ({ historyData }) => {
     {
       type: 'Referral Earnings',
       amount: parseFloat(formatUnits(bonusInfo.referralGains || 0, 6)),
-      icon: <PeopleIcon />,
+      icon: <Users size={16} />,
       color: 'primary',
       description: 'Direct referral commissions',
       source: 'Direct Team',
@@ -1279,7 +1284,7 @@ const EarningsHistory = ({ historyData }) => {
     {
       type: 'Level Earnings',
       amount: parseFloat(formatUnits(bonusInfo.levelGains || 0, 6)),
-      icon: <TrendingUpIcon />,
+      icon: <BarChart size={16} />,
       color: 'secondary',
       description: 'Multi-level team commissions',
       source: 'Team Levels',
@@ -1288,7 +1293,7 @@ const EarningsHistory = ({ historyData }) => {
     {
       type: 'Growth Earnings',
       amount: parseFloat(formatUnits(bonusInfo.growthGains || 0, 6)),
-      icon: <MonetizationOnIcon />,
+      icon: <TrendingUp size={16} />,
       color: 'success',
       description: 'Investment growth rewards',
       source: 'Personal Stakes',
@@ -1297,7 +1302,7 @@ const EarningsHistory = ({ historyData }) => {
     {
       type: 'Team Growth Earnings',
       amount: parseFloat(formatUnits(bonusInfo.teamGrowthGains || 0, 6)),
-      icon: <GroupsIcon />,
+      icon: <Users2 size={16} />,
       color: 'info',
       description: 'Team performance bonuses',
       source: 'Team Performance',
@@ -1306,7 +1311,7 @@ const EarningsHistory = ({ historyData }) => {
     {
       type: 'Leader Earnings',
       amount: parseFloat(formatUnits(bonusInfo.leaderGains || 0, 6)),
-      icon: <TrendingUpIcon />,
+      icon: <Crown size={16} />,
       color: 'warning',
       description: 'Leadership achievement rewards',
       source: 'Leadership Rank',
@@ -1315,7 +1320,7 @@ const EarningsHistory = ({ historyData }) => {
     {
       type: 'Development Earnings',
       amount: parseFloat(formatUnits(bonusInfo.developmentGains || 0, 6)),
-      icon: <AccountBalanceWalletIcon />,
+      icon: <Building2 size={16} />,
       color: 'error',
       description: 'Platform development rewards',
       source: 'Development Fund',

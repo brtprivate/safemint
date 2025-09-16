@@ -75,11 +75,14 @@ const Logo: React.FC<LogoProps> = ({
           textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
           // Add enhanced styling for navbar fallback
           ...(size === 'navbar' && {
-            filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2))',
+            filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2)) drop-shadow(0 0 12px rgba(255, 160, 0, 0.3))',
             transition: 'all 0.3s ease',
+            border: '3px solid rgba(255, 255, 255, 0.4)',
+            borderRadius: '12px',
             '&:hover': {
               transform: 'scale(1.05)',
-              filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3))',
+              filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3)) drop-shadow(0 0 20px rgba(255, 160, 0, 0.5))',
+              border: '3px solid rgba(255, 255, 255, 0.6)',
             }
           }),
           ...sx
@@ -104,11 +107,14 @@ const Logo: React.FC<LogoProps> = ({
         objectFit: LOGO_CONFIG.styles.objectFit,
         // Add enhanced styling for navbar
         ...(size === 'navbar' && {
-          filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2))',
+          filter: 'drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2)) drop-shadow(0 0 12px rgba(255, 160, 0, 0.3))',
           transition: 'all 0.3s ease',
+          border: '2px solid rgba(255, 255, 255, 0.2)',
+          borderRadius: '12px',
           '&:hover': {
             transform: 'scale(1.05)',
-            filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3))',
+            filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3)) drop-shadow(0 0 20px rgba(255, 160, 0, 0.5))',
+            border: '2px solid rgba(255, 255, 255, 0.4)',
           }
         }),
         ...sx

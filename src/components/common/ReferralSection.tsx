@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Chip, Alert } from '@mui/material';
-import { ContentCopy, Share, Link as LinkIcon } from '@mui/icons-material';
+import { Copy, Share, Link } from 'lucide-react';
 import { generateReferralLink, generateReferralMessage } from '../../utils/urlUtils';
 
 interface ReferralSectionProps {
@@ -95,7 +95,7 @@ const ReferralSection: React.FC<ReferralSectionProps> = ({ account, onCopy, onSh
             endAdornment: (
               <Button
                 size="small"
-                startIcon={<ContentCopy />}
+                startIcon={<Copy size={16} />}
                 onClick={handleCopyCode}
                 disabled={!account}
                 sx={{ ml: 1 }}
@@ -121,7 +121,7 @@ const ReferralSection: React.FC<ReferralSectionProps> = ({ account, onCopy, onSh
             endAdornment: (
               <Button
                 size="small"
-                startIcon={<LinkIcon />}
+                startIcon={<Link size={16} />}
                 onClick={handleCopyLink}
                 disabled={!account}
                 sx={{ ml: 1 }}
@@ -138,7 +138,7 @@ const ReferralSection: React.FC<ReferralSectionProps> = ({ account, onCopy, onSh
       <Box sx={{ display: 'flex', gap: 1 }}>
         <Button
           variant="contained"
-          startIcon={<Share />}
+          startIcon={<Share size={16} />}
           onClick={handleShare}
           disabled={!account}
           sx={{ flex: 1, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}

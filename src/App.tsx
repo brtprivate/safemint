@@ -20,8 +20,10 @@ import Navbar from './components/Navbar';
 import MLMDashboard from './pages/MLMDashboard';
 import Dashboard from './pages/Dashboard';
 import HistoryPage from './pages/HistoryPage';
-import SwapPage from './pages/SwapPage';
+import SwapPage from './pages/SwapPage';      
+import LandingPage from './pages/LandingPage';
 import TokenTest from './pages/TokenTest';
+
 
 // Create a colorful theme
 const theme = createTheme({
@@ -136,7 +138,8 @@ function App() {
                     <Navbar />
                     <Routes>
                       <Route path="/dashboard" element={<MLMDashboard />} />
-                      <Route path="/" element={<Dashboard />} />
+                      <Route path="/app" element={<Dashboard />} />
+                      <Route path="/" element={<LandingPage />} />
                       <Route path="/history" element={<HistoryPage />} />
                       <Route path="/swap" element={<SwapPage />} />
                       <Route path="/token-test" element={<TokenTest />} />

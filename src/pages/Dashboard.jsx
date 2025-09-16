@@ -32,20 +32,22 @@ import SafeMintTokenStats from '../components/common/SafeMintTokenStats';
 // Import utility functions
 import { formatCurrency, formatNumber, formatDate } from '../utils/formatters';
 
-// Icons
-import PeopleIcon from '@mui/icons-material/People';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import DiamondIcon from '@mui/icons-material/Diamond';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import TimelineIcon from '@mui/icons-material/Timeline';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import GroupWorkIcon from '@mui/icons-material/GroupWork';
-import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
-import BatteryChargingFullIcon from '@mui/icons-material/BatteryChargingFull';
+// Lucide React icons
+import {
+  Users,
+  TrendingUp,
+  Wallet,
+  DollarSign,
+  Star,
+  Trophy,
+  BarChart3,
+  RefreshCw,
+  Building2,
+  Users2,
+  Fuel,
+  CheckCircle,
+  Battery
+} from 'lucide-react';
 
 // Helper function to safely stringify objects with BigInt values
 const safeStringify = (obj, space = 2) => {
@@ -868,7 +870,7 @@ const Dashboard = () => {
 
           <Button
             variant="outlined"
-            startIcon={<RefreshIcon />}
+            startIcon={<RefreshCw size={18} />}
             onClick={fetchMlmData}
             disabled={isLoading}
             size={isMobile ? 'small' : 'medium'}
@@ -1004,11 +1006,11 @@ const Dashboard = () => {
             }}
           >
             {[
-              { icon: <PeopleIcon />, title: 'My Direct', value: formatNumber(mlmData.directTeam), subtitle: 'Direct Referrals', color: 'primary.main' },
-              { icon: <DiamondIcon />, title: 'Strong Teams', value: formatNumber(mlmData.strongTeam), subtitle: 'Active Strong Teams', color: 'secondary.main' },
-              { icon: <PeopleIcon />, title: 'Other Teams', value: formatNumber(mlmData.otherTeams), subtitle: 'Additional Team Members', color: 'info.main' },
-              { icon: <TimelineIcon />, title: 'Levels', value: formatNumber(mlmData.levels), subtitle: 'Achievement Levels', color: 'warning.main' },
-              { icon: <AssignmentTurnedInIcon />, title: 'Active Orders', value: formatNumber(mlmData.activeOrders), subtitle: 'Current Active Orders', color: 'success.main' },
+              { icon: <Users size={24} />, title: 'My Direct', value: formatNumber(mlmData.directTeam), subtitle: 'Direct Referrals', color: 'primary.main' },
+              { icon: <Star size={24} />, title: 'Strong Teams', value: formatNumber(mlmData.strongTeam), subtitle: 'Active Strong Teams', color: 'secondary.main' },
+              { icon: <Users size={24} />, title: 'Other Teams', value: formatNumber(mlmData.otherTeams), subtitle: 'Additional Team Members', color: 'info.main' },
+              { icon: <BarChart3 size={24} />, title: 'Levels', value: formatNumber(mlmData.levels), subtitle: 'Achievement Levels', color: 'warning.main' },
+              { icon: <CheckCircle size={24} />, title: 'Active Orders', value: formatNumber(mlmData.activeOrders), subtitle: 'Current Active Orders', color: 'success.main' },
             ].map((card, index) => (
               <Grid
                 item
@@ -1074,15 +1076,15 @@ const Dashboard = () => {
             }}
           >
             {[
-              { icon: <TrendingUpIcon />, title: 'Total In', value: formatCurrency(mlmData.totalIn), subtitle: 'Total Investments', color: 'success.main' },
-              { icon: <MonetizationOnIcon />, title: 'Total Out', value: formatCurrency(mlmData.totalOut), subtitle: 'Total Withdrawals', color: 'info.main' },
-              { icon: <AccountBalanceWalletIcon />, title: 'Active Portfolio', value: formatCurrency(mlmData.activePortfolio), subtitle: 'Current Investment Value', color: 'primary.main' },
-              { icon: <EmojiEventsIcon />, title: 'Team Growth Wallet', value: formatCurrency(mlmData.teamGrowthWallet), subtitle: 'Growth Wallet Balance', color: 'secondary.main' },
-              { icon: <AccountBalanceIcon />, title: 'Total Withdrawn', value: formatCurrency(mlmData.totalWithdrawn), subtitle: 'Total Amount Withdrawn', color: 'error.main' },
-              { icon: <GroupWorkIcon />, title: 'Team Growth Laps', value: formatCurrency(mlmData.teamGrowthLaps), subtitle: 'Team Growth Cycles', color: 'warning.main' },
-              { icon: <AccountBalanceWalletIcon />, title: 'SafeMint Buy Potential', value: formatCurrency(mlmData.inOutBuy), subtitle: 'Buy Potential Value', color: 'info.main' },
-              { icon: <LocalGasStationIcon />, title: 'Growth Fuels', value: formatCurrency(mlmData.growthFuels), subtitle: 'Team Growth Potential', color: 'success.main' },
-              { icon: <BatteryChargingFullIcon />, title: 'Total Fuels', value: formatCurrency(mlmData.totalFuels), subtitle: 'Combined Fuel Resources', color: 'primary.main' },
+              { icon: <TrendingUp size={24} />, title: 'Total In', value: formatCurrency(mlmData.totalIn), subtitle: 'Total Investments', color: 'success.main' },
+              { icon: <DollarSign size={24} />, title: 'Total Out', value: formatCurrency(mlmData.totalOut), subtitle: 'Total Withdrawals', color: 'info.main' },
+              { icon: <Wallet size={24} />, title: 'Active Portfolio', value: formatCurrency(mlmData.activePortfolio), subtitle: 'Current Investment Value', color: 'primary.main' },
+              { icon: <Trophy size={24} />, title: 'Team Growth Wallet', value: formatCurrency(mlmData.teamGrowthWallet), subtitle: 'Growth Wallet Balance', color: 'secondary.main' },
+              { icon: <Building2 size={24} />, title: 'Total Withdrawn', value: formatCurrency(mlmData.totalWithdrawn), subtitle: 'Total Amount Withdrawn', color: 'error.main' },
+              { icon: <Users2 size={24} />, title: 'Team Growth Laps', value: formatCurrency(mlmData.teamGrowthLaps), subtitle: 'Team Growth Cycles', color: 'warning.main' },
+              { icon: <Wallet size={24} />, title: 'SafeMint Buy Potential', value: formatCurrency(mlmData.inOutBuy), subtitle: 'Buy Potential Value', color: 'info.main' },
+              { icon: <Fuel size={24} />, title: 'Growth Fuels', value: formatCurrency(mlmData.growthFuels), subtitle: 'Team Growth Potential', color: 'success.main' },
+              { icon: <Battery size={24} />, title: 'Total Fuels', value: formatCurrency(mlmData.totalFuels), subtitle: 'Combined Fuel Resources', color: 'primary.main' },
             ].map((card, index) => (
               <Grid
                 item
@@ -1148,12 +1150,12 @@ const Dashboard = () => {
             }}
           >
             {[
-              { icon: <PeopleIcon />, title: 'Referral Earn', value: formatCurrency(mlmData.referralEarn), subtitle: 'From Direct Referrals', color: 'primary.main' },
-              { icon: <TimelineIcon />, title: 'Level Earn', value: formatCurrency(mlmData.levelEarn), subtitle: 'From Team Levels', color: 'info.main' },
-              { icon: <TrendingUpIcon />, title: 'Growth Earn', value: formatCurrency(mlmData.growthEarn), subtitle: 'From Growth System', color: 'success.main' },
-              { icon: <EmojiEventsIcon />, title: 'Leader Earn', value: formatCurrency(mlmData.leaderEarn), subtitle: 'From Leadership', color: 'warning.main' },
-              { icon: <TimelineIcon />, title: 'Development Earn', value: formatCurrency(mlmData.developmentEarn), subtitle: 'From Development', color: 'info.main' },
-              { icon: <PeopleIcon />, title: 'Team Growth', value: formatCurrency(mlmData.teamGrowthWallet), subtitle: 'Team Growth Wallet', color: 'secondary.main' },
+              { icon: <Users size={24} />, title: 'Referral Earn', value: formatCurrency(mlmData.referralEarn), subtitle: 'From Direct Referrals', color: 'primary.main' },
+              { icon: <BarChart3 size={24} />, title: 'Level Earn', value: formatCurrency(mlmData.levelEarn), subtitle: 'From Team Levels', color: 'info.main' },
+              { icon: <TrendingUp size={24} />, title: 'Growth Earn', value: formatCurrency(mlmData.growthEarn), subtitle: 'From Growth System', color: 'success.main' },
+              { icon: <Trophy size={24} />, title: 'Leader Earn', value: formatCurrency(mlmData.leaderEarn), subtitle: 'From Leadership', color: 'warning.main' },
+              { icon: <BarChart3 size={24} />, title: 'Development Earn', value: formatCurrency(mlmData.developmentEarn), subtitle: 'From Development', color: 'info.main' },
+              { icon: <Users size={24} />, title: 'Team Growth', value: formatCurrency(mlmData.teamGrowthWallet), subtitle: 'Team Growth Wallet', color: 'secondary.main' },
             ].map((card, index) => (
               <Grid
                 item

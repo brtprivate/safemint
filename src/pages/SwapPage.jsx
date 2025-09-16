@@ -20,9 +20,8 @@ import { formatUnits, parseUnits, formatEther } from 'viem';
 import { formatNumber } from '../utils/formatters';
 import safeMintTokenService from '../services/safeMintTokenService';
 
-// Icons
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+// Lucide React icons
+import { TrendingDown, TrendingUp } from 'lucide-react';
 
 const UnstakePage = () => {
   const wallet = useWallet();
@@ -278,7 +277,7 @@ const UnstakePage = () => {
       {/* Header */}
       <Box sx={{ mb: 4, textAlign: 'center' }}>
         <Typography variant="h4" gutterBottom sx={{ color: 'primary.main', fontWeight: 'bold' }}>
-          <TrendingDownIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+          <TrendingDown size={24} style={{ marginRight: 8, verticalAlign: 'middle' }} />
           Unstake SafeMint Tokens
         </Typography>
         <Typography variant="body1" color="text.secondary">
@@ -426,7 +425,7 @@ const UnstakePage = () => {
             size="large"
             onClick={handleUnstake}
             disabled={loading || !tokenAmount || parseFloat(tokenAmount) <= 0}
-            startIcon={loading ? <CircularProgress size={20} /> : <TrendingDownIcon />}
+            startIcon={loading ? <CircularProgress size={20} /> : <TrendingDown size={18} />}
             sx={{
               py: 1.5,
               fontSize: '1.1rem',

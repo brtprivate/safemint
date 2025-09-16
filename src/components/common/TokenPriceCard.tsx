@@ -11,12 +11,12 @@ import {
   IconButton
 } from '@mui/material';
 import {
-  TrendingUp as TrendingUpIcon,
-  TrendingDown as TrendingDownIcon,
-  Refresh as RefreshIcon,
-  Info as InfoIcon,
-  Token as TokenIcon
-} from '@mui/icons-material';
+  TrendingUp,
+  TrendingDown,
+  RefreshCw,
+  Info,
+  Coins
+} from 'lucide-react';
 import { formatEther } from 'viem';
 import safeMintTokenService, { SafeMintTokenInfo } from '../../services/safeMintTokenService';
 
@@ -99,8 +99,8 @@ const TokenPriceCard: React.FC<TokenPriceCardProps> = ({
 
   const getTrendIcon = () => {
     const trend = getRateTrend();
-    if (trend === 'up') return <TrendingUpIcon sx={{ color: 'success.main', fontSize: '1rem' }} />;
-    if (trend === 'down') return <TrendingDownIcon sx={{ color: 'error.main', fontSize: '1rem' }} />;
+    if (trend === 'up') return <TrendingUp size={16} style={{ color: '#4caf50' }} />;
+    if (trend === 'down') return <TrendingDown size={16} style={{ color: '#f44336' }} />;
     return null;
   };
 
@@ -132,7 +132,7 @@ const TokenPriceCard: React.FC<TokenPriceCardProps> = ({
           </Alert>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <IconButton onClick={handleRefresh} disabled={loading}>
-              <RefreshIcon />
+              <RefreshCw size={20} />
             </IconButton>
           </Box>
         </CardContent>
@@ -181,10 +181,12 @@ const TokenPriceCard: React.FC<TokenPriceCardProps> = ({
           mb: { xs: 1, sm: 1.5 }
         }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1 } }}>
-            <TokenIcon sx={{
-              color: 'primary.main',
-              fontSize: { xs: '1.2rem', sm: '1.5rem', md: '1.8rem' }
-            }} />
+            <Coins
+              size={24}
+              style={{
+                color: '#1976d2'
+              }}
+            />
             {getTrendIcon()}
           </Box>
           <IconButton
@@ -199,7 +201,7 @@ const TokenPriceCard: React.FC<TokenPriceCardProps> = ({
               }
             }}
           >
-            <RefreshIcon />
+            <RefreshCw size={16} />
           </IconButton>
         </Box>
 

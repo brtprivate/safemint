@@ -36,10 +36,11 @@ const Navbar: React.FC = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const location = useLocation();
 
-  // Don't render navbar on landing page
-  if (location.pathname === '/') {
-    return null;
-  }
+  // Don't render navbar on landing page (now served from server root)
+  // Since React app is now served at /app, always show navbar
+  // if (location.pathname === '/') {
+  //   return null;
+  // }
 
   // Check if a route is active
   const isActive = (path: string) => {
@@ -63,7 +64,7 @@ const Navbar: React.FC = () => {
             <Typography
               variant="h6"
               component={RouterLink}
-              to="/app"
+              to="/"
               sx={{
                 flexGrow: 1,
                 fontWeight: 700,
@@ -95,11 +96,11 @@ const Navbar: React.FC = () => {
                 <Button
                   color="inherit"
                   component={RouterLink}
-                  to="/app"
+                  to="/"
                   sx={{
                     borderRadius: '20px',
                     px: 2,
-                    backgroundColor: isActive('/app') ? 'rgba(255, 255, 255, 0.15)' : 'transparent'
+                    backgroundColor: isActive('/') ? 'rgba(255, 255, 255, 0.15)' : 'transparent'
                   }}
                   startIcon={<Home size={18} />}
                 >
@@ -238,9 +239,9 @@ const Navbar: React.FC = () => {
           >
             <BottomNavigationAction
               label="Dashboard"
-              value="/app"
+              value="/"
               icon={<Home size={18} />}
-              onClick={() => navigate('/app')}
+              onClick={() => navigate('/')}
             />
             {/* <BottomNavigationAction
               label="New"

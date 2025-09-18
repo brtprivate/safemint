@@ -120,18 +120,14 @@ const LandingPage = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Simplified navigation items for cleaner navbar
   const navItems = [
-    { label: 'Home', icon: <Home size={18} />, href: '#hero' },
-    { label: 'Features', icon: <Sparkles size={18} />, href: '#features' },
-    { label: 'About', icon: <Info size={18} />, href: '#about' },
-    { label: 'Technology', icon: <Code size={18} />, href: '#technology' },
-    { label: 'Opportunity', icon: <TrendingUp size={18} />, href: '#opportunity' },
-    { label: 'Roadmap', icon: <BarChart3 size={18} />, href: '#roadmap' },
-    { label: 'Team', icon: <Users size={18} />, href: '#team' },
-    { label: 'Security', icon: <Shield size={18} />, href: '#security' },
-    { label: 'Tokenomics', icon: <Coins size={18} />, href: '#tokenomics' },
-    { label: 'FAQ', icon: <MessageCircle size={18} />, href: '#faq' },
-    { label: 'Contact', icon: <Globe size={18} />, href: '#contact' },
+    { label: 'Home', href: '#hero' },
+    { label: 'Features', href: '#features' },
+    { label: 'About', href: '#about' },
+    { label: 'Security', href: '#security' },
+    { label: 'Tokenomics', href: '#tokenomics' },
+    { label: 'FAQ', href: '#faq' },
   ];
 
   const scrollToSection = (href) => {
@@ -176,97 +172,93 @@ const LandingPage = () => {
         }}
       />
 
-      {/* Enhanced Navigation */}
+      {/* Clean Enhanced Navigation with Orange Gradient */}
       <AppBar
         position="fixed"
         sx={{
           background: scrolled
-            ? 'rgba(10, 10, 10, 0.95)'
-            : 'rgba(10, 10, 10, 0.8)',
+            ? 'linear-gradient(90deg, rgba(255, 160, 0, 0.95), rgba(255, 143, 0, 0.95))'
+            : 'linear-gradient(90deg, rgba(255, 160, 0, 0.9), rgba(255, 143, 0, 0.9))',
           backdropFilter: 'blur(20px)',
-          borderBottom: `1px solid ${scrolled ? 'rgba(0, 212, 255, 0.3)' : 'rgba(0, 212, 255, 0.1)'}`,
-          boxShadow: scrolled ? '0 8px 32px rgba(0, 0, 0, 0.3)' : 'none',
+          borderBottom: `1px solid ${scrolled ? 'rgba(255, 160, 0, 0.4)' : 'rgba(255, 160, 0, 0.2)'}`,
+          boxShadow: scrolled ? '0 8px 32px rgba(255, 160, 0, 0.3)' : '0 4px 20px rgba(255, 160, 0, 0.2)',
           transition: 'all 0.3s ease',
           zIndex: 1100,
         }}
       >
-        <Toolbar sx={{ justifyContent: 'space-between', py: 1 }}>
-          {/* Logo */}
+        <Toolbar sx={{ justifyContent: 'space-between', py: 1.5 }}>
+          {/* Clean Logo */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              {/* Real SafeMint Logo */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
+              {/* Enhanced SafeMint Logo with Orange Theme */}
               <Box
                 sx={{
-                  width: 55,
-                  height: 55,
+                  width: 50,
+                  height: 50,
                   borderRadius: 3,
-                  background: 'linear-gradient(135deg, #00d4ff, #0099cc, #00ff88)',
+                  background: 'linear-gradient(135deg, #FFD700, #FFC107, #FF8F00)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: '0 8px 25px rgba(0, 212, 255, 0.4)',
+                  boxShadow: '0 6px 20px rgba(255, 215, 0, 0.4)',
                   position: 'relative',
+                  border: '2px solid rgba(255, 255, 255, 0.3)',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                    boxShadow: '0 8px 25px rgba(255, 215, 0, 0.6)',
+                  },
                   '&::before': {
                     content: '""',
                     position: 'absolute',
                     inset: -2,
                     borderRadius: 3,
-                    background: 'linear-gradient(135deg, #00d4ff, #0099cc, #00ff88)',
+                    background: 'linear-gradient(135deg, #FFD700, #FFC107, #FF8F00)',
                     zIndex: -1,
-                    filter: 'blur(10px)',
-                    opacity: 0.6,
+                    filter: 'blur(8px)',
+                    opacity: 0.5,
                   }
                 }}
               >
-                {/* SafeMint Logo Design */}
+                {/* Clean S Letter Design */}
                 <Box
                   sx={{
-                    width: 35,
-                    height: 35,
+                    fontSize: '22px',
+                    fontWeight: 900,
+                    color: '#000',
+                    fontFamily: '"Inter", "Roboto", sans-serif',
                     position: 'relative',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    '&::after': {
+                      content: '"$"',
+                      position: 'absolute',
+                      top: '-2px',
+                      right: '-6px',
+                      fontSize: '10px',
+                      fontWeight: 700,
+                      color: '#000',
+                    }
                   }}
                 >
-                  {/* S Letter with Mint Symbol */}
-                  <Box
-                    sx={{
-                      fontSize: '24px',
-                      fontWeight: 900,
-                      color: '#000',
-                      fontFamily: 'Arial, sans-serif',
-                      position: 'relative',
-                      '&::after': {
-                        content: '"$"',
-                        position: 'absolute',
-                        top: '-2px',
-                        right: '-8px',
-                        fontSize: '12px',
-                        fontWeight: 700,
-                        color: '#000',
-                      }
-                    }}
-                  >
-                    S
-                  </Box>
+                  S
                 </Box>
               </Box>
               <Typography
                 variant="h5"
                 sx={{
-                  fontWeight: 900,
-                  background: 'linear-gradient(135deg, #00d4ff, #0099cc, #00ff88)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  color: 'transparent',
-                  fontSize: { xs: '1.6rem', md: '2rem' },
-                  letterSpacing: '-0.02em',
+                  fontWeight: 800,
+                  color: '#ffffff',
+                  fontSize: { xs: '1.5rem', md: '1.8rem' },
+                  letterSpacing: '-0.01em',
                   fontFamily: '"Inter", "Roboto", sans-serif',
+                  textShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    textShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+                  }
                 }}
               >
                 SafeMint
@@ -330,16 +322,16 @@ const LandingPage = () => {
                     variant="outlined"
                     onClick={() => scrollToSection('#about')}
                     sx={{
-                      borderColor: 'rgba(0, 212, 255, 0.5)',
-                      color: '#00d4ff',
+                      borderColor: 'rgba(255, 255, 255, 0.6)',
+                      color: 'white',
                       px: 3,
-                      py: 1,
+                      py: 1.2,
                       borderRadius: 25,
-                      fontWeight: 500,
+                      fontWeight: 600,
                       transition: 'all 0.3s ease',
                       '&:hover': {
-                        borderColor: '#00d4ff',
-                        backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                        borderColor: 'white',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
                         transform: 'translateY(-2px)',
                       },
                     }}
@@ -350,19 +342,19 @@ const LandingPage = () => {
                     startIcon={<Rocket size={18} />}
                     onClick={handleGetStarted}
                     sx={{
-                      background: 'linear-gradient(135deg, #00d4ff, #0099cc)',
-                      color: 'white',
+                      background: 'linear-gradient(135deg, #FFD700, #FFC107)',
+                      color: '#000',
                       px: 4,
                       py: 1.2,
                       borderRadius: 25,
-                      fontWeight: 600,
+                      fontWeight: 700,
                       fontSize: '0.95rem',
                       transition: 'all 0.3s ease',
-                      boxShadow: '0 4px 15px rgba(0, 212, 255, 0.3)',
+                      boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
                       '&:hover': {
                         transform: 'translateY(-3px)',
-                        boxShadow: '0 8px 30px rgba(0, 212, 255, 0.5)',
-                        background: 'linear-gradient(135deg, #00e5ff, #00b8d4)',
+                        boxShadow: '0 8px 30px rgba(255, 215, 0, 0.6)',
+                        background: 'linear-gradient(135deg, #FFC107, #FF8F00)',
                       },
                     }}
                   >
@@ -376,12 +368,12 @@ const LandingPage = () => {
                 <IconButton
                   onClick={() => setMobileMenuOpen(true)}
                   sx={{
-                    color: '#00d4ff',
-                    background: 'rgba(0, 212, 255, 0.15)',
-                    border: '1px solid rgba(0, 212, 255, 0.3)',
+                    color: 'white',
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
                     borderRadius: 2,
                     '&:hover': {
-                      background: 'rgba(0, 212, 255, 0.25)',
+                      background: 'rgba(255, 255, 255, 0.25)',
                       transform: 'scale(1.05)',
                     }
                   }}
@@ -394,30 +386,35 @@ const LandingPage = () => {
         </Toolbar>
       </AppBar>
 
-      {/* Enhanced Mobile Drawer */}
+      {/* Enhanced Mobile Drawer with Orange Theme */}
       <Drawer
         anchor="right"
         open={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
         PaperProps={{
           sx: {
-            background: 'rgba(10, 10, 10, 0.95)',
+            background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(26, 26, 26, 0.95))',
             backdropFilter: 'blur(20px)',
             color: 'white',
             width: 320,
-            borderLeft: '1px solid rgba(0, 212, 255, 0.2)',
+            borderLeft: '2px solid rgba(255, 160, 0, 0.3)',
           }
         }}
       >
         <Box sx={{ p: 3 }}>
           {/* Header */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-            <Typography variant="h6" sx={{ fontWeight: 600, color: '#00d4ff' }}>
+            <Typography variant="h6" sx={{ fontWeight: 700, color: '#FFD700' }}>
               Navigation
             </Typography>
             <IconButton
               onClick={() => setMobileMenuOpen(false)}
-              sx={{ color: '#00d4ff' }}
+              sx={{
+                color: '#FFD700',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                }
+              }}
             >
               <X size={20} />
             </IconButton>
@@ -440,19 +437,19 @@ const LandingPage = () => {
                     mb: 1,
                     transition: 'all 0.3s ease',
                     background: activeSection === item.href.slice(1)
-                      ? 'rgba(0, 212, 255, 0.15)'
+                      ? 'rgba(255, 215, 0, 0.15)'
                       : 'transparent',
                     border: activeSection === item.href.slice(1)
-                      ? '1px solid rgba(0, 212, 255, 0.3)'
+                      ? '1px solid rgba(255, 215, 0, 0.3)'
                       : '1px solid transparent',
                     '&:hover': {
-                      backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                      backgroundColor: 'rgba(255, 215, 0, 0.1)',
                       transform: 'translateX(8px)',
-                      border: '1px solid rgba(0, 212, 255, 0.4)',
+                      border: '1px solid rgba(255, 215, 0, 0.4)',
                     }
                   }}
                 >
-                  <Box sx={{ mr: 2, color: '#00d4ff' }}>{item.icon}</Box>
+                  <Box sx={{ mr: 2, color: '#FFD700' }}>•</Box>
                   <ListItemText
                     primary={item.label}
                     sx={{
@@ -473,11 +470,11 @@ const LandingPage = () => {
               variant="outlined"
               onClick={() => scrollToSection('#about')}
               sx={{
-                borderColor: 'rgba(0, 212, 255, 0.5)',
-                color: '#00d4ff',
+                borderColor: 'rgba(255, 215, 0, 0.5)',
+                color: '#FFD700',
                 py: 1.5,
                 borderRadius: 25,
-                fontWeight: 500,
+                fontWeight: 600,
               }}
             >
               Learn More
@@ -487,12 +484,12 @@ const LandingPage = () => {
               startIcon={<Rocket size={18} />}
               onClick={handleGetStarted}
               sx={{
-                background: 'linear-gradient(135deg, #00d4ff, #0099cc)',
-                color: 'white',
+                background: 'linear-gradient(135deg, #FFD700, #FFC107)',
+                color: '#000',
                 py: 1.5,
                 borderRadius: 25,
-                fontWeight: 600,
-                boxShadow: '0 4px 15px rgba(0, 212, 255, 0.3)',
+                fontWeight: 700,
+                boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
               }}
             >
               Launch App
@@ -1079,12 +1076,12 @@ const LandingPage = () => {
         </Container>
       </Box>
 
-      {/* Enhanced About Section */}
+      {/* Enhanced About Section with Black & Golden Theme */}
       <Box
         id="about"
         sx={{
-          py: { xs: 10, md: 15 },
-          background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(26, 26, 46, 0.9) 50%, rgba(22, 33, 62, 0.8) 100%)',
+          py: { xs: 12, md: 18 },
+          background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #2d2d2d 50%, #1a1a1a 75%, #000000 100%)',
           position: 'relative',
           zIndex: 1,
           overflow: 'hidden',
@@ -1096,8 +1093,22 @@ const LandingPage = () => {
             right: 0,
             bottom: 0,
             background: `
-              radial-gradient(circle at 20% 20%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
-              radial-gradient(circle at 80% 80%, rgba(0, 255, 136, 0.08) 0%, transparent 50%)
+              radial-gradient(circle at 15% 25%, rgba(255, 215, 0, 0.15) 0%, transparent 40%),
+              radial-gradient(circle at 85% 75%, rgba(255, 193, 7, 0.12) 0%, transparent 45%),
+              radial-gradient(circle at 50% 50%, rgba(255, 235, 59, 0.08) 0%, transparent 60%)
+            `,
+            zIndex: -1,
+          },
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: `
+              linear-gradient(45deg, transparent 30%, rgba(255, 215, 0, 0.03) 50%, transparent 70%),
+              linear-gradient(-45deg, transparent 30%, rgba(255, 193, 7, 0.02) 50%, transparent 70%)
             `,
             zIndex: -1,
           }
@@ -1110,8 +1121,8 @@ const LandingPage = () => {
             transition={{ duration: 1 }}
             viewport={{ once: true }}
           >
-            {/* Enhanced Section Header */}
-            <Box sx={{ textAlign: 'center', mb: 12 }}>
+            {/* Enhanced Section Header with Golden Theme */}
+            <Box sx={{ textAlign: 'center', mb: 15 }}>
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
@@ -1119,17 +1130,26 @@ const LandingPage = () => {
                 viewport={{ once: true }}
               >
                 <Chip
-                  icon={<Info size={18} />}
-                  label="About Our Platform"
+                  icon={<Info size={20} />}
+                  label="🏆 About Our Revolutionary Platform"
                   sx={{
-                    mb: 4,
-                    background: 'rgba(0, 212, 255, 0.15)',
-                    color: '#00d4ff',
-                    border: '1px solid rgba(0, 212, 255, 0.3)',
-                    fontWeight: 600,
-                    fontSize: '1rem',
-                    px: 3,
-                    py: 1,
+                    mb: 6,
+                    background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 193, 7, 0.15))',
+                    color: '#FFD700',
+                    border: '2px solid rgba(255, 215, 0, 0.4)',
+                    fontWeight: 700,
+                    fontSize: '1.1rem',
+                    px: 4,
+                    py: 1.5,
+                    borderRadius: 50,
+                    boxShadow: '0 8px 32px rgba(255, 215, 0, 0.25)',
+                    backdropFilter: 'blur(10px)',
+                    '&:hover': {
+                      transform: 'scale(1.05)',
+                      boxShadow: '0 12px 40px rgba(255, 215, 0, 0.35)',
+                      border: '2px solid rgba(255, 215, 0, 0.6)',
+                    },
+                    transition: 'all 0.3s ease',
                   }}
                 />
               </motion.div>
@@ -1143,22 +1163,28 @@ const LandingPage = () => {
                 <Typography
                   variant="h1"
                   sx={{
-                    fontSize: { xs: '3rem', sm: '4rem', md: '5rem', lg: '6rem' },
+                    fontSize: { xs: '3.5rem', sm: '5rem', md: '6rem', lg: '7rem' },
                     fontWeight: 900,
                     mb: 4,
                     lineHeight: 0.9,
                     letterSpacing: '-0.03em',
+                    textShadow: '0 4px 20px rgba(255, 215, 0, 0.3)',
                   }}
                 >
                   <Box component="span" sx={{
-                    background: 'linear-gradient(135deg, #00d4ff, #0099cc, #00ff88)',
+                    background: 'linear-gradient(135deg, #FFD700 0%, #FFC107 50%, #FF8F00 100%)',
                     backgroundClip: 'text',
                     WebkitBackgroundClip: 'text',
                     color: 'transparent',
+                    filter: 'drop-shadow(0 2px 8px rgba(255, 215, 0, 0.4))',
                   }}>
                     About
                   </Box>
-                  <Box component="span" sx={{ color: 'white', ml: 2 }}>
+                  <Box component="span" sx={{
+                    color: '#ffffff',
+                    ml: 3,
+                    textShadow: '0 2px 12px rgba(255, 255, 255, 0.3)',
+                  }}>
                     SafeMint
                   </Box>
                 </Typography>
@@ -1173,46 +1199,58 @@ const LandingPage = () => {
                 <Typography
                   variant="h4"
                   sx={{
-                    color: '#e2e8f0',
-                    maxWidth: '800px',
+                    color: '#f8fafc',
+                    maxWidth: '900px',
                     mx: 'auto',
                     lineHeight: 1.4,
-                    fontSize: { xs: '1.5rem', md: '2rem' },
-                    fontWeight: 400,
-                    mb: 2,
+                    fontSize: { xs: '1.6rem', md: '2.2rem' },
+                    fontWeight: 500,
+                    mb: 3,
+                    textShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
                   }}
                 >
-                  Revolutionizing DeFi with{' '}
+                  Revolutionizing DeFi on{' '}
                   <Box component="span" sx={{
-                    background: 'linear-gradient(135deg, #00d4ff, #00ff88)',
+                    background: 'linear-gradient(135deg, #FFD700, #FFC107)',
                     backgroundClip: 'text',
                     WebkitBackgroundClip: 'text',
                     color: 'transparent',
-                    fontWeight: 600,
+                    fontWeight: 700,
                   }}>
-                    Smart Contract Innovation
+                    BSC Mainnet
+                  </Box>
+                  {' '}with{' '}
+                  <Box component="span" sx={{
+                    background: 'linear-gradient(135deg, #FFD700, #FF8F00)',
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    color: 'transparent',
+                    fontWeight: 700,
+                  }}>
+                    USDT Innovation
                   </Box>
                 </Typography>
 
                 <Typography
                   variant="h6"
                   sx={{
-                    color: '#94a3b8',
-                    maxWidth: '700px',
+                    color: '#cbd5e1',
+                    maxWidth: '800px',
                     mx: 'auto',
-                    lineHeight: 1.6,
-                    fontSize: { xs: '1.1rem', md: '1.3rem' },
+                    lineHeight: 1.7,
+                    fontSize: { xs: '1.2rem', md: '1.4rem' },
                     fontWeight: 400,
+                    textShadow: '0 1px 4px rgba(0, 0, 0, 0.2)',
                   }}
                 >
-                  Built on cutting-edge blockchain technology, SafeMint represents the future of
-                  decentralized investment platforms with unmatched security, transparency, and profitability.
+                  Built on Binance Smart Chain with USDT as our primary token, SafeMint represents the future of
+                  decentralized investment platforms with unmatched security, transparency, and sustainable profitability.
                 </Typography>
               </motion.div>
             </Box>
 
-            {/* Main Content Cards */}
-            <Grid container spacing={6}>
+            {/* Main Content Cards with Golden Theme */}
+            <Grid container spacing={8}>
               {/* Mission Card */}
               <Grid item xs={12} md={4}>
                 <motion.div
@@ -1223,19 +1261,19 @@ const LandingPage = () => {
                 >
                   <Paper
                     sx={{
-                      background: 'rgba(0, 212, 255, 0.1)',
+                      background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(26, 26, 26, 0.95) 100%)',
                       backdropFilter: 'blur(20px)',
-                      border: '1px solid rgba(0, 212, 255, 0.3)',
-                      borderRadius: 6,
-                      p: 6,
+                      border: '2px solid rgba(255, 215, 0, 0.3)',
+                      borderRadius: 8,
+                      p: 7,
                       height: '100%',
                       position: 'relative',
                       overflow: 'hidden',
                       transition: 'all 0.4s ease',
                       '&:hover': {
-                        transform: 'translateY(-10px)',
-                        boxShadow: '0 20px 60px rgba(0, 212, 255, 0.3)',
-                        border: '1px solid rgba(0, 212, 255, 0.5)',
+                        transform: 'translateY(-15px) scale(1.02)',
+                        boxShadow: '0 25px 80px rgba(255, 215, 0, 0.4)',
+                        border: '2px solid rgba(255, 215, 0, 0.6)',
                       },
                       '&::before': {
                         content: '""',
@@ -1243,33 +1281,53 @@ const LandingPage = () => {
                         top: 0,
                         left: 0,
                         right: 0,
-                        height: 4,
-                        background: 'linear-gradient(90deg, #00d4ff, #0099cc)',
+                        height: 6,
+                        background: 'linear-gradient(90deg, #FFD700, #FFC107, #FF8F00)',
+                        borderRadius: '8px 8px 0 0',
+                      },
+                      '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, transparent 50%)',
+                        borderRadius: 8,
+                        pointerEvents: 'none',
                       }
                     }}
                   >
                     <Box
                       sx={{
-                        width: 80,
-                        height: 80,
+                        width: 90,
+                        height: 90,
                         borderRadius: '50%',
-                        background: 'rgba(0, 212, 255, 0.2)',
+                        background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 193, 7, 0.15))',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         mb: 4,
-                        border: '2px solid rgba(0, 212, 255, 0.4)',
+                        border: '3px solid rgba(255, 215, 0, 0.4)',
+                        boxShadow: '0 8px 25px rgba(255, 215, 0, 0.3)',
+                        position: 'relative',
+                        zIndex: 1,
                       }}
                     >
-                      <Target size={40} color="#00d4ff" />
+                      <Target size={45} color="#FFD700" />
                     </Box>
                     <Typography
                       variant="h4"
                       sx={{
-                        fontWeight: 700,
+                        fontWeight: 800,
                         mb: 3,
-                        color: 'white',
-                        fontSize: '1.8rem',
+                        background: 'linear-gradient(135deg, #FFD700, #FFC107)',
+                        backgroundClip: 'text',
+                        WebkitBackgroundClip: 'text',
+                        color: 'transparent',
+                        fontSize: '2rem',
+                        position: 'relative',
+                        zIndex: 1,
                       }}
                     >
                       Our Mission
@@ -1277,14 +1335,17 @@ const LandingPage = () => {
                     <Typography
                       variant="body1"
                       sx={{
-                        color: '#e2e8f0',
-                        lineHeight: 1.7,
-                        fontSize: '1.1rem',
+                        color: '#f1f5f9',
+                        lineHeight: 1.8,
+                        fontSize: '1.15rem',
+                        fontWeight: 400,
+                        position: 'relative',
+                        zIndex: 1,
                       }}
                     >
-                      To democratize access to advanced DeFi investment strategies through
-                      transparent, automated smart contracts that deliver consistent returns
-                      while maintaining the highest security standards.
+                      To democratize access to advanced DeFi investment strategies on BSC mainnet through
+                      transparent, automated smart contracts using USDT that deliver consistent returns
+                      while maintaining the highest security standards in the industry.
                     </Typography>
                   </Paper>
                 </motion.div>
@@ -1300,19 +1361,19 @@ const LandingPage = () => {
                 >
                   <Paper
                     sx={{
-                      background: 'rgba(0, 255, 136, 0.1)',
+                      background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(26, 26, 26, 0.95) 100%)',
                       backdropFilter: 'blur(20px)',
-                      border: '1px solid rgba(0, 255, 136, 0.3)',
-                      borderRadius: 6,
-                      p: 6,
+                      border: '2px solid rgba(255, 193, 7, 0.3)',
+                      borderRadius: 8,
+                      p: 7,
                       height: '100%',
                       position: 'relative',
                       overflow: 'hidden',
                       transition: 'all 0.4s ease',
                       '&:hover': {
-                        transform: 'translateY(-10px)',
-                        boxShadow: '0 20px 60px rgba(0, 255, 136, 0.3)',
-                        border: '1px solid rgba(0, 255, 136, 0.5)',
+                        transform: 'translateY(-15px) scale(1.02)',
+                        boxShadow: '0 25px 80px rgba(255, 193, 7, 0.4)',
+                        border: '2px solid rgba(255, 193, 7, 0.6)',
                       },
                       '&::before': {
                         content: '""',
@@ -1320,48 +1381,71 @@ const LandingPage = () => {
                         top: 0,
                         left: 0,
                         right: 0,
-                        height: 4,
-                        background: 'linear-gradient(90deg, #00ff88, #00cc6a)',
+                        height: 6,
+                        background: 'linear-gradient(90deg, #FFC107, #FF8F00, #FFD700)',
+                        borderRadius: '8px 8px 0 0',
+                      },
+                      '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'linear-gradient(135deg, rgba(255, 193, 7, 0.05) 0%, transparent 50%)',
+                        borderRadius: 8,
+                        pointerEvents: 'none',
                       }
                     }}
                   >
                     <Box
                       sx={{
-                        width: 80,
-                        height: 80,
+                        width: 90,
+                        height: 90,
                         borderRadius: '50%',
-                        background: 'rgba(0, 255, 136, 0.2)',
+                        background: 'linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 152, 0, 0.15))',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         mb: 4,
-                        border: '2px solid rgba(0, 255, 136, 0.4)',
+                        border: '3px solid rgba(255, 193, 7, 0.4)',
+                        boxShadow: '0 8px 25px rgba(255, 193, 7, 0.3)',
+                        position: 'relative',
+                        zIndex: 1,
                       }}
                     >
-                      <Code size={40} color="#00ff88" />
+                      <Code size={45} color="#FFC107" />
                     </Box>
                     <Typography
                       variant="h4"
                       sx={{
-                        fontWeight: 700,
+                        fontWeight: 800,
                         mb: 3,
-                        color: 'white',
-                        fontSize: '1.8rem',
+                        background: 'linear-gradient(135deg, #FFC107, #FF8F00)',
+                        backgroundClip: 'text',
+                        WebkitBackgroundClip: 'text',
+                        color: 'transparent',
+                        fontSize: '2rem',
+                        position: 'relative',
+                        zIndex: 1,
                       }}
                     >
-                      Technology
+                      BSC Technology
                     </Typography>
                     <Typography
                       variant="body1"
                       sx={{
-                        color: '#e2e8f0',
-                        lineHeight: 1.7,
-                        fontSize: '1.1rem',
+                        color: '#f1f5f9',
+                        lineHeight: 1.8,
+                        fontSize: '1.15rem',
+                        fontWeight: 400,
+                        position: 'relative',
+                        zIndex: 1,
                       }}
                     >
-                      Built on Ethereum blockchain with advanced smart contract architecture.
+                      Built on Binance Smart Chain with advanced smart contract architecture using USDT.
                       Our platform utilizes cutting-edge DeFi protocols, automated market makers,
-                      and yield optimization strategies.
+                      and yield optimization strategies for maximum efficiency and low fees.
                     </Typography>
                   </Paper>
                 </motion.div>
@@ -1377,19 +1461,19 @@ const LandingPage = () => {
                 >
                   <Paper
                     sx={{
-                      background: 'rgba(255, 0, 150, 0.1)',
+                      background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(26, 26, 26, 0.95) 100%)',
                       backdropFilter: 'blur(20px)',
-                      border: '1px solid rgba(255, 0, 150, 0.3)',
-                      borderRadius: 6,
-                      p: 6,
+                      border: '2px solid rgba(255, 152, 0, 0.3)',
+                      borderRadius: 8,
+                      p: 7,
                       height: '100%',
                       position: 'relative',
                       overflow: 'hidden',
                       transition: 'all 0.4s ease',
                       '&:hover': {
-                        transform: 'translateY(-10px)',
-                        boxShadow: '0 20px 60px rgba(255, 0, 150, 0.3)',
-                        border: '1px solid rgba(255, 0, 150, 0.5)',
+                        transform: 'translateY(-15px) scale(1.02)',
+                        boxShadow: '0 25px 80px rgba(255, 152, 0, 0.4)',
+                        border: '2px solid rgba(255, 152, 0, 0.6)',
                       },
                       '&::before': {
                         content: '""',
@@ -1397,48 +1481,71 @@ const LandingPage = () => {
                         top: 0,
                         left: 0,
                         right: 0,
-                        height: 4,
-                        background: 'linear-gradient(90deg, #ff0096, #cc0077)',
+                        height: 6,
+                        background: 'linear-gradient(90deg, #FF9800, #FFD700, #FFC107)',
+                        borderRadius: '8px 8px 0 0',
+                      },
+                      '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'linear-gradient(135deg, rgba(255, 152, 0, 0.05) 0%, transparent 50%)',
+                        borderRadius: 8,
+                        pointerEvents: 'none',
                       }
                     }}
                   >
                     <Box
                       sx={{
-                        width: 80,
-                        height: 80,
+                        width: 90,
+                        height: 90,
                         borderRadius: '50%',
-                        background: 'rgba(255, 0, 150, 0.2)',
+                        background: 'linear-gradient(135deg, rgba(255, 152, 0, 0.2), rgba(255, 215, 0, 0.15))',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         mb: 4,
-                        border: '2px solid rgba(255, 0, 150, 0.4)',
+                        border: '3px solid rgba(255, 152, 0, 0.4)',
+                        boxShadow: '0 8px 25px rgba(255, 152, 0, 0.3)',
+                        position: 'relative',
+                        zIndex: 1,
                       }}
                     >
-                      <Shield size={40} color="#ff0096" />
+                      <Shield size={45} color="#FF9800" />
                     </Box>
                     <Typography
                       variant="h4"
                       sx={{
-                        fontWeight: 700,
+                        fontWeight: 800,
                         mb: 3,
-                        color: 'white',
-                        fontSize: '1.8rem',
+                        background: 'linear-gradient(135deg, #FF9800, #FFD700)',
+                        backgroundClip: 'text',
+                        WebkitBackgroundClip: 'text',
+                        color: 'transparent',
+                        fontSize: '2rem',
+                        position: 'relative',
+                        zIndex: 1,
                       }}
                     >
-                      Security
+                      USDT Security
                     </Typography>
                     <Typography
                       variant="body1"
                       sx={{
-                        color: '#e2e8f0',
-                        lineHeight: 1.7,
-                        fontSize: '1.1rem',
+                        color: '#f1f5f9',
+                        lineHeight: 1.8,
+                        fontSize: '1.15rem',
+                        fontWeight: 400,
+                        position: 'relative',
+                        zIndex: 1,
                       }}
                     >
                       Multi-signature wallets, smart contract audits, and real-time monitoring
-                      ensure your investments are protected by bank-grade security measures
-                      and industry best practices.
+                      ensure your USDT investments are protected by bank-grade security measures
+                      and industry best practices on BSC mainnet.
                     </Typography>
                   </Paper>
                 </motion.div>
@@ -1709,8 +1816,8 @@ const LandingPage = () => {
                     fontWeight: 400,
                   }}
                 >
-                  Built on Ethereum's robust blockchain with advanced smart contracts,
-                  DeFi protocols, and cutting-edge security measures.
+                  Built on Binance Smart Chain's robust blockchain with advanced smart contracts,
+                  DeFi protocols, USDT integration, and cutting-edge security measures.
                 </Typography>
               </motion.div>
             </Box>
@@ -1776,7 +1883,7 @@ const LandingPage = () => {
                         fontSize: '1.8rem',
                       }}
                     >
-                      Ethereum Blockchain
+                      BSC Mainnet Blockchain
                     </Typography>
                     <Typography
                       variant="body1"
@@ -1787,8 +1894,8 @@ const LandingPage = () => {
                         mb: 4,
                       }}
                     >
-                      Built on Ethereum's robust and secure blockchain infrastructure,
-                      ensuring maximum security, transparency, and decentralization for all transactions.
+                      Built on Binance Smart Chain's robust and secure blockchain infrastructure,
+                      ensuring maximum security, transparency, low fees, and fast transactions for all USDT operations.
                     </Typography>
 
                     <Stack spacing={2}>
@@ -2033,17 +2140,17 @@ const LandingPage = () => {
                   {[
                     {
                       title: 'Blockchain Network',
-                      value: 'Ethereum Mainnet',
+                      value: 'BSC Mainnet',
                       icon: <Layers size={32} />,
                       color: '#00d4ff',
-                      description: 'Built on the most secure and decentralized blockchain'
+                      description: 'Built on Binance Smart Chain for fast and low-cost transactions'
                     },
                     {
                       title: 'Token Standard',
-                      value: 'ERC-20 Compatible',
+                      value: 'BEP-20 Compatible',
                       icon: <Coins size={32} />,
                       color: '#00ff88',
-                      description: 'Full compatibility with Ethereum ecosystem'
+                      description: 'Full compatibility with BSC ecosystem and USDT integration'
                     },
                     {
                       title: 'Smart Contract',
@@ -2206,7 +2313,7 @@ const LandingPage = () => {
                   {
                     icon: <DollarSign size={32} style={{ color: '#00d4ff' }} />,
                     title: 'Buying Phase',
-                    desc: 'Users invest funds (DAI, tokens, etc.) into the system by:',
+                    desc: 'Users invest funds (USDT, tokens, etc.) into the system by:',
                     points: ['Staking', 'Purchasing tokens', 'Providing liquidity']
                   },
                   {
@@ -2941,362 +3048,7 @@ const LandingPage = () => {
         </Container>
       </Box>
 
-      {/* Enhanced Roadmap Section */}
-      <Box
-        id="roadmap"
-        sx={{
-          py: { xs: 10, md: 15 },
-          background: 'linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(0, 0, 0, 0.9) 50%, rgba(13, 13, 35, 0.95) 100%)',
-          position: 'relative',
-          overflow: 'hidden',
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: `
-              radial-gradient(circle at 20% 20%, rgba(0, 255, 136, 0.12) 0%, transparent 50%),
-              radial-gradient(circle at 80% 80%, rgba(255, 235, 59, 0.08) 0%, transparent 50%)
-            `,
-            zIndex: -1,
-          }
-        }}
-      >
-        <Container maxWidth="xl">
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            viewport={{ once: true }}
-          >
-            {/* Enhanced Section Header */}
-            <Box sx={{ textAlign: 'center', mb: 12 }}>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                viewport={{ once: true }}
-              >
-                <Chip
-                  icon={<Rocket size={18} />}
-                  label="Future Innovations"
-                  sx={{
-                    mb: 4,
-                    background: 'rgba(255, 235, 59, 0.15)',
-                    color: '#ffeb3b',
-                    border: '1px solid rgba(255, 235, 59, 0.3)',
-                    fontWeight: 600,
-                    fontSize: '1rem',
-                    px: 3,
-                    py: 1,
-                  }}
-                />
-              </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                viewport={{ once: true }}
-              >
-                <Typography
-                  variant="h1"
-                  sx={{
-                    fontSize: { xs: '3rem', sm: '4rem', md: '5rem', lg: '6rem' },
-                    fontWeight: 900,
-                    mb: 4,
-                    lineHeight: 0.9,
-                    letterSpacing: '-0.03em',
-                  }}
-                >
-                  <Box component="span" sx={{
-                    background: 'linear-gradient(135deg, #ffeb3b, #00ff88, #00d4ff)',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    color: 'transparent',
-                  }}>
-                    Upcoming
-                  </Box>
-                  <Box component="span" sx={{ color: 'white', ml: 2 }}>
-                    Projects
-                  </Box>
-                </Typography>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-                viewport={{ once: true }}
-              >
-                <Typography
-                  variant="h4"
-                  sx={{
-                    color: '#e2e8f0',
-                    maxWidth: '800px',
-                    mx: 'auto',
-                    lineHeight: 1.4,
-                    fontSize: { xs: '1.5rem', md: '2rem' },
-                    fontWeight: 400,
-                    mb: 2,
-                  }}
-                >
-                  Building the{' '}
-                  <Box component="span" sx={{
-                    background: 'linear-gradient(135deg, #ffeb3b, #00ff88)',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
-                    color: 'transparent',
-                    fontWeight: 600,
-                  }}>
-                    Future of DeFi
-                  </Box>
-                  {' '}Ecosystem
-                </Typography>
-
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: '#94a3b8',
-                    maxWidth: '700px',
-                    mx: 'auto',
-                    lineHeight: 1.6,
-                    fontSize: { xs: '1.1rem', md: '1.3rem' },
-                    fontWeight: 400,
-                  }}
-                >
-                  Revolutionary projects and innovations that will transform the
-                  decentralized finance landscape forever.
-                </Typography>
-              </motion.div>
-            </Box>
-
-            {/* Projects Timeline */}
-            <Grid container spacing={6}>
-              {[
-                {
-                  icon: <ArrowLeftRight size={40} />,
-                  title: 'SafeMint DEX',
-                  phase: 'Q1 2024',
-                  status: 'In Development',
-                  description: 'Revolutionary decentralized exchange with ultra-low fees, lightning-fast transactions, and institutional-grade security.',
-                  features: ['Zero-slippage trading', 'Cross-chain compatibility', 'Advanced order types'],
-                  color: '#FFD700',
-                  progress: 75
-                },
-                {
-                  icon: <Network size={40} />,
-                  title: 'SafeMint Chain',
-                  phase: 'Q2 2024',
-                  status: 'Planning',
-                  description: 'Custom blockchain network optimized for DeFi operations with enhanced scalability and reduced transaction costs.',
-                  features: ['1000+ TPS capability', 'EVM compatibility', 'Proof-of-Stake consensus'],
-                  color: '#FFD700',
-                  progress: 45
-                },
-                {
-                  icon: <Smartphone size={40} />,
-                  title: 'Mobile App',
-                  phase: 'Q3 2024',
-                  status: 'Design Phase',
-                  description: 'Native mobile application for iOS and Android with full DeFi functionality and intuitive user experience.',
-                  features: ['Biometric security', 'Push notifications', 'Offline mode'],
-                  color: '#FFD700',
-                  progress: 25
-                },
-                {
-                  icon: <Database size={40} />,
-                  title: 'AI Trading Bot',
-                  phase: 'Q4 2024',
-                  status: 'Research',
-                  description: 'Intelligent trading algorithms powered by machine learning for automated portfolio optimization.',
-                  features: ['Market analysis', 'Risk management', 'Strategy backtesting'],
-                  color: '#FFD700',
-                  progress: 15
-                },
-                {
-                  icon: <Building2 size={40} />,
-                  title: 'Enterprise Suite',
-                  phase: 'Q1 2025',
-                  status: 'Concept',
-                  description: 'Comprehensive DeFi solutions for institutional investors and enterprise clients.',
-                  features: ['White-label solutions', 'API integration', 'Compliance tools'],
-                  color: '#FFD700',
-                  progress: 5
-                },
-                {
-                  icon: <Globe size={40} />,
-                  title: 'Global Expansion',
-                  phase: 'Q2 2025',
-                  status: 'Future',
-                  description: 'Worldwide platform expansion with localized services and regulatory compliance.',
-                  features: ['Multi-language support', 'Regional partnerships', 'Local regulations'],
-                  color: '#FFD700',
-                  progress: 0
-                },
-              ].map((project, index) => (
-                <Grid item xs={12} md={6} key={index}>
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                  >
-                    <Paper
-                      sx={{
-                        background: 'rgba(0, 0, 0, 0.8)',
-                        backdropFilter: 'blur(20px)',
-                        border: '1px solid rgba(255, 215, 0, 0.3)',
-                        borderRadius: 6,
-                        p: 6,
-                        height: '100%',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        transition: 'all 0.4s ease',
-                        '&:hover': {
-                          transform: 'translateY(-10px)',
-                          boxShadow: '0 20px 60px rgba(255, 215, 0, 0.3)',
-                          border: '1px solid rgba(255, 215, 0, 0.5)',
-                        },
-                        '&::before': {
-                          content: '""',
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          height: 4,
-                          background: 'linear-gradient(90deg, #FFD700, #FFC107)',
-                        }
-                      }}
-                    >
-                      {/* Status Badge */}
-                      <Chip
-                        label={project.status}
-                        sx={{
-                          position: 'absolute',
-                          top: 20,
-                          right: 20,
-                          background: '#FFD700',
-                          color: '#000',
-                          fontWeight: 600,
-                          fontSize: '0.8rem',
-                        }}
-                      />
-
-                      {/* Icon and Phase */}
-                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                        <Box
-                          sx={{
-                            width: 70,
-                            height: 70,
-                            borderRadius: '50%',
-                            background: 'rgba(255, 215, 0, 0.2)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            mr: 3,
-                            border: '2px solid rgba(255, 215, 0, 0.4)',
-                          }}
-                        >
-                          <Box sx={{ color: '#FFD700' }}>
-                            {project.icon}
-                          </Box>
-                        </Box>
-                        <Box>
-                          <Typography
-                            variant="h5"
-                            sx={{
-                              fontWeight: 700,
-                              color: 'white',
-                              fontSize: '1.5rem',
-                              mb: 1,
-                            }}
-                          >
-                            {project.title}
-                          </Typography>
-                          <Typography
-                            variant="body1"
-                            sx={{
-                              color: project.color,
-                              fontWeight: 600,
-                            }}
-                          >
-                            {project.phase}
-                          </Typography>
-                        </Box>
-                      </Box>
-
-                      {/* Description */}
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          color: '#e2e8f0',
-                          lineHeight: 1.7,
-                          mb: 4,
-                          fontSize: '1.1rem',
-                        }}
-                      >
-                        {project.description}
-                      </Typography>
-
-                      {/* Features */}
-                      <Box sx={{ mb: 4 }}>
-                        <Typography
-                          variant="h6"
-                          sx={{
-                            color: 'white',
-                            fontWeight: 600,
-                            mb: 2,
-                          }}
-                        >
-                          Key Features:
-                        </Typography>
-                        <Stack spacing={1}>
-                          {project.features.map((feature, featureIndex) => (
-                            <Box key={featureIndex} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                              <CheckCircle size={16} color={project.color} />
-                              <Typography variant="body2" sx={{ color: '#94a3b8' }}>
-                                {feature}
-                              </Typography>
-                            </Box>
-                          ))}
-                        </Stack>
-                      </Box>
-
-                      {/* Progress Bar */}
-                      <Box>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                          <Typography variant="body2" sx={{ color: '#94a3b8' }}>
-                            Progress
-                          </Typography>
-                          <Typography variant="body2" sx={{ color: project.color, fontWeight: 600 }}>
-                            {project.progress}%
-                          </Typography>
-                        </Box>
-                        <LinearProgress
-                          variant="determinate"
-                          value={project.progress}
-                          sx={{
-                            height: 8,
-                            borderRadius: 4,
-                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                            '& .MuiLinearProgress-bar': {
-                              backgroundColor: project.color,
-                              borderRadius: 4,
-                            },
-                          }}
-                        />
-                      </Box>
-                    </Paper>
-                  </motion.div>
-                </Grid>
-              ))}
-            </Grid>
-          </motion.div>
-        </Container>
-      </Box>
 
       {/* Team Section */}
       <Box
@@ -3385,7 +3137,7 @@ const LandingPage = () => {
                   name: 'Sarah Johnson',
                   role: 'CTO & Co-Founder',
                   image: '/api/placeholder/300/300',
-                  bio: 'Ex-Ethereum core developer with expertise in smart contract security and blockchain architecture.',
+                  bio: 'Ex-BSC core developer with expertise in smart contract security and blockchain architecture.',
                   linkedin: '#',
                   twitter: '#',
                   expertise: ['Blockchain Development', 'Smart Contracts', 'Security']
@@ -4023,7 +3775,7 @@ const LandingPage = () => {
                         { label: 'Token Name', value: 'SafeMint Token' },
                         { label: 'Symbol', value: 'SAFE' },
                         { label: 'Total Supply', value: '1,000,000,000 SAFE' },
-                        { label: 'Blockchain', value: 'Ethereum (ERC-20)' },
+                        { label: 'Blockchain', value: 'BSC Mainnet (BEP-20)' },
                         { label: 'Initial Price', value: '$0.001' },
                         { label: 'Listing Date', value: 'Q2 2024' },
                       ].map((detail, index) => (
@@ -4179,19 +3931,19 @@ const LandingPage = () => {
               {[
                 {
                   question: 'What is SafeMint and how does it work?',
-                  answer: 'SafeMint is a decentralized finance (DeFi) platform that offers automated investment strategies through smart contracts. Users can invest in various plans with guaranteed returns, powered by blockchain technology and algorithmic trading strategies.'
+                  answer: 'SafeMint is a decentralized finance (DeFi) platform built on Binance Smart Chain (BSC) mainnet that offers automated investment strategies through smart contracts using USDT. Users can invest in various plans with guaranteed returns, powered by blockchain technology and algorithmic trading strategies.'
                 },
                 {
                   question: 'How secure are my investments on SafeMint?',
-                  answer: 'SafeMint employs bank-grade security measures including multi-signature wallets, smart contract audits by leading firms, real-time monitoring, and decentralized architecture. All funds are protected by multiple layers of security protocols.'
+                  answer: 'SafeMint employs bank-grade security measures including multi-signature wallets, smart contract audits by leading firms, real-time monitoring, and decentralized architecture on BSC mainnet. All USDT funds are protected by multiple layers of security protocols with low transaction fees.'
                 },
                 {
                   question: 'What are the minimum investment requirements?',
-                  answer: 'SafeMint offers flexible investment options starting from just $10 for the Starter Plan, $100 for the Professional Plan, and $1,000 for the Enterprise Plan. This makes DeFi accessible to investors of all levels.'
+                  answer: 'SafeMint offers flexible USDT investment options starting from just $10 for the Starter Plan, $100 for the Professional Plan, and $1,000 for the Enterprise Plan. This makes DeFi accessible to investors of all levels on BSC mainnet with minimal fees.'
                 },
                 {
                   question: 'How do I earn returns on my investments?',
-                  answer: 'Returns are generated through automated trading strategies, liquidity provision, yield farming, and other DeFi protocols. Profits are distributed daily to investors based on their chosen investment plan and amount invested.'
+                  answer: 'Returns are generated through automated trading strategies, liquidity provision, yield farming, and other DeFi protocols on BSC mainnet using USDT. Profits are distributed daily to investors based on their chosen investment plan and amount invested.'
                 },
                 {
                   question: 'Can I withdraw my funds at any time?',
@@ -4199,7 +3951,7 @@ const LandingPage = () => {
                 },
                 {
                   question: 'What is the SAFE token and its utility?',
-                  answer: 'SAFE is the native utility token of the SafeMint ecosystem. Token holders enjoy governance voting rights, staking rewards up to 25% APY, reduced platform fees, access to exclusive investment opportunities, and premium features.'
+                  answer: 'SAFE is the native utility token of the SafeMint ecosystem built on BSC mainnet. Token holders enjoy governance voting rights, staking rewards up to 25% APY, reduced platform fees, access to exclusive USDT investment opportunities, and premium features with low transaction costs.'
                 },
                 {
                   question: 'Is SafeMint available globally?',

@@ -131,8 +131,8 @@ const HistoryPage = () => {
       {/* Header */}
       <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Box>
-          <Typography variant="h4" gutterBottom sx={{ color: 'primary.main', fontWeight: 'bold' }}>
-            <ScheduleIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
+          <Typography variant="h4" gutterBottom sx={{ color: 'primary.main', fontWeight: 'bold', display: 'flex', alignItems: 'center' }}>
+            <Clock style={{ marginRight: 8 }} />
             Transaction History
           </Typography>
           <Typography variant="body1" color="text.secondary">
@@ -178,7 +178,7 @@ const HistoryPage = () => {
                       {historyData.stakeHistory?.length || 0}
                     </Typography>
                   </Box>
-                  <WalletIcon sx={{ fontSize: 40, opacity: 0.8 }} />
+                  <Wallet size={40} style={{ opacity: 0.8 }} />
                 </Box>
               </CardContent>
             </Card>
@@ -196,7 +196,7 @@ const HistoryPage = () => {
                       {historyData.stakeHistory?.filter(stake => !stake.isComplete).length || 0}
                     </Typography>
                   </Box>
-                  <TrendingUpIcon sx={{ fontSize: 40, opacity: 0.8 }} />
+                  <TrendingUp size={40} style={{ opacity: 0.8 }} />
                 </Box>
               </CardContent>
             </Card>
@@ -214,7 +214,7 @@ const HistoryPage = () => {
                       {historyData.stakeHistory?.filter(stake => stake.isComplete).length || 0}
                     </Typography>
                   </Box>
-                  <CheckCircleIcon sx={{ fontSize: 40, opacity: 0.8 }} />
+                  <CheckCircle size={40} style={{ opacity: 0.8 }} />
                 </Box>
               </CardContent>
             </Card>
@@ -232,7 +232,7 @@ const HistoryPage = () => {
                       {historyData.directReferrals?.length || 0}
                     </Typography>
                   </Box>
-                  <PeopleIcon sx={{ fontSize: 40, opacity: 0.8 }} />
+                  <Users size={40} style={{ opacity: 0.8 }} />
                 </Box>
               </CardContent>
             </Card>
@@ -314,7 +314,7 @@ const DepositHistory = ({ historyData }) => {
   if (deposits.length === 0) {
     return (
       <Box sx={{ textAlign: 'center', py: 4 }}>
-        <TrendingUpIcon sx={{ fontSize: 64, color: 'grey.400', mb: 2 }} />
+        <TrendingUp size={64} style={{ color: '#9e9e9e', marginBottom: 16 }} />
         <Typography variant="h6" color="text.secondary">
           No active deposits
         </Typography>
@@ -345,7 +345,7 @@ const DepositHistory = ({ historyData }) => {
                     {deposits.length}
                   </Typography>
                 </Box>
-                <TrendingUpIcon sx={{ fontSize: 40, color: 'primary.main' }} />
+                <TrendingUp size={40} style={{ color: '#6200ea' }} />
               </Box>
             </CardContent>
           </Card>
@@ -370,7 +370,7 @@ const DepositHistory = ({ historyData }) => {
                     )}
                   </Typography>
                 </Box>
-                <MonetizationOnIcon sx={{ fontSize: 40, color: 'success.main' }} />
+                <DollarSign size={40} style={{ color: '#4caf50' }} />
               </Box>
             </CardContent>
           </Card>
@@ -394,7 +394,7 @@ const DepositHistory = ({ historyData }) => {
                     )}
                   </Typography>
                 </Box>
-                <TrendingUpIcon sx={{ fontSize: 40, color: 'info.main' }} />
+                <TrendingUp size={40} style={{ color: '#2196f3' }} />
               </Box>
             </CardContent>
           </Card>
@@ -405,7 +405,7 @@ const DepositHistory = ({ historyData }) => {
       <Card>
         <CardContent>
           <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
-            <HistoryIcon sx={{ mr: 1 }} />
+            <Clock3 size={20} style={{ marginRight: 8 }} />
             Active Deposits ({deposits.length})
           </Typography>
 
@@ -529,7 +529,7 @@ const DepositHistory = ({ historyData }) => {
                               size="small"
                               onClick={() => copyToClipboard(orderId)}
                             >
-                              <ContentCopyIcon fontSize="small" />
+                              <Copy size={16} />
                             </IconButton>
                           </Tooltip>
                           <Tooltip title="View on Explorer">
@@ -537,7 +537,7 @@ const DepositHistory = ({ historyData }) => {
                               size="small"
                               onClick={() => window.open(`https://bscscan.com/tx/${orderId}`, '_blank')}
                             >
-                              <LaunchIcon fontSize="small" />
+                              <ExternalLink size={16} />
                             </IconButton>
                           </Tooltip>
                         </Box>
@@ -547,7 +547,7 @@ const DepositHistory = ({ historyData }) => {
                 }) : (
                   <TableRow>
                     <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
-                      <WalletIcon sx={{ fontSize: 48, color: 'grey.400', mb: 1 }} />
+                      <Wallet size={48} style={{ color: '#9e9e9e', marginBottom: 8 }} />
                       <Typography variant="h6" color="text.secondary">
                         No active deposits found
                       </Typography>
@@ -606,7 +606,7 @@ const WithdrawalHistory = ({ historyData }) => {
                     {withdrawals.length}
                   </Typography>
                 </Box>
-                <CheckCircleIcon sx={{ fontSize: 40, color: 'success.main' }} />
+                <CheckCircle size={40} style={{ color: '#4caf50' }} />
               </Box>
             </CardContent>
           </Card>
@@ -624,7 +624,7 @@ const WithdrawalHistory = ({ historyData }) => {
                     {formatCurrency(totalWithdrawn)}
                   </Typography>
                 </Box>
-                <TrendingDownIcon sx={{ fontSize: 40, color: 'error.main' }} />
+                <TrendingDown size={40} style={{ color: '#f44336' }} />
               </Box>
             </CardContent>
           </Card>
@@ -642,7 +642,7 @@ const WithdrawalHistory = ({ historyData }) => {
                     {formatCurrency(totalProfit)}
                   </Typography>
                 </Box>
-                <MonetizationOnIcon sx={{ fontSize: 40, color: 'warning.main' }} />
+                <DollarSign size={40} style={{ color: '#ff9800' }} />
               </Box>
             </CardContent>
           </Card>
@@ -653,7 +653,7 @@ const WithdrawalHistory = ({ historyData }) => {
       <Card>
         <CardContent>
           <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
-            <TrendingDownIcon sx={{ mr: 1 }} />
+            <TrendingDown size={20} style={{ marginRight: 8 }} />
             Completed Withdrawals ({withdrawals.length})
           </Typography>
 
@@ -753,7 +753,7 @@ const WithdrawalHistory = ({ historyData }) => {
                               size="small"
                               onClick={() => copyToClipboard(orderId)}
                             >
-                              <ContentCopyIcon fontSize="small" />
+                              <Copy size={16} />
                             </IconButton>
                           </Tooltip>
                           <Tooltip title="View on Explorer">
@@ -761,7 +761,7 @@ const WithdrawalHistory = ({ historyData }) => {
                               size="small"
                               onClick={() => window.open(`https://bscscan.com/tx/${orderId}`, '_blank')}
                             >
-                              <LaunchIcon fontSize="small" />
+                              <ExternalLink size={16} />
                             </IconButton>
                           </Tooltip>
                         </Box>
@@ -771,7 +771,7 @@ const WithdrawalHistory = ({ historyData }) => {
                 }) : (
                   <TableRow>
                     <TableCell colSpan={6} sx={{ textAlign: 'center', py: 4 }}>
-                      <TrendingDownIcon sx={{ fontSize: 48, color: 'grey.400', mb: 1 }} />
+                      <TrendingDown size={48} style={{ color: '#9e9e9e', marginBottom: 8 }} />
                       <Typography variant="h6" color="text.secondary">
                         No completed withdrawals found
                       </Typography>
@@ -812,7 +812,7 @@ const DirectTeamHistory = ({ historyData }) => {
                     {teamDetails.length}
                   </Typography>
                 </Box>
-                <PeopleIcon sx={{ fontSize: 40, opacity: 0.8 }} />
+                <Users size={40} style={{ opacity: 0.8 }} />
               </Box>
             </CardContent>
           </Card>
@@ -828,7 +828,7 @@ const DirectTeamHistory = ({ historyData }) => {
                     {formatCurrency(teamDetails.reduce((sum, member) => sum + member.recentDeposited, 0))}
                   </Typography>
                 </Box>
-                <MonetizationOnIcon sx={{ fontSize: 40, opacity: 0.8 }} />
+                <DollarSign size={40} style={{ opacity: 0.8 }} />
               </Box>
             </CardContent>
           </Card>
@@ -844,7 +844,7 @@ const DirectTeamHistory = ({ historyData }) => {
                     {teamDetails.filter(member => member.userStatus === 'Active').length}
                   </Typography>
                 </Box>
-                <TrendingUpIcon sx={{ fontSize: 40, opacity: 0.8 }} />
+                <TrendingUp size={40} style={{ opacity: 0.8 }} />
               </Box>
             </CardContent>
           </Card>
@@ -855,7 +855,7 @@ const DirectTeamHistory = ({ historyData }) => {
       <Card>
         <CardContent>
           <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
-            <PeopleIcon sx={{ mr: 1 }} />
+            <Users size={20} style={{ marginRight: 8 }} />
             Direct Team Members ({teamDetails.length})
           </Typography>
 
@@ -1023,7 +1023,7 @@ const DirectTeamHistory = ({ historyData }) => {
                               transition: 'all 0.2s ease'
                             }}
                           >
-                            <ContentCopyIcon fontSize="small" />
+                            <Copy size={16} />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="View on BSCScan">
@@ -1039,7 +1039,7 @@ const DirectTeamHistory = ({ historyData }) => {
                               transition: 'all 0.2s ease'
                             }}
                           >
-                            <LaunchIcon fontSize="small" />
+                            <ExternalLink size={16} />
                           </IconButton>
                         </Tooltip>
                       </Box>
@@ -1048,7 +1048,7 @@ const DirectTeamHistory = ({ historyData }) => {
                 )) : (
                   <TableRow>
                     <TableCell colSpan={9} sx={{ textAlign: 'center', py: 4 }}>
-                      <PeopleIcon sx={{ fontSize: 48, color: 'grey.400', mb: 1 }} />
+                      <Users size={48} style={{ color: '#9e9e9e', marginBottom: 8 }} />
                       <Typography variant="h6" color="text.secondary">
                         No direct team members found
                       </Typography>
@@ -1072,7 +1072,7 @@ const TeamOverview = ({ historyData }) => {
   if (!historyData?.rankQualify || !historyData?.userInfo) {
     return (
       <Box sx={{ textAlign: 'center', py: 4 }}>
-        <GroupsIcon sx={{ fontSize: 64, color: 'grey.400', mb: 2 }} />
+        <Users2 size={64} style={{ color: '#9e9e9e', marginBottom: 16 }} />
         <Typography variant="h6" color="text.secondary">
           No team data available
         </Typography>
@@ -1092,7 +1092,7 @@ const TeamOverview = ({ historyData }) => {
         <Grid item xs={12} md={3}>
           <Card sx={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
             <CardContent sx={{ textAlign: 'center' }}>
-              <PeopleIcon sx={{ fontSize: 40, mb: 1 }} />
+              <Users size={40} style={{ marginBottom: 8 }} />
               <Typography variant="h4" fontWeight="bold">
                 {formatNumber(Number(rankQualify.directs || 0))}
               </Typography>
@@ -1104,7 +1104,7 @@ const TeamOverview = ({ historyData }) => {
         <Grid item xs={12} md={3}>
           <Card sx={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', color: 'white' }}>
             <CardContent sx={{ textAlign: 'center' }}>
-              <GroupsIcon sx={{ fontSize: 40, mb: 1 }} />
+              <Users2 size={40} style={{ marginBottom: 8 }} />
               <Typography variant="h4" fontWeight="bold">
                 {formatNumber(Number(rankQualify.strongTeam || 0))}
               </Typography>
@@ -1116,7 +1116,7 @@ const TeamOverview = ({ historyData }) => {
         <Grid item xs={12} md={3}>
           <Card sx={{ background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', color: 'white' }}>
             <CardContent sx={{ textAlign: 'center' }}>
-              <GroupsIcon sx={{ fontSize: 40, mb: 1 }} />
+              <Users2 size={40} style={{ marginBottom: 8 }} />
               <Typography variant="h4" fontWeight="bold">
                 {formatNumber(Number(rankQualify.totalTeam || 0))}
               </Typography>
@@ -1128,7 +1128,7 @@ const TeamOverview = ({ historyData }) => {
         <Grid item xs={12} md={3}>
           <Card sx={{ background: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)', color: 'white' }}>
             <CardContent sx={{ textAlign: 'center' }}>
-              <TrendingUpIcon sx={{ fontSize: 40, mb: 1 }} />
+              <TrendingUp size={40} style={{ marginBottom: 8 }} />
               <Typography variant="h4" fontWeight="bold">
                 {formatNumber(Number(rankQualify.level || 0))}
               </Typography>
@@ -1144,7 +1144,7 @@ const TeamOverview = ({ historyData }) => {
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
-                <GroupsIcon sx={{ mr: 1 }} />
+                <Users2 size={20} style={{ marginRight: 8 }} />
                 Team Performance
               </Typography>
 
@@ -1201,7 +1201,7 @@ const TeamOverview = ({ historyData }) => {
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
-                <WalletIcon sx={{ mr: 1 }} />
+                <Wallet size={20} style={{ marginRight: 8 }} />
                 Account Information
               </Typography>
 
@@ -1509,7 +1509,7 @@ const EarningsHistory = ({ historyData }) => {
                                 transition: 'all 0.2s ease'
                               }}
                             >
-                              <ContentCopyIcon fontSize="small" />
+                              <Copy size={16} />
                             </IconButton>
                           </Tooltip>
                           <Tooltip title="View on BSCScan">
@@ -1525,7 +1525,7 @@ const EarningsHistory = ({ historyData }) => {
                                 transition: 'all 0.2s ease'
                               }}
                             >
-                              <LaunchIcon fontSize="small" />
+                              <ExternalLink size={16} />
                             </IconButton>
                           </Tooltip>
                         </Box>

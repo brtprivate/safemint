@@ -25,7 +25,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'dist',
+    outDir: 'server/dist',
     assetsDir: 'assets',
     sourcemap: false,
     minify: false,

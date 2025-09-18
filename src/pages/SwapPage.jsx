@@ -293,7 +293,7 @@ const UnstakePage = () => {
         <CardContent>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', color: 'primary.main' }}>
-              <TrendingUpIcon sx={{ mr: 1 }} />
+              <TrendingUp sx={{ mr: 1 }} />
               SafeMint Token Price
             </Typography>
            
@@ -309,7 +309,7 @@ const UnstakePage = () => {
       <Card sx={{ backgroundColor: 'white', boxShadow: 3 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
-            <TrendingDownIcon sx={{ mr: 1 }} />
+            <TrendingDown sx={{ mr: 1 }} />
             Unstake SafeMint Tokens
           </Typography>
 
@@ -347,7 +347,7 @@ const UnstakePage = () => {
 
             {/* Arrow Divider */}
             <Grid item xs={12} sx={{ textAlign: 'center' }}>
-              <TrendingDownIcon sx={{ fontSize: 40, color: 'primary.main' }} />
+              <TrendingDown sx={{ fontSize: 40, color: 'primary.main' }} />
             </Grid>
 
             {/* USDT Output Section */}

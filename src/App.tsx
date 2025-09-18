@@ -20,9 +20,10 @@ import Navbar from './components/Navbar';
 import MLMDashboard from './pages/MLMDashboard';
 import Dashboard from './pages/Dashboard';
 import HistoryPage from './pages/HistoryPage';
-import SwapPage from './pages/SwapPage';      
+import SwapPage from './pages/SwapPage';
 import LandingPage from './pages/LandingPage';
 import TokenTest from './pages/TokenTest';
+import SafeMintHTML from './pages/SafeMintHTML';
 
 
 // Create a colorful theme
@@ -134,12 +135,13 @@ function App() {
             <ToastProvider>
               <MLMProvider>
                 <TransactionHistoryProvider>
-                  <Router>
+                  <Router basename="/app">
                     <Navbar />
                     <Routes>
                       <Route path="/dashboard" element={<MLMDashboard />} />
-                      <Route path="/app" element={<Dashboard />} />
-                      <Route path="/" element={<LandingPage />} />
+                      <Route path="/" element={<Dashboard />} />
+                      {/* <Route path="/" element={<LandingPage />} /> */}
+                      <Route path="/ui" element={<SafeMintHTML />} />
                       <Route path="/history" element={<HistoryPage />} />
                       <Route path="/swap" element={<SwapPage />} />
                       <Route path="/token-test" element={<TokenTest />} />

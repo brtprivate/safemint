@@ -28,6 +28,7 @@ import OrderHistoryTable from '../components/common/OrderHistoryTable';
 import RegistrationForm from '../components/common/RegistrationForm';
 import TokenPriceCard from '../components/common/TokenPriceCard';
 import SafeMintTokenStats from '../components/common/SafeMintTokenStats';
+import TeamGrowthChecker from '../components/TeamGrowthChecker';
 
 // Import utility functions
 import { formatCurrency, formatNumber, formatDate } from '../utils/formatters';
@@ -58,6 +59,24 @@ const safeStringify = (obj, space = 2) => {
     return value;
   }, space);
 };
+
+// Loading Skeleton Component
+const LoadingSkeleton = ({ height = 60, width = '100%', borderRadius = 2 }) => (
+  <Box
+    sx={{
+      width,
+      height,
+      borderRadius,
+      background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)',
+      backgroundSize: '200% 100%',
+      animation: 'skeleton-loading 1.5s ease-in-out infinite',
+      '@keyframes skeleton-loading': {
+        '0%': { backgroundPosition: '200% 0' },
+        '100%': { backgroundPosition: '-200% 0' }
+      }
+    }}
+  />
+);
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -732,23 +751,52 @@ const Dashboard = () => {
 
   if (!wallet.isConnected) {
     return (
-      <Container maxWidth="xl" sx={{ py: { xs: 2, sm: 3 } }}>
+      <Container maxWidth="xl" sx={{ py: { xs: 3, sm: 4 } }}>
         <Card sx={{
-          p: { xs: 2, sm: 3 },
-          boxShadow: 3,
+          p: { xs: 3, sm: 4, md: 5 },
+          boxShadow: { xs: 4, sm: 8, md: 12 },
           textAlign: 'center',
           backgroundColor: 'white',
-          borderRadius: { xs: 2, sm: 3 }
+          borderRadius: { xs: 3, sm: 4 },
+          border: '1px solid rgba(0, 0, 0, 0.08)',
+          position: 'relative',
+          overflow: 'hidden',
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '4px',
+            background: 'linear-gradient(90deg, #1976d2 0%, #42a5f5 50%, #1976d2 100%)',
+            backgroundSize: '200% 100%',
+            animation: 'shimmer 3s ease-in-out infinite',
+          }
         }}>
-          <Typography variant="h5" gutterBottom sx={{ color: 'primary.main', fontWeight: 'bold' }}>
+          <Typography variant="h4" gutterBottom sx={{
+            color: 'primary.main',
+            fontWeight: 800,
+            fontSize: { xs: '1.5rem', sm: '1.8rem', md: '2.2rem' },
+            letterSpacing: '-0.02em',
+            mb: 2
+          }}>
             Welcome to SafeMint Dashboard
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-            Connect your wallet to access the dashboard and start earning.
+          <Typography variant="body1" color="text.secondary" sx={{
+            mb: 4,
+            fontSize: { xs: '1rem', sm: '1.1rem' },
+            fontWeight: 500,
+            lineHeight: 1.6
+          }}>
+            Connect your wallet to access the dashboard and start earning with our secure staking platform.
           </Typography>
           {isFromReferralLink && referralCode && (
-            <Alert severity="info" sx={{ mb: 3 }}>
-              <Typography variant="body2">
+            <Alert severity="info" sx={{
+              mb: 4,
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(33, 150, 243, 0.15)'
+            }}>
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>
                 🎉 You were invited! Referral code: {referralCode.slice(0, 6)}...{referralCode.slice(-4)}
               </Typography>
             </Alert>
@@ -758,11 +806,29 @@ const Dashboard = () => {
             size="large"
             onClick={wallet.connectWallet}
             disabled={wallet.loading}
-            sx={{ minWidth: 200 }}
+            sx={{
+              minWidth: 220,
+              py: { xs: 1.5, sm: 2 },
+              px: { xs: 3, sm: 4 },
+              fontSize: { xs: '1rem', sm: '1.1rem' },
+              fontWeight: 700,
+              borderRadius: '30px',
+              textTransform: 'none',
+              boxShadow: '0 6px 20px rgba(25, 118, 210, 0.3)',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                boxShadow: '0 8px 25px rgba(25, 118, 210, 0.4)'
+              }
+            }}
           >
             {wallet.loading ? <CircularProgress size={24} color="inherit" /> : 'Connect Wallet'}
           </Button>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+          <Typography variant="body2" color="text.secondary" sx={{
+            mt: 3,
+            fontSize: { xs: '0.9rem', sm: '1rem' },
+            fontWeight: 500
+          }}>
             💡 Connecting your wallet is safe and secure
           </Typography>
         </Card>
@@ -775,14 +841,34 @@ const Dashboard = () => {
       <Container
         maxWidth="xl"
         sx={{
-          py: { xs: 2, sm: 3 },
+          py: { xs: 4, sm: 6 },
           display: 'flex',
+          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          minHeight: '400px'
+          minHeight: '60vh'
         }}
       >
-        <CircularProgress />
+        <Box sx={{
+          textAlign: 'center',
+          p: { xs: 3, sm: 4 },
+          borderRadius: 3,
+          backgroundColor: 'white',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+          border: '1px solid rgba(0, 0, 0, 0.08)'
+        }}>
+          <CircularProgress size={48} sx={{ mb: 3 }} />
+          <Typography variant="h6" sx={{
+            color: 'primary.main',
+            fontWeight: 600,
+            mb: 1
+          }}>
+            Loading Dashboard
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
+            Please wait while we fetch your data...
+          </Typography>
+        </Box>
       </Container>
     );
   }
@@ -805,24 +891,46 @@ const Dashboard = () => {
 
   return (
     <Box sx={{
-      backgroundColor: '#f5f5f5',
+      backgroundColor: '#f8f9fa',
       minHeight: '100vh',
-      py: { xs: 1, sm: 2, md: 3 },
-      pb: { xs: 10, sm: 3, md: 3 } // Add extra bottom padding for mobile to avoid footer overlap
+      py: { xs: 2, sm: 3, md: 4 },
+      pb: { xs: 12, sm: 4, md: 4 } // Add extra bottom padding for mobile to avoid footer overlap
     }}>
       <Container
         maxWidth="xl"
         sx={{
-          px: { xs: 1, sm: 2, md: 3 }
+          px: { xs: 1.5, sm: 2, md: 3 }
         }}
       >
         {error && (
-          <Alert severity="error" sx={{ mb: 2, backgroundColor: 'white' }} onClose={() => setError('')}>
+          <Alert
+            severity="error"
+            sx={{
+              mb: 3,
+              backgroundColor: 'white',
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(244, 67, 54, 0.15)',
+              border: '1px solid rgba(244, 67, 54, 0.2)',
+              fontWeight: 500
+            }}
+            onClose={() => setError('')}
+          >
             {error}
           </Alert>
         )}
         {success && (
-          <Alert severity="success" sx={{ mb: 2, backgroundColor: 'white' }} onClose={() => setSuccess('')}>
+          <Alert
+            severity="success"
+            sx={{
+              mb: 3,
+              backgroundColor: 'white',
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(76, 175, 80, 0.15)',
+              border: '1px solid rgba(76, 175, 80, 0.2)',
+              fontWeight: 500
+            }}
+            onClose={() => setSuccess('')}
+          >
             {success}
           </Alert>
         )}
@@ -836,10 +944,33 @@ const Dashboard = () => {
             justifyContent: 'space-between',
             alignItems: { xs: 'flex-start', sm: 'center' },
             gap: { xs: 1.5, sm: 2 },
-            p: { xs: 1.5, sm: 2, md: 3 },
-            borderRadius: { xs: 2, sm: 3 },
+            p: { xs: 2, sm: 3, md: 4 },
+            borderRadius: { xs: 3, sm: 4 },
             backgroundColor: 'white',
-            boxShadow: { xs: 1, sm: 2 }
+            boxShadow: { xs: 2, sm: 4, md: 6 },
+            border: '1px solid rgba(0, 0, 0, 0.08)',
+            position: 'relative',
+            overflow: 'hidden',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '4px',
+              background: 'linear-gradient(90deg, #1976d2 0%, #42a5f5 50%, #1976d2 100%)',
+              backgroundSize: '200% 100%',
+              animation: 'shimmer 3s ease-in-out infinite',
+            },
+            '@keyframes shimmer': {
+              '0%': { backgroundPosition: '-200% 0' },
+              '100%': { backgroundPosition: '200% 0' }
+            },
+            animation: 'float 6s ease-in-out infinite',
+            '@keyframes float': {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-2px)' }
+            }
           }}
         >
           <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -848,10 +979,11 @@ const Dashboard = () => {
               gutterBottom
               sx={{
                 color: 'primary.main',
-                fontWeight: 'bold',
-                fontSize: { xs: '1.3rem', sm: '1.5rem', md: '2rem' },
-                lineHeight: 1.2,
-                mb: { xs: 0.5, sm: 1 }
+                fontWeight: 800,
+                fontSize: { xs: '1.4rem', sm: '1.6rem', md: '2.1rem' },
+                lineHeight: 1.1,
+                mb: { xs: 0.5, sm: 1 },
+                letterSpacing: '-0.02em'
               }}
             >
               SafeMint Dashboard
@@ -860,8 +992,9 @@ const Dashboard = () => {
               variant="body1"
               color="text.secondary"
               sx={{
-                fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' },
-                lineHeight: 1.4
+                fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1.05rem' },
+                lineHeight: 1.5,
+                fontWeight: 500
               }}
             >
               Welcome back! {wallet.account?.slice(0, 6)}...{wallet.account?.slice(-4)}
@@ -877,7 +1010,17 @@ const Dashboard = () => {
             sx={{
               fontSize: { xs: '0.8rem', sm: '0.875rem', md: '1rem' },
               flex: { xs: 1, sm: 'none' },
-              borderRadius: { xs: 1.5, sm: 2 }
+              borderRadius: { xs: 2, sm: 3 },
+              fontWeight: 600,
+              px: { xs: 2, sm: 3 },
+              py: { xs: 1, sm: 1.5 },
+              borderWidth: '2px',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              '&:hover': {
+                borderWidth: '2px',
+                transform: 'translateY(-2px)',
+                boxShadow: '0 8px 25px rgba(25, 118, 210, 0.15)'
+              }
             }}
           >
             Refresh
@@ -886,22 +1029,87 @@ const Dashboard = () => {
 
         {/* Token Information Section */}
         <Card sx={{
-          p: { xs: 1.5, sm: 2, md: 3 },
+          p: { xs: 2, sm: 3, md: 4 },
           backgroundColor: 'white',
-          borderRadius: { xs: 2, sm: 3 },
-          boxShadow: { xs: 1, sm: 2 },
+          borderRadius: { xs: 3, sm: 4 },
+          boxShadow: { xs: 2, sm: 4, md: 6 },
           mb: { xs: 2, sm: 3 },
-          width: '100%'
+          width: '100%',
+          border: '1px solid rgba(0, 0, 0, 0.08)',
+          position: 'relative',
+          overflow: 'hidden',
+          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          animation: 'slideInUp 0.6s ease-out',
+          '&:hover': {
+            boxShadow: { xs: 4, sm: 8, md: 12 },
+            transform: 'translateY(-4px) scale(1.01)'
+          },
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '3px',
+            background: 'linear-gradient(90deg, #1976d2 0%, #42a5f5 50%, #1976d2 100%)',
+            backgroundSize: '200% 100%',
+            animation: 'shimmer 3s ease-in-out infinite',
+          },
+          '@keyframes slideInUp': {
+            '0%': { opacity: 0, transform: 'translateY(30px)' },
+            '100%': { opacity: 1, transform: 'translateY(0)' }
+          },
+          '@keyframes shimmer': {
+            '0%': { backgroundPosition: '-200% 0' },
+            '100%': { backgroundPosition: '200% 0' }
+          }
         }}>
+          {/* Decorative SVG Circle */}
+          <Box sx={{
+            position: 'absolute',
+            top: 16,
+            left: 16,
+            width: 12,
+            height: 12,
+            zIndex: 1
+          }}>
+            <svg width="12" height="12" viewBox="0 0 12 12">
+              <circle
+                cx="6"
+                cy="6"
+                r="5"
+                fill="none"
+                stroke="#1976d2"
+                strokeWidth="1"
+                opacity="0.6"
+              >
+                <animate
+                  attributeName="r"
+                  values="3;5;3"
+                  dur="2s"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0.6;0.2;0.6"
+                  dur="2s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </svg>
+          </Box>
+
           <Typography
             variant="h6"
             gutterBottom
             sx={{
               color: 'primary.main',
-              fontWeight: 'bold',
+              fontWeight: 700,
               mb: { xs: 2, sm: 3 },
-              fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
-              textAlign: { xs: 'center', sm: 'left' }
+              fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.35rem' },
+              textAlign: { xs: 'center', sm: 'left' },
+              letterSpacing: '-0.01em',
+              pl: { xs: 0, sm: 3 }
             }}
           >
             Token Information
@@ -944,7 +1152,7 @@ const Dashboard = () => {
           {/* Token Stats Cards - Responsive Grid */}
           <Grid
             container
-            spacing={{ xs: 1.5, sm: 2, md: 2 }}
+            spacing={{ xs: 2, sm: 2.5, md: 3 }}
             sx={{
               width: '100%',
               margin: 0
@@ -977,40 +1185,99 @@ const Dashboard = () => {
 
         {/* Team Statistics Cards */}
         <Card sx={{
-          p: { xs: 1.5, sm: 2, md: 3 },
+          p: { xs: 2, sm: 3, md: 4 },
           backgroundColor: 'white',
-          borderRadius: { xs: 2, sm: 3 },
-          boxShadow: { xs: 1, sm: 2 },
+          borderRadius: { xs: 3, sm: 4 },
+          boxShadow: { xs: 2, sm: 4, md: 6 },
           mb: { xs: 2, sm: 3 },
-          width: '100%'
+          width: '100%',
+          border: '1px solid rgba(0, 0, 0, 0.08)',
+          position: 'relative',
+          overflow: 'hidden',
+          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          animation: 'slideInUp 0.8s ease-out',
+          animationDelay: '0.1s',
+          animationFillMode: 'both',
+          '&:hover': {
+            boxShadow: { xs: 4, sm: 8, md: 12 },
+            transform: 'translateY(-4px) scale(1.01)'
+          },
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '3px',
+            background: 'linear-gradient(90deg, #9c27b0 0%, #e1bee7 50%, #9c27b0 100%)',
+            backgroundSize: '200% 100%',
+            animation: 'shimmer 3s ease-in-out infinite',
+          }
         }}>
+          {/* Decorative SVG Circle */}
+          <Box sx={{
+            position: 'absolute',
+            top: 16,
+            left: 16,
+            width: 12,
+            height: 12,
+            zIndex: 1
+          }}>
+            <svg width="12" height="12" viewBox="0 0 12 12">
+              <circle
+                cx="6"
+                cy="6"
+                r="5"
+                fill="none"
+                stroke="#9c27b0"
+                strokeWidth="1"
+                opacity="0.6"
+              >
+                <animate
+                  attributeName="r"
+                  values="2;6;2"
+                  dur="2.5s"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0.8;0.2;0.8"
+                  dur="2.5s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </svg>
+          </Box>
+
           <Typography
             variant="h6"
             gutterBottom
             sx={{
               color: 'primary.main',
-              mb: { xs: 1.5, sm: 2 },
-              fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
-              fontWeight: 'bold',
-              textAlign: { xs: 'center', sm: 'left' }
+              mb: { xs: 2, sm: 3 },
+              fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.35rem' },
+              fontWeight: 700,
+              textAlign: { xs: 'center', sm: 'left' },
+              letterSpacing: '-0.01em',
+              pl: { xs: 0, sm: 3 }
             }}
           >
             Team Statistics
           </Typography>
           <Grid
             container
-            spacing={{ xs: 1.5, sm: 2, md: 2 }}
+            spacing={{ xs: 2, sm: 2.5, md: 3 }}
             sx={{
               width: '100%',
               margin: 0
             }}
           >
             {[
-              { icon: <Users size={24} />, title: 'My Direct', value: formatNumber(mlmData.directTeam), subtitle: 'Direct Referrals', color: 'primary.main' },
-              { icon: <Star size={24} />, title: 'Strong Teams', value: formatNumber(mlmData.strongTeam), subtitle: 'Active Strong Teams', color: 'secondary.main' },
-              { icon: <Users size={24} />, title: 'Other Teams', value: formatNumber(mlmData.otherTeams), subtitle: 'Additional Team Members', color: 'info.main' },
-              { icon: <BarChart3 size={24} />, title: 'Levels', value: formatNumber(mlmData.levels), subtitle: 'Achievement Levels', color: 'warning.main' },
-              { icon: <CheckCircle size={24} />, title: 'Active Orders', value: formatNumber(mlmData.activeOrders), subtitle: 'Current Active Orders', color: 'success.main' },
+              { icon: <Users size={24} />, title: 'My Direct', value: isLoading ? <LoadingSkeleton height={24} width={60} /> : formatNumber(mlmData.directTeam), subtitle: 'Direct Referrals', color: 'primary.main' },
+              { icon: <Star size={24} />, title: 'Strong Teams', value: isLoading ? <LoadingSkeleton height={24} width={60} /> : formatNumber(mlmData.strongTeam), subtitle: 'Active Strong Teams', color: 'secondary.main' },
+              { icon: <Users size={24} />, title: 'Other Teams', value: isLoading ? <LoadingSkeleton height={24} width={60} /> : formatNumber(mlmData.otherTeams), subtitle: 'Additional Team Members', color: 'info.main' },
+              { icon: <BarChart3 size={24} />, title: 'Levels', value: isLoading ? <LoadingSkeleton height={24} width={60} /> : formatNumber(mlmData.levels), subtitle: 'Achievement Levels', color: 'warning.main' },
+              { icon: <CheckCircle size={24} />, title: 'Active Orders', value: isLoading ? <LoadingSkeleton height={24} width={60} /> : formatNumber(mlmData.activeOrders), subtitle: 'Current Active Orders', color: 'success.main' },
             ].map((card, index) => (
               <Grid
                 item
@@ -1030,7 +1297,14 @@ const Dashboard = () => {
               >
                 <Box sx={{
                   width: { xs: '100%', sm: '100%', md: '100%' },
-                  maxWidth: '100%'
+                  maxWidth: '100%',
+                  animation: 'fadeInUp 0.6s ease-out',
+                  animationDelay: `${index * 0.1}s`,
+                  animationFillMode: 'both',
+                  '@keyframes fadeInUp': {
+                    '0%': { opacity: 0, transform: 'translateY(20px)' },
+                    '100%': { opacity: 1, transform: 'translateY(0)' }
+                  }
                 }}>
                   <StatCard
                     icon={card.icon}
@@ -1047,44 +1321,103 @@ const Dashboard = () => {
 
         {/* Financial Overview Cards */}
         <Card sx={{
-          p: { xs: 1.5, sm: 2, md: 3 },
+          p: { xs: 2, sm: 3, md: 4 },
           backgroundColor: 'white',
-          borderRadius: { xs: 2, sm: 3 },
-          boxShadow: { xs: 1, sm: 2 },
+          borderRadius: { xs: 3, sm: 4 },
+          boxShadow: { xs: 2, sm: 4, md: 6 },
           mb: { xs: 2, sm: 3 },
-          width: '100%'
+          width: '100%',
+          border: '1px solid rgba(0, 0, 0, 0.08)',
+          position: 'relative',
+          overflow: 'hidden',
+          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          animation: 'slideInUp 1s ease-out',
+          animationDelay: '0.2s',
+          animationFillMode: 'both',
+          '&:hover': {
+            boxShadow: { xs: 4, sm: 8, md: 12 },
+            transform: 'translateY(-4px) scale(1.01)'
+          },
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '3px',
+            background: 'linear-gradient(90deg, #4caf50 0%, #81c784 50%, #4caf50 100%)',
+            backgroundSize: '200% 100%',
+            animation: 'shimmer 3s ease-in-out infinite',
+          }
         }}>
+          {/* Decorative SVG Circle */}
+          <Box sx={{
+            position: 'absolute',
+            top: 16,
+            left: 16,
+            width: 12,
+            height: 12,
+            zIndex: 1
+          }}>
+            <svg width="12" height="12" viewBox="0 0 12 12">
+              <circle
+                cx="6"
+                cy="6"
+                r="5"
+                fill="none"
+                stroke="#4caf50"
+                strokeWidth="1"
+                opacity="0.6"
+              >
+                <animate
+                  attributeName="r"
+                  values="4;6;4"
+                  dur="3s"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0.6;0.3;0.6"
+                  dur="3s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </svg>
+          </Box>
+
           <Typography
             variant="h6"
             gutterBottom
             sx={{
               color: 'primary.main',
-              mb: { xs: 1.5, sm: 2 },
-              fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
-              fontWeight: 'bold',
-              textAlign: { xs: 'center', sm: 'left' }
+              mb: { xs: 2, sm: 3 },
+              fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.35rem' },
+              fontWeight: 700,
+              textAlign: { xs: 'center', sm: 'left' },
+              letterSpacing: '-0.01em',
+              pl: { xs: 0, sm: 3 }
             }}
           >
             Financial Overview
           </Typography>
           <Grid
             container
-            spacing={{ xs: 1.5, sm: 2, md: 2 }}
+            spacing={{ xs: 2, sm: 2.5, md: 3 }}
             sx={{
               width: '100%',
               margin: 0
             }}
           >
             {[
-              { icon: <TrendingUp size={24} />, title: 'Total In', value: formatCurrency(mlmData.totalIn), subtitle: 'Total Investments', color: 'success.main' },
-              { icon: <DollarSign size={24} />, title: 'Total Out', value: formatCurrency(mlmData.totalOut), subtitle: 'Total Withdrawals', color: 'info.main' },
-              { icon: <Wallet size={24} />, title: 'Active Portfolio', value: formatCurrency(mlmData.activePortfolio), subtitle: 'Current Investment Value', color: 'primary.main' },
-              { icon: <Trophy size={24} />, title: 'Team Growth Wallet', value: formatCurrency(mlmData.teamGrowthWallet), subtitle: 'Growth Wallet Balance', color: 'secondary.main' },
-              { icon: <Building2 size={24} />, title: 'Total Withdrawn', value: formatCurrency(mlmData.totalWithdrawn), subtitle: 'Total Amount Withdrawn', color: 'error.main' },
-              { icon: <Users2 size={24} />, title: 'Team Growth Laps', value: formatCurrency(mlmData.teamGrowthLaps), subtitle: 'Team Growth Cycles', color: 'warning.main' },
-              { icon: <Wallet size={24} />, title: 'SafeMint Buy Potential', value: formatCurrency(mlmData.inOutBuy), subtitle: 'Buy Potential Value', color: 'info.main' },
-              { icon: <Fuel size={24} />, title: 'Growth Fuels', value: formatCurrency(mlmData.growthFuels), subtitle: 'Team Growth Potential', color: 'success.main' },
-              { icon: <Battery size={24} />, title: 'Total Fuels', value: formatCurrency(mlmData.totalFuels), subtitle: 'Combined Fuel Resources', color: 'primary.main' },
+              { icon: <TrendingUp size={24} />, title: 'Total In', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.totalIn), subtitle: 'Total Investments', color: 'success.main' },
+              { icon: <DollarSign size={24} />, title: 'Total Out', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.totalOut), subtitle: 'Total Withdrawals', color: 'info.main' },
+              { icon: <Wallet size={24} />, title: 'Active Portfolio', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.activePortfolio), subtitle: 'Current Investment Value', color: 'primary.main' },
+              { icon: <Trophy size={24} />, title: 'Team Growth Wallet', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.teamGrowthWallet), subtitle: 'Growth Wallet Balance', color: 'secondary.main' },
+              { icon: <Building2 size={24} />, title: 'Total Withdrawn', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.totalWithdrawn), subtitle: 'Total Amount Withdrawn', color: 'error.main' },
+              { icon: <Users2 size={24} />, title: 'Team Growth Laps', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.teamGrowthLaps), subtitle: 'Team Growth Cycles', color: 'warning.main' },
+              { icon: <Wallet size={24} />, title: 'SafeMint Buy Potential', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.inOutBuy), subtitle: 'Buy Potential Value', color: 'info.main' },
+              { icon: <Fuel size={24} />, title: 'Growth Fuels', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.growthFuels), subtitle: 'Team Growth Potential', color: 'success.main' },
+              { icon: <Battery size={24} />, title: 'Total Fuels', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.totalFuels), subtitle: 'Combined Fuel Resources', color: 'primary.main' },
             ].map((card, index) => (
               <Grid
                 item
@@ -1104,7 +1437,10 @@ const Dashboard = () => {
               >
                 <Box sx={{
                   width: { xs: '100%', sm: '100%', md: '100%' },
-                  maxWidth: '100%'
+                  maxWidth: '100%',
+                  animation: 'fadeInUp 0.6s ease-out',
+                  animationDelay: `${index * 0.08}s`,
+                  animationFillMode: 'both'
                 }}>
                   <StatCard
                     icon={card.icon}
@@ -1121,41 +1457,100 @@ const Dashboard = () => {
 
         {/* Earnings Breakdown Cards */}
         <Card sx={{
-          p: { xs: 1.5, sm: 2, md: 3 },
+          p: { xs: 2, sm: 3, md: 4 },
           backgroundColor: 'white',
-          borderRadius: { xs: 2, sm: 3 },
-          boxShadow: { xs: 1, sm: 2 },
+          borderRadius: { xs: 3, sm: 4 },
+          boxShadow: { xs: 2, sm: 4, md: 6 },
           mb: { xs: 2, sm: 3 },
-          width: '100%'
+          width: '100%',
+          border: '1px solid rgba(0, 0, 0, 0.08)',
+          position: 'relative',
+          overflow: 'hidden',
+          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          animation: 'slideInUp 1.2s ease-out',
+          animationDelay: '0.3s',
+          animationFillMode: 'both',
+          '&:hover': {
+            boxShadow: { xs: 4, sm: 8, md: 12 },
+            transform: 'translateY(-4px) scale(1.01)'
+          },
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '3px',
+            background: 'linear-gradient(90deg, #ff9800 0%, #ffcc02 50%, #ff9800 100%)',
+            backgroundSize: '200% 100%',
+            animation: 'shimmer 3s ease-in-out infinite',
+          }
         }}>
+          {/* Decorative SVG Circle */}
+          <Box sx={{
+            position: 'absolute',
+            top: 16,
+            left: 16,
+            width: 12,
+            height: 12,
+            zIndex: 1
+          }}>
+            <svg width="12" height="12" viewBox="0 0 12 12">
+              <circle
+                cx="6"
+                cy="6"
+                r="5"
+                fill="none"
+                stroke="#ff9800"
+                strokeWidth="1"
+                opacity="0.6"
+              >
+                <animate
+                  attributeName="r"
+                  values="3;5;3"
+                  dur="2.2s"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0.7;0.3;0.7"
+                  dur="2.2s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </svg>
+          </Box>
+
           <Typography
             variant="h6"
             gutterBottom
             sx={{
               color: 'primary.main',
-              mb: { xs: 1.5, sm: 2 },
-              fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
-              fontWeight: 'bold',
-              textAlign: { xs: 'center', sm: 'left' }
+              mb: { xs: 2, sm: 3 },
+              fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.35rem' },
+              fontWeight: 700,
+              textAlign: { xs: 'center', sm: 'left' },
+              letterSpacing: '-0.01em',
+              pl: { xs: 0, sm: 3 }
             }}
           >
             Earnings Breakdown
           </Typography>
           <Grid
             container
-            spacing={{ xs: 1.5, sm: 2, md: 2 }}
+            spacing={{ xs: 2, sm: 2.5, md: 3 }}
             sx={{
               width: '100%',
               margin: 0
             }}
           >
             {[
-              { icon: <Users size={24} />, title: 'Referral Earn', value: formatCurrency(mlmData.referralEarn), subtitle: 'From Direct Referrals', color: 'primary.main' },
-              { icon: <BarChart3 size={24} />, title: 'Level Earn', value: formatCurrency(mlmData.levelEarn), subtitle: 'From Team Levels', color: 'info.main' },
-              { icon: <TrendingUp size={24} />, title: 'Growth Earn', value: formatCurrency(mlmData.growthEarn), subtitle: 'From Growth System', color: 'success.main' },
-              { icon: <Trophy size={24} />, title: 'Leader Earn', value: formatCurrency(mlmData.leaderEarn), subtitle: 'From Leadership', color: 'warning.main' },
-              { icon: <BarChart3 size={24} />, title: 'Development Earn', value: formatCurrency(mlmData.developmentEarn), subtitle: 'From Development', color: 'info.main' },
-              { icon: <Users size={24} />, title: 'Team Growth', value: formatCurrency(mlmData.teamGrowthWallet), subtitle: 'Team Growth Wallet', color: 'secondary.main' },
+              { icon: <Users size={24} />, title: 'Referral Earn', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.referralEarn), subtitle: 'From Direct Referrals', color: 'primary.main' },
+              { icon: <BarChart3 size={24} />, title: 'Level Earn', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.levelEarn), subtitle: 'From Team Levels', color: 'info.main' },
+              { icon: <TrendingUp size={24} />, title: 'Growth Earn', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.growthEarn), subtitle: 'From Growth System', color: 'success.main' },
+              { icon: <Trophy size={24} />, title: 'Leader Earn', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.leaderEarn), subtitle: 'From Leadership', color: 'warning.main' },
+              { icon: <BarChart3 size={24} />, title: 'Development Earn', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.developmentEarn), subtitle: 'From Development', color: 'info.main' },
+              { icon: <Users size={24} />, title: 'Team Growth', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.teamGrowthWallet), subtitle: 'Team Growth Wallet', color: 'secondary.main' },
             ].map((card, index) => (
               <Grid
                 item
@@ -1175,7 +1570,10 @@ const Dashboard = () => {
               >
                 <Box sx={{
                   width: { xs: '100%', sm: '100%', md: '100%' },
-                  maxWidth: '100%'
+                  maxWidth: '100%',
+                  animation: 'fadeInUp 0.6s ease-out',
+                  animationDelay: `${index * 0.12}s`,
+                  animationFillMode: 'both'
                 }}>
                   <StatCard
                     icon={card.icon}
@@ -1191,7 +1589,7 @@ const Dashboard = () => {
         </Card>
 
         {/* Main Action Cards Grid */}
-        <Grid container spacing={{ xs: 1.5, sm: 2, md: 2 }} sx={{ width: '100%', margin: 0 }}>
+        <Grid container spacing={{ xs: 2, sm: 2.5, md: 3 }} sx={{ width: '100%', margin: 0 }}>
 
           {/* Trading & Staking Card */}
           <Grid
@@ -1214,22 +1612,85 @@ const Dashboard = () => {
               maxWidth: '100%'
             }}>
               <Card sx={{
-                p: { xs: 1.5, sm: 2, md: 3 },
+                p: { xs: 2, sm: 3, md: 4 },
                 backgroundColor: 'white',
-                borderRadius: { xs: 2, sm: 3 },
-                boxShadow: { xs: 1, sm: 2 },
+                borderRadius: { xs: 3, sm: 4 },
+                boxShadow: { xs: 2, sm: 4, md: 6 },
                 height: 'fit-content',
-                width: '100%'
+                width: '100%',
+                border: '1px solid rgba(0, 0, 0, 0.08)',
+                position: 'relative',
+                overflow: 'hidden',
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                animation: 'slideInLeft 1.4s ease-out',
+                animationDelay: '0.4s',
+                animationFillMode: 'both',
+                '&:hover': {
+                  boxShadow: { xs: 4, sm: 8, md: 12 },
+                  transform: 'translateY(-4px) scale(1.01)'
+                },
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '3px',
+                  background: 'linear-gradient(90deg, #2196f3 0%, #64b5f6 50%, #2196f3 100%)',
+                  backgroundSize: '200% 100%',
+                  animation: 'shimmer 3s ease-in-out infinite',
+                },
+                '@keyframes slideInLeft': {
+                  '0%': { opacity: 0, transform: 'translateX(-30px)' },
+                  '100%': { opacity: 1, transform: 'translateX(0)' }
+                }
               }}>
+              {/* Decorative SVG Circle */}
+              <Box sx={{
+                position: 'absolute',
+                top: 16,
+                left: 16,
+                width: 12,
+                height: 12,
+                zIndex: 1
+              }}>
+                <svg width="12" height="12" viewBox="0 0 12 12">
+                  <circle
+                    cx="6"
+                    cy="6"
+                    r="5"
+                    fill="none"
+                    stroke="#2196f3"
+                    strokeWidth="1"
+                    opacity="0.6"
+                  >
+                    <animate
+                      attributeName="r"
+                      values="2;5;2"
+                      dur="2.8s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values="0.8;0.2;0.8"
+                      dur="2.8s"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                </svg>
+              </Box>
+
               <Typography
                 variant="h6"
                 gutterBottom
                 sx={{
                   color: 'primary.main',
-                  fontWeight: 'bold',
+                  fontWeight: 700,
                   mb: { xs: 2, sm: 3 },
-                  fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
-                  textAlign: { xs: 'center', sm: 'left' }
+                  fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.35rem' },
+                  textAlign: { xs: 'center', sm: 'left' },
+                  letterSpacing: '-0.01em',
+                  pl: { xs: 0, sm: 3 }
                 }}
               >
                 Trading & Staking
@@ -1272,22 +1733,85 @@ const Dashboard = () => {
               maxWidth: '100%'
             }}>
               <Card sx={{
-                p: { xs: 1.5, sm: 2, md: 3 },
+                p: { xs: 2, sm: 3, md: 4 },
                 backgroundColor: 'white',
-                borderRadius: { xs: 2, sm: 3 },
-                boxShadow: { xs: 1, sm: 2 },
+                borderRadius: { xs: 3, sm: 4 },
+                boxShadow: { xs: 2, sm: 4, md: 6 },
                 height: 'fit-content',
-                width: '100%'
+                width: '100%',
+                border: '1px solid rgba(0, 0, 0, 0.08)',
+                position: 'relative',
+                overflow: 'hidden',
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                animation: 'slideInRight 1.4s ease-out',
+                animationDelay: '0.5s',
+                animationFillMode: 'both',
+                '&:hover': {
+                  boxShadow: { xs: 4, sm: 8, md: 12 },
+                  transform: 'translateY(-4px) scale(1.01)'
+                },
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '3px',
+                  background: 'linear-gradient(90deg, #673ab7 0%, #9575cd 50%, #673ab7 100%)',
+                  backgroundSize: '200% 100%',
+                  animation: 'shimmer 3s ease-in-out infinite',
+                },
+                '@keyframes slideInRight': {
+                  '0%': { opacity: 0, transform: 'translateX(30px)' },
+                  '100%': { opacity: 1, transform: 'translateX(0)' }
+                }
               }}>
+              {/* Decorative SVG Circle */}
+              <Box sx={{
+                position: 'absolute',
+                top: 16,
+                left: 16,
+                width: 12,
+                height: 12,
+                zIndex: 1
+              }}>
+                <svg width="12" height="12" viewBox="0 0 12 12">
+                  <circle
+                    cx="6"
+                    cy="6"
+                    r="5"
+                    fill="none"
+                    stroke="#673ab7"
+                    strokeWidth="1"
+                    opacity="0.6"
+                  >
+                    <animate
+                      attributeName="r"
+                      values="4;6;4"
+                      dur="2.6s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values="0.6;0.2;0.6"
+                      dur="2.6s"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                </svg>
+              </Box>
+
               <Typography
                 variant="h6"
                 gutterBottom
                 sx={{
                   color: 'primary.main',
-                  fontWeight: 'bold',
+                  fontWeight: 700,
                   mb: { xs: 2, sm: 3 },
-                  fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
-                  textAlign: { xs: 'center', sm: 'left' }
+                  fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.35rem' },
+                  textAlign: { xs: 'center', sm: 'left' },
+                  letterSpacing: '-0.01em',
+                  pl: { xs: 0, sm: 3 }
                 }}
               >
                 Your Referral Code
@@ -1323,22 +1847,81 @@ const Dashboard = () => {
               maxWidth: '100%'
             }}>
               <Card sx={{
-                p: { xs: 1.5, sm: 2, md: 3 },
+                p: { xs: 2, sm: 3, md: 4 },
                 backgroundColor: 'white',
-                borderRadius: { xs: 2, sm: 3 },
-                boxShadow: { xs: 1, sm: 2 },
+                borderRadius: { xs: 3, sm: 4 },
+                boxShadow: { xs: 2, sm: 4, md: 6 },
                 height: 'fit-content',
-                width: '100%'
+                width: '100%',
+                border: '1px solid rgba(0, 0, 0, 0.08)',
+                position: 'relative',
+                overflow: 'hidden',
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                animation: 'slideInLeft 1.6s ease-out',
+                animationDelay: '0.6s',
+                animationFillMode: 'both',
+                '&:hover': {
+                  boxShadow: { xs: 4, sm: 8, md: 12 },
+                  transform: 'translateY(-4px) scale(1.01)'
+                },
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '3px',
+                  background: 'linear-gradient(90deg, #4caf50 0%, #81c784 50%, #4caf50 100%)',
+                  backgroundSize: '200% 100%',
+                  animation: 'shimmer 3s ease-in-out infinite',
+                }
               }}>
+              {/* Decorative SVG Circle */}
+              <Box sx={{
+                position: 'absolute',
+                top: 16,
+                left: 16,
+                width: 12,
+                height: 12,
+                zIndex: 1
+              }}>
+                <svg width="12" height="12" viewBox="0 0 12 12">
+                  <circle
+                    cx="6"
+                    cy="6"
+                    r="5"
+                    fill="none"
+                    stroke="#4caf50"
+                    strokeWidth="1"
+                    opacity="0.6"
+                  >
+                    <animate
+                      attributeName="r"
+                      values="3;6;3"
+                      dur="2.4s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values="0.7;0.2;0.7"
+                      dur="2.4s"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                </svg>
+              </Box>
+
               <Typography
                 variant="h6"
                 gutterBottom
                 sx={{
-                  fontWeight: 'bold',
+                  fontWeight: 700,
                   mb: { xs: 2, sm: 3 },
                   textAlign: 'center',
                   color: 'primary.main',
-                  fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' }
+                  fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.35rem' },
+                  letterSpacing: '-0.01em',
+                  pl: { xs: 0, sm: 3 }
                 }}
               >
                 Withdrawal Information
@@ -1347,43 +1930,62 @@ const Dashboard = () => {
               <Box sx={{ mb: 3 }}>
                 <Box sx={{
                   backgroundColor: '#f8f9fa',
-                  p: 1.5,
+                  p: { xs: 1.5, sm: 2 },
                   display: 'flex',
                   justifyContent: 'space-between',
-                  borderRadius: '8px 8px 0 0',
-                  borderBottom: '2px solid #e9ecef'
+                  borderRadius: '12px 12px 0 0',
+                  borderBottom: '2px solid #e9ecef',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
                 }}>
-                  <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'text.primary', fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
+                  <Typography variant="body2" sx={{ fontWeight: 700, color: 'text.primary', fontSize: { xs: '0.85rem', sm: '0.9rem' } }}>
                     Earning Type
                   </Typography>
-                  <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'text.primary', fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
+                  <Typography variant="body2" sx={{ fontWeight: 700, color: 'text.primary', fontSize: { xs: '0.85rem', sm: '0.9rem' } }}>
                     Available Amount
                   </Typography>
                 </Box>
 
-                <Box sx={{ border: '1px solid #e9ecef', borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
+                <Box sx={{
+                  border: '1px solid #e9ecef',
+                  borderTop: 'none',
+                  borderRadius: '0 0 12px 12px',
+                  overflow: 'hidden',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+                }}>
                   {[
-                    { label: 'Referral Earnings', value: mlmData.referralEarn },
-                    { label: 'Level Earnings', value: mlmData.levelEarn },
-                    { label: 'Growth Earnings', value: mlmData.growthEarn },
-                    { label: 'Team Growth Gains', value: mlmData.teamGrowthWallet },
-                    { label: 'Leader Earnings', value: mlmData.leaderEarn },
-                    { label: 'Development Earnings', value: mlmData.developmentEarn },
+                    { label: 'Referral Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.referralEarn },
+                    { label: 'Level Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.levelEarn },
+                    { label: 'Growth Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.growthEarn },
+                    { label: 'Team Growth Gains', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.teamGrowthWallet },
+                    { label: 'Leader Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.leaderEarn },
+                    { label: 'Development Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.developmentEarn },
                   ].map((item, index, array) => (
                     <Box
                       key={item.label}
                       sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
-                        p: { xs: 1, sm: 1.5 },
-                        borderBottom: index < array.length - 1 ? '1px solid #f1f3f4' : 'none'
+                        p: { xs: 1.5, sm: 2 },
+                        borderBottom: index < array.length - 1 ? '1px solid #f1f3f4' : 'none',
+                        transition: 'all 0.2s ease',
+                        '&:hover': {
+                          backgroundColor: '#f8f9fa'
+                        }
                       }}
                     >
-                      <Typography variant="body2" sx={{ color: 'text.primary', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                      <Typography variant="body2" sx={{
+                        color: 'text.primary',
+                        fontSize: { xs: '0.8rem', sm: '0.9rem' },
+                        fontWeight: 500
+                      }}>
                         {item.label}
                       </Typography>
-                      <Typography variant="body2" sx={{ fontWeight: 'bold', color: 'success.main', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
-                        + ${formatNumber(item.value)}
+                      <Typography variant="body2" sx={{
+                        fontWeight: 700,
+                        color: 'success.main',
+                        fontSize: { xs: '0.8rem', sm: '0.9rem' }
+                      }}>
+                        {typeof item.value === 'object' ? item.value : `+ $${formatNumber(item.value)}`}
                       </Typography>
                     </Box>
                   ))}
@@ -1392,31 +1994,50 @@ const Dashboard = () => {
 
               <Box sx={{
                 backgroundColor: '#f8f9fa',
-                p: { xs: 1.5, sm: 2 },
-                borderRadius: 2,
+                p: { xs: 2, sm: 3 },
+                borderRadius: 3,
                 mb: 3,
                 textAlign: 'center',
-                border: '2px solid #e9ecef'
+                border: '2px solid #e9ecef',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '3px',
+                  background: 'linear-gradient(90deg, #4caf50 0%, #81c784 50%, #4caf50 100%)',
+                  backgroundSize: '200% 100%',
+                  animation: 'shimmer 2s ease-in-out infinite',
+                }
               }}>
                 <Typography variant="h4" sx={{
-                  fontWeight: 'bold',
+                  fontWeight: 800,
                   color: 'primary.main',
                   mb: 1,
-                  fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' }
+                  fontSize: { xs: '1.6rem', sm: '2.2rem', md: '2.8rem' },
+                  letterSpacing: '-0.02em'
                 }}>
-                  ${formatNumber(
-                    mlmData.referralEarn +
-                    mlmData.levelEarn +
-                    mlmData.growthEarn +
-                    mlmData.teamGrowthWallet +
-                    mlmData.leaderEarn +
-                    mlmData.developmentEarn
+                  {isLoading ? (
+                    <LoadingSkeleton height={40} width={120} />
+                  ) : (
+                    `$${formatNumber(
+                      mlmData.referralEarn +
+                      mlmData.levelEarn +
+                      mlmData.growthEarn +
+                      mlmData.teamGrowthWallet +
+                      mlmData.leaderEarn +
+                      mlmData.developmentEarn
+                    )}`
                   )}
                 </Typography>
                 <Typography variant="body1" sx={{
                   color: 'text.secondary',
-                  fontWeight: 'medium',
-                  fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' }
+                  fontWeight: 600,
+                  fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1.05rem' }
                 }}>
                   Total Available for Withdrawal
                 </Typography>
@@ -1429,13 +2050,24 @@ const Dashboard = () => {
                   sx={{
                     backgroundColor: '#4CAF50',
                     color: 'white',
-                    borderRadius: '25px',
-                    px: { xs: 3, sm: 4 },
-                    py: { xs: 1, sm: 1.5 },
-                    fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
-                    fontWeight: 'bold',
-                    '&:hover': { backgroundColor: '#45a049' },
-                    '&:disabled': { backgroundColor: '#cccccc' }
+                    borderRadius: '30px',
+                    px: { xs: 4, sm: 5 },
+                    py: { xs: 1.5, sm: 2 },
+                    fontSize: { xs: '0.95rem', sm: '1.05rem', md: '1.15rem' },
+                    fontWeight: 700,
+                    textTransform: 'none',
+                    boxShadow: '0 6px 20px rgba(76, 175, 80, 0.3)',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    '&:hover': {
+                      backgroundColor: '#45a049',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 8px 25px rgba(76, 175, 80, 0.4)'
+                    },
+                    '&:disabled': {
+                      backgroundColor: '#cccccc',
+                      transform: 'none',
+                      boxShadow: 'none'
+                    }
                   }}
                   disabled={orderLoading || (mlmData.referralEarn + mlmData.levelEarn + mlmData.growthEarn + mlmData.teamGrowthWallet + mlmData.leaderEarn + mlmData.developmentEarn) <= 0}
                   onClick={handleWithdraw}
@@ -1468,22 +2100,81 @@ const Dashboard = () => {
               maxWidth: '100%'
             }}>
               <Card sx={{
-                p: { xs: 1.5, sm: 2, md: 3 },
+                p: { xs: 2, sm: 3, md: 4 },
                 backgroundColor: 'white',
-                borderRadius: { xs: 2, sm: 3 },
-                boxShadow: { xs: 1, sm: 2 },
+                borderRadius: { xs: 3, sm: 4 },
+                boxShadow: { xs: 2, sm: 4, md: 6 },
                 height: 'fit-content',
-                width: '100%'
+                width: '100%',
+                border: '1px solid rgba(0, 0, 0, 0.08)',
+                position: 'relative',
+                overflow: 'hidden',
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                animation: 'slideInRight 1.6s ease-out',
+                animationDelay: '0.7s',
+                animationFillMode: 'both',
+                '&:hover': {
+                  boxShadow: { xs: 4, sm: 8, md: 12 },
+                  transform: 'translateY(-4px) scale(1.01)'
+                },
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '3px',
+                  background: 'linear-gradient(90deg, #f44336 0%, #ef5350 50%, #f44336 100%)',
+                  backgroundSize: '200% 100%',
+                  animation: 'shimmer 3s ease-in-out infinite',
+                }
               }}>
+              {/* Decorative SVG Circle */}
+              <Box sx={{
+                position: 'absolute',
+                top: 16,
+                left: 16,
+                width: 12,
+                height: 12,
+                zIndex: 1
+              }}>
+                <svg width="12" height="12" viewBox="0 0 12 12">
+                  <circle
+                    cx="6"
+                    cy="6"
+                    r="5"
+                    fill="none"
+                    stroke="#f44336"
+                    strokeWidth="1"
+                    opacity="0.6"
+                  >
+                    <animate
+                      attributeName="r"
+                      values="2;6;2"
+                      dur="3.2s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values="0.8;0.2;0.8"
+                      dur="3.2s"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                </svg>
+              </Box>
+
               <Typography
                 variant="h6"
                 gutterBottom
                 sx={{
                   color: 'primary.main',
-                  fontWeight: 'bold',
+                  fontWeight: 700,
                   mb: { xs: 2, sm: 3 },
-                  fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
-                  textAlign: { xs: 'center', sm: 'left' }
+                  fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.35rem' },
+                  textAlign: { xs: 'center', sm: 'left' },
+                  letterSpacing: '-0.01em',
+                  pl: { xs: 0, sm: 3 }
                 }}
               >
                 Order History
@@ -1499,6 +2190,7 @@ const Dashboard = () => {
           </Grid>
 
         </Grid>
+
       </Container>
     </Box>
   );

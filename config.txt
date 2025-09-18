@@ -27,13 +27,50 @@ server {
 }
 
 
+server {
+    server_name app.bdcstack.com;
+
+    location / {
+        proxy_pass http://localhost:1735;   # Node.js app on port 1735
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/app.bdcstack.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/app.bdcstack.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = app.bdcstack.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name app.bdcstack.com;
+    return 404; # managed by Certbot
+
+
+}
+
+
+
+
+
+
 
 server {
     listen 80;
-    server_name safemint.vip;
+    server_name bdcstack.com;
 
     location / {
-        proxy_pass http://localhost:1736;   # Node.js app port
+        proxy_pass http://localhost:1737;   # Node.js app port
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -46,4 +83,7 @@ server {
 ln -s /etc/nginx/sites-available/safemint /etc/nginx/sites-enabled/
 nginx -t
 systemctl reload nginx
-certbot --nginx -d safemint.vip
+certbot --nginx -d bdcstack.com
+
+
+ln -s /etc/nginx/sites-available/app.bdcstack.com /etc/nginx/sites-enabled/

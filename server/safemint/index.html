@@ -158,18 +158,19 @@
         .logo-container {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 8px 16px;
-            border-radius: 12px;
-            background: rgba(0, 212, 255, 0.05);
-            border: 1px solid rgba(0, 212, 255, 0.1);
+            gap: 8px;
+            padding: 0;
+            margin: 0;
+            border-radius: 0;
+            background: transparent;
+            border: none;
             transition: all 0.3s ease;
         }
 
         .logo-container:hover {
-            background: rgba(0, 212, 255, 0.1);
-            border-color: rgba(0, 212, 255, 0.2);
-            transform: translateY(-2px);
+            background: transparent;
+            border-color: transparent;
+            transform: scale(1.05);
         }
 
         .logo-text {
@@ -305,7 +306,7 @@
                 <div class="flex items-center justify-between">
                     <!-- Logo Section -->
                     <div class="logo-container">
-                        <img src="safemint-logo.png" alt="SafeMint Logo" class="w-12 h-12 rounded-lg shadow-lg">
+                        <img src="safemint-logo.png" alt="SafeMint Logo" class="w-20 h-20 rounded-lg shadow-lg">
                         <span class="logo-text">SafeMint</span>
                     </div>
 
@@ -399,11 +400,37 @@
                     <p class="text-2xl md:text-3xl mb-8 text-gray-300">
                         Smart Contract Investment Platform
                     </p>
-                    <p class="text-xl mb-12 text-gray-400 max-w-4xl mx-auto">
+                    <p class="text-xl mb-8 text-gray-400 max-w-4xl mx-auto">
                         The SafeMint project is designed around a simple yet powerful economic principle:
                         Flow of Value In (IN) and Flow of Value Out (OUT). Create continuous cycles of
                         buying, selling, and reinvesting for sustainable growth.
                     </p>
+
+                    <!-- Contract Address Section -->
+                    <div class="glass-card p-6 mb-8 max-w-4xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+                        <div class="flex flex-col items-center space-y-3">
+                            <h3 class="text-lg font-bold gradient-text">
+                                <i class="fas fa-file-contract mr-2"></i>Smart Contract Address
+                            </h3>
+                            <div class="flex items-center space-x-3 bg-black/30 rounded-lg p-3 w-full max-w-2xl">
+                                <code class="text-cyan-400 font-mono text-sm flex-1 text-center break-all">
+                                    0xC0746bd0380190B899440bC33C647cE2426C8cCb
+                                </code>
+                                <button
+                                    onclick="copyToClipboard('0xC0746bd0380190B899440bC33C647cE2426C8cCb')"
+                                    class="bg-cyan-500 hover:bg-cyan-600 text-white px-3 py-1 rounded-md text-sm transition-colors duration-200 flex items-center space-x-1"
+                                    title="Copy to clipboard"
+                                >
+                                    <i class="fas fa-copy"></i>
+                                    <span>Copy</span>
+                                </button>
+                            </div>
+                            <p class="text-xs text-gray-500 text-center">
+                                Verified smart contract on BEP-20 blockchain
+                            </p>
+                        </div>
+                    </div>
+
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
                         <button class="btn-primary text-lg px-10 py-4">
                             Start Investing
@@ -1374,6 +1401,46 @@
                 }
             });
         });
+
+        // Copy to clipboard function
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Show success feedback
+                const button = event.target.closest('button');
+                const originalContent = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i><span>Copied!</span>';
+                button.classList.add('bg-green-500');
+                button.classList.remove('bg-cyan-500');
+
+                setTimeout(() => {
+                    button.innerHTML = originalContent;
+                    button.classList.remove('bg-green-500');
+                    button.classList.add('bg-cyan-500');
+                }, 2000);
+            }).catch(function(err) {
+                console.error('Could not copy text: ', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+
+                // Show success feedback
+                const button = event.target.closest('button');
+                const originalContent = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i><span>Copied!</span>';
+                button.classList.add('bg-green-500');
+                button.classList.remove('bg-cyan-500');
+
+                setTimeout(() => {
+                    button.innerHTML = originalContent;
+                    button.classList.remove('bg-green-500');
+                    button.classList.add('bg-cyan-500');
+                }, 2000);
+            });
+        }
 
         // Add active state to current section
         window.addEventListener('scroll', function() {

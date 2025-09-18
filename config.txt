@@ -1,0 +1,49 @@
+server {
+    listen 80;
+    server_name safemint.vip;
+    return 301 https://safemint.vip$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name safemint.vip;
+
+    root /www/wwwroot/safemint/dist;
+    index index.html;
+
+    ssl_certificate /etc/letsencrypt/live/safemint.vip/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/safemint.vip/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    location / {
+        try_files $uri /index.html;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}
+
+
+
+server {
+    listen 80;
+    server_name safemint.vip;
+
+    location / {
+        proxy_pass http://localhost:1736;   # Node.js app port
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+
+
+ln -s /etc/nginx/sites-available/safemint /etc/nginx/sites-enabled/
+nginx -t
+systemctl reload nginx
+certbot --nginx -d safemint.vip

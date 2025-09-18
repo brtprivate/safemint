@@ -49,7 +49,7 @@ const Navbar: React.FC = () => {
 
   // Gradient background for AppBar
   const appBarStyle = {
-    background: 'linear-gradient(90deg, #FFA000 0%, #FF8F00 100%)',
+    background: 'linear-gradient(90deg, #1e3a8a 0%, #1e40af 100%)', // Royal dark blue gradient
     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
   };
 
@@ -59,7 +59,7 @@ const Navbar: React.FC = () => {
     <>
       <AppBar position="sticky" sx={appBarStyle} elevation={0}>
         <Container maxWidth="lg">
-          <Toolbar disableGutters sx={{ minHeight: { xs: 64, sm: 70 } }}>
+          <Toolbar disableGutters sx={{ minHeight: { xs: 41, sm: 45 } }}>
             {/* Logo */}
             <Typography
               variant="h6"
@@ -83,7 +83,10 @@ const Navbar: React.FC = () => {
               <Logo
                 size="navbar"
                 sx={{
-                  mr: { xs: 1.5, sm: 2 },
+                  mr: 0,
+                  ml: 0,
+                  m: 0,
+                  p: 0,
                   flexShrink: 0
                 }}
               />
@@ -192,8 +195,8 @@ const Navbar: React.FC = () => {
                   variant="contained"
                   onClick={() => open()}
                   sx={{
-                    backgroundColor: '#FFA000',
-                    '&:hover': { backgroundColor: '#FF8F00' },
+                    backgroundColor: '#3b82f6',
+                    '&:hover': { backgroundColor: '#2563eb' },
                     px: { xs: 1, sm: 2 },
                     fontSize: { xs: '0.75rem', sm: '0.875rem' }
                   }}
@@ -223,7 +226,7 @@ const Navbar: React.FC = () => {
           <BottomNavigation
             value={location.pathname}
             sx={{
-              bgcolor: '#FFA000',
+              bgcolor: '#1e3a8a', // Royal dark blue to match navbar
               '& .MuiBottomNavigationAction-root': {
                 color: 'rgba(255, 255, 255, 0.7)',
                 fontSize: '0.7rem',

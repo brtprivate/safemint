@@ -1282,10 +1282,10 @@ const Dashboard = () => {
               <Grid
                 item
                 xs={12}
-                sm={12}
-                md={6}
+                sm={6}
+                md={4}
                 lg={4}
-                xl={3}
+                xl={4}
                 key={`team-stats-${index}`}
                 sx={{
                   display: 'flex',
@@ -1422,10 +1422,10 @@ const Dashboard = () => {
               <Grid
                 item
                 xs={12}
-                sm={12}
-                md={6}
+                sm={6}
+                md={4}
                 lg={4}
-                xl={3}
+                xl={4}
                 key={`financial-${index}`}
                 sx={{
                   display: 'flex',
@@ -1555,10 +1555,10 @@ const Dashboard = () => {
               <Grid
                 item
                 xs={12}
-                sm={12}
-                md={6}
+                sm={6}
+                md={4}
                 lg={4}
-                xl={3}
+                xl={4}
                 key={`earnings-${index}`}
                 sx={{
                   display: 'flex',

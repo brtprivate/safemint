@@ -33,22 +33,11 @@ import TeamGrowthChecker from '../components/TeamGrowthChecker';
 // Import utility functions
 import { formatCurrency, formatNumber, formatDate } from '../utils/formatters';
 
-// Lucide React icons
-import {
-  Users,
-  TrendingUp,
-  Wallet,
-  DollarSign,
-  Star,
-  Trophy,
-  BarChart3,
-  RefreshCw,
-  Building2,
-  Users2,
-  Fuel,
-  CheckCircle,
-  Battery
-} from 'lucide-react';
+// Import Enhanced Custom SVG Icons
+import CustomSVGIcons from '../components/icons/CustomSVGIcons';
+
+// Import RefreshCw from lucide-react (keeping this one as it's used in header)
+import { RefreshCw } from 'lucide-react';
 
 // Helper function to safely stringify objects with BigInt values
 const safeStringify = (obj, space = 2) => {
@@ -116,6 +105,7 @@ const Dashboard = () => {
     inOutBuy: 0,
     growthFuels: 0,
     activeOrders: 0,
+    teamLevelStake   : 0,
   });
 
   const fetchMlmData = async () => {
@@ -359,6 +349,11 @@ const Dashboard = () => {
 
       const availableWithdrawal = totGainFormatted + orderGrowthFormatted + growthFuels + orderValueFormatted;
 
+      // Extract teamLevelStake from bonusInfo (index 6 in the contract response)
+      const teamLevelStakeRaw = bonusInfo?.teamLevelStake || 0;
+      const teamLevelStake = formatValue(teamLevelStakeRaw);
+      console.log("📊 [fetchMlmData] Team Level Stake:", teamLevelStake);
+
       const finalMlmData = {
         directTeam,
         strongTeam,
@@ -380,6 +375,7 @@ const Dashboard = () => {
         totalFuels,
         activeOrders,
         availableWithdrawal,
+        teamLevelStake, // Add teamLevelStake to the final data
       };
 
       setMlmData(finalMlmData);
@@ -1266,26 +1262,28 @@ const Dashboard = () => {
           </Typography>
           <Grid
             container
-            spacing={{ xs: 2, sm: 2.5, md: 3 }}
+            spacing={{ xs: 1.5, sm: 2, md: 2.5, lg: 3 }}
             sx={{
               width: '100%',
-              margin: 0
+              margin: 0,
+              justifyContent: { xs: 'center', sm: 'flex-start' }
             }}
           >
             {[
-              { icon: <Users size={24} />, title: 'My Direct', value: isLoading ? <LoadingSkeleton height={24} width={60} /> : formatNumber(mlmData.directTeam), subtitle: 'Direct Referrals', color: 'primary.main' },
-              { icon: <Star size={24} />, title: 'Strong Teams', value: isLoading ? <LoadingSkeleton height={24} width={60} /> : formatNumber(mlmData.strongTeam), subtitle: 'Active Strong Teams', color: 'secondary.main' },
-              { icon: <Users size={24} />, title: 'Other Teams', value: isLoading ? <LoadingSkeleton height={24} width={60} /> : formatNumber(mlmData.otherTeams), subtitle: 'Additional Team Members', color: 'info.main' },
-              { icon: <BarChart3 size={24} />, title: 'Levels', value: isLoading ? <LoadingSkeleton height={24} width={60} /> : formatNumber(mlmData.levels), subtitle: 'Achievement Levels', color: 'warning.main' },
-              { icon: <CheckCircle size={24} />, title: 'Active Orders', value: isLoading ? <LoadingSkeleton height={24} width={60} /> : formatNumber(mlmData.activeOrders), subtitle: 'Current Active Orders', color: 'success.main' },
+              { icon: <CustomSVGIcons.Users size={120} animated={true} />, title: 'My Direct', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatNumber(mlmData.directTeam), subtitle: 'Direct Referrals', color: 'primary.main', gradient: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)' },
+              { icon: <CustomSVGIcons.Star size={120} animated={true} />, title: 'Strong Teams', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatNumber(mlmData.strongTeam), subtitle: 'Active Strong Teams', color: 'secondary.main', gradient: 'linear-gradient(135deg, #9c27b0 0%, #ba68c8 100%)' },
+              { icon: <CustomSVGIcons.Users size={120} animated={true} />, title: 'Other Teams', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatNumber(mlmData.otherTeams), subtitle: 'Additional Team Members', color: 'info.main', gradient: 'linear-gradient(135deg, #2196f3 0%, #64b5f6 100%)' },
+              { icon: <CustomSVGIcons.BarChart3 size={120} animated={true} />, title: 'Levels', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatNumber(mlmData.levels), subtitle: 'Achievement Levels', color: 'warning.main', gradient: 'linear-gradient(135deg, #ff9800 0%, #ffb74d 100%)' },
+              { icon: <CustomSVGIcons.CheckCircle size={120} animated={true} />, title: 'Active Orders', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatNumber(mlmData.activeOrders), subtitle: 'Current Active Orders', color: 'success.main', gradient: 'linear-gradient(135deg, #4caf50 0%, #81c784 100%)' },
+              { icon: <CustomSVGIcons.TrendingUp size={120} animated={true} />, title: 'Team Level Stake', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatCurrency(mlmData.teamLevelStake), subtitle: 'Team Level Stake Amount', color: 'error.main', gradient: 'linear-gradient(135deg, #f44336 0%, #ef5350 100%)' },
             ].map((card, index) => (
               <Grid
                 item
-                xs={12}
-                sm={6}
-                md={4}
-                lg={4}
-                xl={4}
+                xs={6}
+                sm={4}
+                md={3}
+                lg={2.4}
+                xl={2.4}
                 key={`team-stats-${index}`}
                 sx={{
                   display: 'flex',
@@ -1402,30 +1400,31 @@ const Dashboard = () => {
           </Typography>
           <Grid
             container
-            spacing={{ xs: 2, sm: 2.5, md: 3 }}
+            spacing={{ xs: 1.5, sm: 2, md: 2.5, lg: 3 }}
             sx={{
               width: '100%',
-              margin: 0
+              margin: 0,
+              justifyContent: { xs: 'center', sm: 'flex-start' }
             }}
           >
             {[
-              { icon: <TrendingUp size={24} />, title: 'Total In', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.totalIn), subtitle: 'Total Investments', color: 'success.main' },
-              { icon: <DollarSign size={24} />, title: 'Total Out', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.totalOut), subtitle: 'Total Withdrawals', color: 'info.main' },
-              { icon: <Wallet size={24} />, title: 'Active Portfolio', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.activePortfolio), subtitle: 'Current Investment Value', color: 'primary.main' },
-              { icon: <Trophy size={24} />, title: 'Team Growth Wallet', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.teamGrowthWallet), subtitle: 'Growth Wallet Balance', color: 'secondary.main' },
-              { icon: <Building2 size={24} />, title: 'Total Withdrawn', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.totalWithdrawn), subtitle: 'Total Amount Withdrawn', color: 'error.main' },
-              { icon: <Users2 size={24} />, title: 'Team Growth Laps', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.teamGrowthLaps), subtitle: 'Team Growth Cycles', color: 'warning.main' },
-              { icon: <Wallet size={24} />, title: 'SafeMint Buy Potential', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.inOutBuy), subtitle: 'Buy Potential Value', color: 'info.main' },
-              { icon: <Fuel size={24} />, title: 'Growth Fuels', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.growthFuels), subtitle: 'Team Growth Potential', color: 'success.main' },
-              { icon: <Battery size={24} />, title: 'Total Fuels', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.totalFuels), subtitle: 'Combined Fuel Resources', color: 'primary.main' },
+              { icon: <CustomSVGIcons.TrendingUp size={120} animated={true} />, title: 'Total In', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.totalIn), subtitle: 'Total Investments', color: 'success.main', gradient: 'linear-gradient(135deg, #4caf50 0%, #81c784 100%)' },
+              { icon: <CustomSVGIcons.DollarSign size={120} animated={true} />, title: 'Total Out', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.totalOut), subtitle: 'Total Withdrawals', color: 'info.main', gradient: 'linear-gradient(135deg, #2196f3 0%, #64b5f6 100%)' },
+              { icon: <CustomSVGIcons.Wallet size={120} animated={true} />, title: 'Active Portfolio', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.activePortfolio), subtitle: 'Current Investment Value', color: 'primary.main', gradient: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)' },
+              { icon: <CustomSVGIcons.Trophy size={120} animated={true} />, title: 'Team Growth Wallet', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.teamLevelStake), subtitle: 'Growth Wallet Balance', color: 'secondary.main', gradient: 'linear-gradient(135deg, #9c27b0 0%, #ba68c8 100%)' },
+              { icon: <CustomSVGIcons.Building2 size={120} animated={true} />, title: 'Total Withdrawn', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.totalWithdrawn), subtitle: 'Total Amount Withdrawn', color: 'error.main', gradient: 'linear-gradient(135deg, #f44336 0%, #ef5350 100%)' },
+              { icon: <CustomSVGIcons.Users2 size={120} animated={true} />, title: 'Team Growth Laps', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.teamGrowthLaps), subtitle: 'Team Growth Cycles', color: 'warning.main', gradient: 'linear-gradient(135deg, #ff9800 0%, #ffb74d 100%)' },
+              { icon: <CustomSVGIcons.Wallet size={120} animated={true} />, title: 'SafeMint Buy Potential', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.inOutBuy), subtitle: 'Buy Potential Value', color: 'info.main', gradient: 'linear-gradient(135deg, #00bcd4 0%, #4dd0e1 100%)' },
+              { icon: <CustomSVGIcons.Fuel size={120} animated={true} />, title: 'Growth Fuels', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.growthFuels), subtitle: 'Team Growth Potential', color: 'success.main', gradient: 'linear-gradient(135deg, #8bc34a 0%, #aed581 100%)' },
+              { icon: <CustomSVGIcons.Battery size={120} animated={true} />, title: 'Total Fuels', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.totalFuels), subtitle: 'Combined Fuel Resources', color: 'primary.main', gradient: 'linear-gradient(135deg, #3f51b5 0%, #7986cb 100%)' },
             ].map((card, index) => (
               <Grid
                 item
-                xs={12}
+                xs={6}
                 sm={6}
                 md={4}
-                lg={4}
-                xl={4}
+                lg={3}
+                xl={3}
                 key={`financial-${index}`}
                 sx={{
                   display: 'flex',
@@ -1538,27 +1537,28 @@ const Dashboard = () => {
           </Typography>
           <Grid
             container
-            spacing={{ xs: 2, sm: 2.5, md: 3 }}
+            spacing={{ xs: 1.5, sm: 2, md: 2.5, lg: 3 }}
             sx={{
               width: '100%',
-              margin: 0
+              margin: 0,
+              justifyContent: { xs: 'center', sm: 'flex-start' }
             }}
           >
             {[
-              { icon: <Users size={24} />, title: 'Referral Earn', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.referralEarn), subtitle: 'From Direct Referrals', color: 'primary.main' },
-              { icon: <BarChart3 size={24} />, title: 'Level Earn', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.levelEarn), subtitle: 'From Team Levels', color: 'info.main' },
-              { icon: <TrendingUp size={24} />, title: 'Growth Earn', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.growthEarn), subtitle: 'From Growth System', color: 'success.main' },
-              { icon: <Trophy size={24} />, title: 'Leader Earn', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.leaderEarn), subtitle: 'From Leadership', color: 'warning.main' },
-              { icon: <BarChart3 size={24} />, title: 'Development Earn', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.developmentEarn), subtitle: 'From Development', color: 'info.main' },
-              { icon: <Users size={24} />, title: 'Team Growth', value: isLoading ? <LoadingSkeleton height={24} width={80} /> : formatCurrency(mlmData.teamGrowthWallet), subtitle: 'Team Growth Wallet', color: 'secondary.main' },
+              { icon: <CustomSVGIcons.Users size={120} animated={true} />, title: 'Referral Earn', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.referralEarn), subtitle: 'From Direct Referrals', color: 'primary.main', gradient: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)' },
+              { icon: <CustomSVGIcons.BarChart3 size={120} animated={true} />, title: 'Level Earn', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.levelEarn), subtitle: 'From Team Levels', color: 'info.main', gradient: 'linear-gradient(135deg, #2196f3 0%, #64b5f6 100%)' },
+              { icon: <CustomSVGIcons.TrendingUp size={120} animated={true} />, title: 'Growth Earn', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.growthEarn), subtitle: 'From Growth System', color: 'success.main', gradient: 'linear-gradient(135deg, #4caf50 0%, #81c784 100%)' },
+              { icon: <CustomSVGIcons.Trophy size={120} animated={true} />, title: 'Leader Earn', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.leaderEarn), subtitle: 'From Leadership', color: 'warning.main', gradient: 'linear-gradient(135deg, #ff9800 0%, #ffb74d 100%)' },
+              { icon: <CustomSVGIcons.BarChart3 size={120} animated={true} />, title: 'Development Earn', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.developmentEarn), subtitle: 'From Development', color: 'info.main', gradient: 'linear-gradient(135deg, #00bcd4 0%, #4dd0e1 100%)' },
+              { icon: <CustomSVGIcons.Users size={120} animated={true} />, title: 'Team Growth', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.teamGrowthWallet), subtitle: 'Team Growth Wallet', color: 'secondary.main', gradient: 'linear-gradient(135deg, #9c27b0 0%, #ba68c8 100%)' },
             ].map((card, index) => (
               <Grid
                 item
-                xs={12}
+                xs={6}
                 sm={6}
                 md={4}
-                lg={4}
-                xl={4}
+                lg={3}
+                xl={3}
                 key={`earnings-${index}`}
                 sx={{
                   display: 'flex',

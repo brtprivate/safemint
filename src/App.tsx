@@ -24,6 +24,7 @@ import SwapPage from './pages/SwapPage';
 import LandingPage from './pages/LandingPage';
 import TokenTest from './pages/TokenTest';
 import SafeMintHTML from './pages/SafeMintHTML';
+import IconsShowcase from './pages/IconsShowcase';
 
 
 // Create a colorful theme
@@ -145,6 +146,7 @@ function App() {
                       <Route path="/history" element={<HistoryPage />} />
                       <Route path="/swap" element={<SwapPage />} />
                       <Route path="/token-test" element={<TokenTest />} />
+                      <Route path="/icons" element={<IconsShowcase />} />
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                   </Router>

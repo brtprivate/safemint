@@ -7,9 +7,10 @@ interface StatCardProps {
   value: string | number;
   subtitle: string;
   color: string;
+  gradient?: string;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color }) => {
+const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color, gradient }) => {
   return (
     <Card sx={{
       width: '100%',
@@ -23,7 +24,7 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color
       margin: 0,
       position: 'relative',
       overflow: 'hidden',
-      background: `linear-gradient(145deg, #ffffff 0%, #fafafa 100%)`,
+      background: gradient || `linear-gradient(145deg, #ffffff 0%, #fafafa 100%)`,
       '&:hover': {
         boxShadow: { xs: 6, sm: 12, md: 20 },
         transform: 'translateY(-8px) scale(1.03)',
@@ -69,34 +70,34 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color
       <CardContent sx={{
         width: '100%',
         maxWidth: '100%',
-        p: { xs: 3.5, sm: 4, md: 4.5 },
-        '&:last-child': { pb: { xs: 3.5, sm: 4, md: 4.5 } },
+        p: { xs: 4, sm: 5, md: 6 },
+        '&:last-child': { pb: { xs: 4, sm: 5, md: 6 } },
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        minHeight: { xs: '160px', sm: '180px', md: '200px' },
+        minHeight: { xs: '200px', sm: '240px', md: '280px' },
         boxSizing: 'border-box',
         margin: 0,
         justifyContent: 'center',
         alignItems: 'stretch'
       }}>
-        {/* Main Container: Optimized 2-Box Layout */}
+        {/* Main Container: Enhanced 2-Box Layout for Large Icons */}
         <Box sx={{
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'flex-start',
-          gap: { xs: 3, sm: 4, md: 5 },
+          gap: { xs: 4, sm: 5, md: 6 },
           width: '100%',
           height: '100%',
           position: 'relative'
         }}>
 
-          {/* Box 1: Enhanced Icon Container */}
+          {/* Box 1: Enhanced Icon Container - Optimized for Large SVG Icons */}
           <Box sx={{
             flex: '0 0 auto',
-            width: { xs: '90px', sm: '110px', md: '130px' },
-            height: { xs: '90px', sm: '110px', md: '130px' },
+            width: { xs: '140px', sm: '160px', md: '180px' },
+            height: { xs: '140px', sm: '160px', md: '180px' },
             borderRadius: { xs: 4, sm: 5, md: 6 },
             backgroundColor: `${color}08`,
             display: 'flex',
@@ -139,7 +140,7 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color
             },
             '&:hover': {
               backgroundColor: `${color}15`,
-              transform: 'scale(1.08) translateY(-2px)',
+              transform: 'scale(1.05) translateY(-4px)',
               borderColor: `${color}40`,
               boxShadow: `
                 0 15px 40px ${color}35,
@@ -151,27 +152,32 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color
               },
               '&::after': {
                 opacity: 1
+              },
+              '& .icon-wrapper': {
+                transform: 'scale(1.1) rotate(5deg)'
               }
             }
           }}>
-            {React.cloneElement(icon, {
-              sx: {
-                color,
-                fontSize: { xs: '4rem', sm: '5rem', md: '6rem' },
-                fontWeight: 'bold',
-                filter: `drop-shadow(0 4px 12px ${color}40)`,
+            <Box
+              className="icon-wrapper"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                filter: `drop-shadow(0 4px 12px ${color}40)`,
                 position: 'relative',
                 zIndex: 2,
                 '&:hover': {
-                  filter: `drop-shadow(0 6px 16px ${color}60)`,
-                  transform: 'scale(1.05) rotate(2deg)'
+                  filter: `drop-shadow(0 6px 16px ${color}60)`
                 }
-              }
-            })}
+              }}
+            >
+              {icon}
+            </Box>
           </Box>
 
-          {/* Box 2: Optimized Content Container */}
+          {/* Box 2: Optimized Content Container - Enhanced for Large Icons */}
           <Box sx={{
             flex: 1,
             display: 'flex',
@@ -179,25 +185,26 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color
             justifyContent: 'center',
             alignItems: 'flex-start',
             height: '100%',
-            minHeight: { xs: '90px', sm: '110px', md: '130px' },
-            gap: { xs: 1, sm: 1.5, md: 2 },
-            position: 'relative'
+            minHeight: { xs: '140px', sm: '160px', md: '180px' },
+            gap: { xs: 1.5, sm: 2, md: 2.5 },
+            position: 'relative',
+            pl: { xs: 2, sm: 3, md: 4 }
           }}>
 
-            {/* Title Section - Fixed Text Wrapping */}
+            {/* Title Section - Enhanced for Large Icons */}
             <Box sx={{
               width: '100%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'flex-start',
-              minHeight: { xs: '32px', sm: '36px', md: '40px' }
+              minHeight: { xs: '40px', sm: '44px', md: '48px' }
             }}>
               <Typography
-                variant="h6"
+                variant="h5"
                 sx={{
                   fontWeight: 700,
                   color: 'text.primary',
-                  fontSize: { xs: '1.1rem', sm: '1.25rem', md: '1.4rem' },
+                  fontSize: { xs: '1.3rem', sm: '1.5rem', md: '1.7rem' },
                   lineHeight: 1.1,
                   textAlign: 'left',
                   letterSpacing: '-0.01em',
@@ -213,20 +220,20 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color
               </Typography>
             </Box>
 
-            {/* Value Section - Enhanced Typography */}
+            {/* Value Section - Enhanced Typography for Large Icons */}
             <Box sx={{
               width: '100%',
               display: 'flex',
               alignItems: 'baseline',
               justifyContent: 'flex-start',
-              minHeight: { xs: '40px', sm: '48px', md: '56px' }
+              minHeight: { xs: '50px', sm: '60px', md: '70px' }
             }}>
               <Typography
-                variant="h3"
+                variant="h2"
                 sx={{
                   fontWeight: 800,
                   color,
-                  fontSize: { xs: '2.2rem', sm: '2.8rem', md: '3.4rem' },
+                  fontSize: { xs: '2.8rem', sm: '3.5rem', md: '4.2rem' },
                   lineHeight: 0.9,
                   letterSpacing: '-0.03em',
                   textAlign: 'left',
@@ -242,18 +249,18 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color
               </Typography>
             </Box>
 
-            {/* Subtitle Section - Improved Readability */}
+            {/* Subtitle Section - Enhanced for Large Icons */}
             <Box sx={{
               width: '100%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'flex-start',
-              minHeight: { xs: '20px', sm: '24px', md: '28px' }
+              minHeight: { xs: '28px', sm: '32px', md: '36px' }
             }}>
               <Typography
-                variant="body2"
+                variant="body1"
                 sx={{
-                  fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1.05rem' },
+                  fontSize: { xs: '1rem', sm: '1.1rem', md: '1.2rem' },
                   lineHeight: 1.2,
                   color: 'text.secondary',
                   fontWeight: 600,

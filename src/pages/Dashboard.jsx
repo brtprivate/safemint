@@ -1275,7 +1275,7 @@ const Dashboard = () => {
               { icon: <CustomSVGIcons.Users size={120} animated={true} />, title: 'Other Teams', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatNumber(mlmData.otherTeams), subtitle: 'Additional Team Members', color: 'info.main' },
               { icon: <CustomSVGIcons.BarChart3 size={120} animated={true} />, title: 'Levels', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatNumber(mlmData.levels), subtitle: 'Achievement Levels', color: 'warning.main' },
               { icon: <CustomSVGIcons.CheckCircle size={120} animated={true} />, title: 'Active Orders', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatNumber(mlmData.activeOrders), subtitle: 'Current Active Orders', color: 'success.main' },
-              { icon: <CustomSVGIcons.TrendingUp size={120} animated={true} />, title: 'Team Level Stake', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatCurrency(mlmData.teamLevelStake), subtitle: 'Team Level Stake Amount', color: 'error.main' },
+             
             ].map((card, index) => (
               <Grid
                 item

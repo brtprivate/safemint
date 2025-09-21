@@ -209,7 +209,7 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color
                 sx={{
                   fontWeight: 700,
                   color: 'text.primary',
-                  fontSize: { xs: '0.9rem', sm: '1.1rem', md: '1.3rem' },
+                  fontSize: { xs: '1.1rem', sm: '1.3rem', md: '1.5rem' },
                   lineHeight: 1.2,
                   textAlign: 'left',
                   letterSpacing: '-0.01em',
@@ -240,7 +240,7 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color
                 sx={{
                   fontWeight: 800,
                   color,
-                  fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' },
+                  fontSize: { xs: '1.8rem', sm: '2.4rem', md: '3rem' },
                   lineHeight: 1,
                   letterSpacing: '-0.02em',
                   textAlign: 'left',
@@ -269,7 +269,7 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color
               <Typography
                 variant="body2"
                 sx={{
-                  fontSize: { xs: '0.75rem', sm: '0.85rem', md: '0.95rem' },
+                  fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
                   lineHeight: 1.3,
                   color: 'text.secondary',
                   fontWeight: 500,

@@ -70,16 +70,17 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color
       <CardContent sx={{
         width: '100%',
         maxWidth: '100%',
-        p: { xs: 4, sm: 5, md: 6 },
-        '&:last-child': { pb: { xs: 4, sm: 5, md: 6 } },
+        p: { xs: 2, sm: 3, md: 4 },
+        '&:last-child': { pb: { xs: 2, sm: 3, md: 4 } },
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        minHeight: { xs: '200px', sm: '240px', md: '280px' },
+        minHeight: { xs: '160px', sm: '200px', md: '240px' },
         boxSizing: 'border-box',
         margin: 0,
         justifyContent: 'center',
-        alignItems: 'stretch'
+        alignItems: 'stretch',
+        overflow: 'hidden'
       }}>
         {/* Main Container: Enhanced 2-Box Layout for Large Icons */}
         <Box sx={{
@@ -87,7 +88,7 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'flex-start',
-          gap: { xs: 4, sm: 5, md: 6 },
+          gap: { xs: 2, sm: 3, md: 4 },
           width: '100%',
           height: '100%',
           position: 'relative'
@@ -96,14 +97,14 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color
           {/* Box 1: Enhanced Icon Container - Optimized for Large SVG Icons */}
           <Box sx={{
             flex: '0 0 auto',
-            width: { xs: '140px', sm: '160px', md: '180px' },
-            height: { xs: '140px', sm: '160px', md: '180px' },
-            borderRadius: { xs: 4, sm: 5, md: 6 },
+            width: { xs: '80px', sm: '100px', md: '120px' },
+            height: { xs: '80px', sm: '100px', md: '120px' },
+            borderRadius: { xs: 3, sm: 4, md: 5 },
             backgroundColor: `${color}08`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            border: `4px solid ${color}20`,
+            border: `3px solid ${color}20`,
             transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
             position: 'relative',
             overflow: 'hidden',
@@ -185,10 +186,12 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color
             justifyContent: 'center',
             alignItems: 'flex-start',
             height: '100%',
-            minHeight: { xs: '140px', sm: '160px', md: '180px' },
-            gap: { xs: 1.5, sm: 2, md: 2.5 },
+            minHeight: { xs: '80px', sm: '100px', md: '120px' },
+            gap: { xs: 1, sm: 1.5, md: 2 },
             position: 'relative',
-            pl: { xs: 2, sm: 3, md: 4 }
+            pl: { xs: 1, sm: 2, md: 3 },
+            overflow: 'hidden',
+            maxWidth: '100%'
           }}>
 
             {/* Title Section - Enhanced for Large Icons */}
@@ -197,15 +200,17 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'flex-start',
-              minHeight: { xs: '40px', sm: '44px', md: '48px' }
+              minHeight: { xs: '24px', sm: '32px', md: '40px' },
+              maxWidth: '100%',
+              overflow: 'hidden'
             }}>
               <Typography
-                variant="h5"
+                variant="h6"
                 sx={{
                   fontWeight: 700,
                   color: 'text.primary',
-                  fontSize: { xs: '1.3rem', sm: '1.5rem', md: '1.7rem' },
-                  lineHeight: 1.1,
+                  fontSize: { xs: '0.9rem', sm: '1.1rem', md: '1.3rem' },
+                  lineHeight: 1.2,
                   textAlign: 'left',
                   letterSpacing: '-0.01em',
                   whiteSpace: 'nowrap',
@@ -226,16 +231,18 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color
               display: 'flex',
               alignItems: 'baseline',
               justifyContent: 'flex-start',
-              minHeight: { xs: '50px', sm: '60px', md: '70px' }
+              minHeight: { xs: '32px', sm: '40px', md: '50px' },
+              maxWidth: '100%',
+              overflow: 'hidden'
             }}>
               <Typography
-                variant="h2"
+                variant="h3"
                 sx={{
                   fontWeight: 800,
                   color,
-                  fontSize: { xs: '2.8rem', sm: '3.5rem', md: '4.2rem' },
-                  lineHeight: 0.9,
-                  letterSpacing: '-0.03em',
+                  fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' },
+                  lineHeight: 1,
+                  letterSpacing: '-0.02em',
                   textAlign: 'left',
                   textShadow: `0 2px 8px ${color}20`,
                   whiteSpace: 'nowrap',
@@ -255,15 +262,17 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, subtitle, color
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'flex-start',
-              minHeight: { xs: '28px', sm: '32px', md: '36px' }
+              minHeight: { xs: '20px', sm: '24px', md: '28px' },
+              maxWidth: '100%',
+              overflow: 'hidden'
             }}>
               <Typography
-                variant="body1"
+                variant="body2"
                 sx={{
-                  fontSize: { xs: '1rem', sm: '1.1rem', md: '1.2rem' },
-                  lineHeight: 1.2,
+                  fontSize: { xs: '0.75rem', sm: '0.85rem', md: '0.95rem' },
+                  lineHeight: 1.3,
                   color: 'text.secondary',
-                  fontWeight: 600,
+                  fontWeight: 500,
                   textAlign: 'left',
                   letterSpacing: '0.01em',
                   whiteSpace: 'nowrap',

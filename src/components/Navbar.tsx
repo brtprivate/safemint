@@ -1,5 +1,6 @@
 import React from 'react';
 import Logo from './common/Logo';
+import SafeMintTextSvg from './common/SafeMintTextSvg';
 import {
   AppBar,
   Toolbar,
@@ -90,7 +91,14 @@ const Navbar: React.FC = () => {
                   flexShrink: 0
                 }}
               />
-              SafeMint
+              <SafeMintTextSvg
+                size="navbar"
+                animated={true}
+                sx={{
+                  ml: 1,
+                  flexShrink: 0
+                }}
+              />
             </Typography>
 
             {/* Desktop Navigation */}

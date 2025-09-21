@@ -18,6 +18,7 @@ import { formatUnits, parseUnits, decodeErrorResult } from 'viem';
 import { readContract, waitForTransactionReceipt } from '@wagmi/core';
 import { config } from '../config/web3modal';
 import { stakingInteractions, USDT_ADDRESS, USDT_ABI, STAKING_ABI, STAKING_CONTRACT_ADDRESS } from '../services/selfmintStakingService';
+import { safeMintTokenService, SAFEMINT_TOKEN_ADDRESS, SAFEMINT_TOKEN_ABI } from '../services/safeMintTokenService';
 import { getReferrerFromUrl, hasReferralInUrl, clearReferralFromUrl } from '../utils/urlUtils';
 
 // Import reusable components
@@ -704,8 +705,8 @@ const Dashboard = () => {
       setSuccess('');
 
       const decimals = await readContract(config, {
-        abi: USDT_ABI,
-        address: USDT_ADDRESS,
+        abi: SAFEMINT_TOKEN_ABI,
+        address: SAFEMINT_TOKEN_ADDRESS,
         functionName: 'decimals',
         chainId: 56,
       });
@@ -713,20 +714,20 @@ const Dashboard = () => {
       const amountInWei = parseUnits(buyTokenAmount, Number(decimals));
 
       const allowance = await readContract(config, {
-        abi: USDT_ABI,
-        address: USDT_ADDRESS,
+        abi: SAFEMINT_TOKEN_ABI,
+        address: SAFEMINT_TOKEN_ADDRESS,
         functionName: 'allowance',
         args: [wallet.account, STAKING_CONTRACT_ADDRESS],
         chainId: 56,
       });
 
       if (allowance < amountInWei) {
-        const approvalTx = await stakingInteractions.approveUSDT(amountInWei, wallet.account);
+        const approvalTx = await safeMintTokenService.approve(STAKING_CONTRACT_ADDRESS, amountInWei, wallet.account);
         await waitForTransactionReceipt(config, { hash: approvalTx, chainId: 56 });
       }
 
       const txHash = await stakingInteractions.buyToken(buyTokenAmount, wallet.account);
-      setSuccess(`Successfully bought tokens with ${buyTokenAmount} USDT! Tx: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`);
+      setSuccess(`Successfully bought tokens with ${buyTokenAmount} SafeMint tokens! Tx: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`);
       setBuyTokenAmount('');
 
       setTimeout(fetchMlmData, 3000);
@@ -736,7 +737,7 @@ const Dashboard = () => {
       if (error.message?.includes('User rejected')) {
         setError('Transaction was cancelled by user');
       } else if (error.message?.includes('insufficient')) {
-        setError('Insufficient USDT balance for this transaction');
+        setError('Insufficient SafeMint token balance for this transaction');
       } else {
         setError(`Failed to buy tokens: ${error.message || 'Unknown error occurred'}`);
       }

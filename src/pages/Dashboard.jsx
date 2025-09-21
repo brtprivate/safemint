@@ -1275,7 +1275,7 @@ const Dashboard = () => {
               { icon: <CustomSVGIcons.Users size={120} animated={true} />, title: 'Other Teams', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatNumber(mlmData.otherTeams), subtitle: 'Additional Team Members', color: 'info.main', gradient: 'linear-gradient(135deg, #2196f3 0%, #64b5f6 100%)' },
               { icon: <CustomSVGIcons.BarChart3 size={120} animated={true} />, title: 'Levels', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatNumber(mlmData.levels), subtitle: 'Achievement Levels', color: 'warning.main', gradient: 'linear-gradient(135deg, #ff9800 0%, #ffb74d 100%)' },
               { icon: <CustomSVGIcons.CheckCircle size={120} animated={true} />, title: 'Active Orders', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatNumber(mlmData.activeOrders), subtitle: 'Current Active Orders', color: 'success.main', gradient: 'linear-gradient(135deg, #4caf50 0%, #81c784 100%)' },
-              { icon: <CustomSVGIcons.TrendingUp size={120} animated={true} />, title: 'Team Level Stake', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatCurrency(mlmData.teamLevelStake), subtitle: 'Team Level Stake Amount', color: 'error.main', gradient: 'linear-gradient(135deg, #f44336 0%, #ef5350 100%)' },
+              // { icon: <CustomSVGIcons.TrendingUp size={120} animated={true} />, title: 'Team Level Stake', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatCurrency(mlmData.teamLevelStake), subtitle: 'Team Level Stake Amount', color: 'error.main', gradient: 'linear-gradient(135deg, #f44336 0%, #ef5350 100%)' },
             ].map((card, index) => (
               <Grid
                 item

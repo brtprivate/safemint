@@ -39,6 +39,7 @@ import CustomSVGIcons from '../components/icons/CustomSVGIcons';
 
 // Import RefreshCw from lucide-react (keeping this one as it's used in header)
 import { RefreshCw } from 'lucide-react';
+import WithdrawSection from '../components/WithdrawSection';
 
 // Helper function to safely stringify objects with BigInt values
 const safeStringify = (obj, space = 2) => {
@@ -567,7 +568,7 @@ const Dashboard = () => {
       console.log("💰 [handleWithdraw] Amount in wei:", amountInWei.toString());
 
       console.log("📡 [handleWithdraw] Executing withdrawal transaction...");
-      const txHash = await stakingInteractions.makeUnstake(amountInWei, wallet.account);
+      const txHash = await stakingInteractions.makeUnstake(totalAvailable, wallet.account);
       console.log("✅ [handleWithdraw] Withdrawal transaction successful!");
 
       setSuccess(`Withdrawal successful! Amount: $${totalAvailable.toFixed(2)} USDT. Tx: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`);
@@ -1993,7 +1994,7 @@ const Dashboard = () => {
                 </Box>
               </Box>
 
-              <Box sx={{
+               <Box sx={{
                 backgroundColor: '#f8f9fa',
                 p: { xs: 2, sm: 3 },
                 borderRadius: 3,
@@ -2044,38 +2045,17 @@ const Dashboard = () => {
                 </Typography>
               </Box>
 
-              <Box sx={{ textAlign: 'center' }}>
-                <Button
-                  variant="contained"
-                  size="large"
-                  sx={{
-                    backgroundColor: '#4CAF50',
-                    color: 'white',
-                    borderRadius: '30px',
-                    px: { xs: 4, sm: 5 },
-                    py: { xs: 1.5, sm: 2 },
-                    fontSize: { xs: '0.95rem', sm: '1.05rem', md: '1.15rem' },
-                    fontWeight: 700,
-                    textTransform: 'none',
-                    boxShadow: '0 6px 20px rgba(76, 175, 80, 0.3)',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    '&:hover': {
-                      backgroundColor: '#45a049',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 8px 25px rgba(76, 175, 80, 0.4)'
-                    },
-                    '&:disabled': {
-                      backgroundColor: '#cccccc',
-                      transform: 'none',
-                      boxShadow: 'none'
-                    }
-                  }}
-                  disabled={orderLoading || (mlmData.referralEarn + mlmData.levelEarn + mlmData.growthEarn + mlmData.teamGrowthWallet + mlmData.leaderEarn + mlmData.developmentEarn) <= 0}
-                  onClick={handleWithdraw}
-                >
-                  {orderLoading ? <CircularProgress size={24} color="inherit" /> : 'Withdraw Earnings'}
-                </Button>
-              </Box>
+             
+              <WithdrawSection
+                wallet={wallet}
+                chainId={chainId}
+                mlmData={mlmData}
+                stakingInteractions={stakingInteractions}
+                fetchMlmData={fetchMlmData}
+                config={config}
+                USDT_ABI={USDT_ABI}
+                USDT_ADDRESS={USDT_ADDRESS}
+              />
               </Card>
             </Box>
           </Grid>

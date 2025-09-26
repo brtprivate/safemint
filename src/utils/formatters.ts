@@ -169,3 +169,33 @@ export const formatDate = (timestamp: number): string => {
     minute: '2-digit'
   });
 };
+
+
+export const formatAmountFromWei = (amount: bigint, decimals: number = 18, maxDecimals: number = 2): string => {
+  if (amount === 0n) {
+    return '0';
+  }
+
+  const divisor = BigInt(10 ** decimals);
+  const quotient = amount / divisor;
+  const remainder = amount % divisor;
+
+  if (remainder === 0n) {
+    return quotient.toString();
+  }
+
+  // Convert remainder to decimal string
+  const remainderStr = remainder.toString().padStart(decimals, '0');
+  
+  // Limit to maxDecimals places
+  const limitedRemainder = remainderStr.substring(0, maxDecimals);
+  
+  // Remove trailing zeros
+  const trimmedRemainder = limitedRemainder.replace(/0+$/, '');
+
+  if (trimmedRemainder === '') {
+    return quotient.toString();
+  }
+
+  return `${quotient}.${trimmedRemainder}`;
+};

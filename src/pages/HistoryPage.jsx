@@ -28,7 +28,7 @@ import {
 import { useWallet } from '../context/WalletContext';
 import { stakingInteractions } from '../services/selfmintStakingService';
 import { formatUnits } from 'viem';
-import { formatCurrency, formatDate, formatNumber, formatTimeAgo } from '../utils/formatters';
+import { formatAmountFromWei, formatCurrency, formatDate, formatNumber, formatTimeAgo } from '../utils/formatters';
 
 // Lucide React icons
 import {

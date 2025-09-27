@@ -15,13 +15,15 @@ import {
   Chip,
 } from '@mui/material';
 import { useWallet } from '../context/WalletContext';
-import { stakingInteractions, STAKING_CONTRACT_ADDRESS } from '../services/selfmintStakingService';
+import { stakingInteractions, STAKING_CONTRACT_ADDRESS, SAFEMINT_TOKEN_ABI } from '../services/selfmintStakingService';
 import { formatUnits, parseUnits, formatEther } from 'viem';
 import { formatNumber } from '../utils/formatters';
-import safeMintTokenService from '../services/safeMintTokenService';
+import safeMintTokenService, { SAFEMINT_TOKEN_ADDRESS } from '../services/safeMintTokenService';
 
 // Lucide React icons
 import { TrendingDown, TrendingUp } from 'lucide-react';
+import { readContract } from '@wagmi/core';
+import { config } from '../config/web3modal';
 
 const UnstakePage = () => {
   const wallet = useWallet();
@@ -98,7 +100,7 @@ const UnstakePage = () => {
   useEffect(() => {
     if (wallet.isConnected && wallet.account) {
       console.log("🔄 [UnstakePage] Wallet connected, fetching balances for:", wallet.account);
-      console.log("🔄 [UnstakePage] Current chain ID:", wallet.chainId);
+      // console.log("🔄 [UnstakePage] Current chain ID:", wallet.chainId);
 
       // Check if we're on BSC Mainnet
       if (wallet.chainId !== 56) {
@@ -132,134 +134,124 @@ const UnstakePage = () => {
     }
   }, [tokenAmount, tokenPrice]);
 
-  const handleUnstake = async () => {
-    if (!wallet.isConnected || !wallet.account) {
-      setError('Please connect your wallet');
+const handleUnstake = async () => {
+  console.log("🪙 [handleUnstake] Unstake button clicked");
+
+  if (!wallet.isConnected || !wallet.account) {
+    setError('Please connect your wallet');
+    return;
+  }
+
+  if (!tokenAmount || parseFloat(tokenAmount) <= 0) {
+    setError('Please enter a valid token amount');
+    return;
+  }
+
+  if (parseFloat(tokenAmount) > parseFloat(tokenBalance)) {
+    setError('Insufficient token balance');
+    return;
+  }
+
+
+
+  try {
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    // Check if user is registered
+    const userInfo = await stakingInteractions.getUserInfo(wallet.account);
+    console.log('🔍 [handleUnstake] User info:', userInfo);
+    if (!userInfo.joined) {
+      setError('You must be registered to unstake tokens. Please register first.');
       return;
     }
 
-    // Validate token amount input
-    if (!tokenAmount || parseFloat(tokenAmount) <= 0) {
-      setError('Please enter a valid token amount');
-      return;
-    }
-    if (parseFloat(tokenAmount) > parseFloat(tokenBalance)) {
-      setError('Insufficient token balance');
-      return;
-    }
+    // Get SafeMint token decimals
+    const tokenDecimals = await readContract(config, {
+      abi: SAFEMINT_TOKEN_ABI,
+      address: SAFEMINT_TOKEN_ADDRESS,
+      functionName: "decimals",
+      chainId: 56,
+    });
+    console.log("🔍 [handleUnstake] SafeMint Token Decimals:", tokenDecimals);
 
-    try {
-      setLoading(true);
-      setError('');
-      setSuccess('');
+    // Approve SafeMint tokens if allowance is insufficient
+    // if (allowance < tokenAmountInWei) {
+    //   console.log(`🔄 [handleUnstake] Approving ${tokenAmount} SafeMint tokens (plain amount) for staking contract...`);
+    //   setError('Approving tokens for unstake...');
+    //   setApproving(true);
 
-      // Check if user is registered first
-      try {
-        const userInfo = await stakingInteractions.getUserInfo(wallet.account);
-        console.log('User info:', userInfo);
+    //   const approvalTxHash = await safeMintTokenService.approve(
+    //     STAKING_CONTRACT_ADDRESS,
+    //     tokenAmount, // Pass plain amount
+    //     wallet.account
+      // );
+      // console.log(`✅ [handleUnstake] Approval transaction successful: ${approvalTxHash}`);
+      // setError('Approval submitted. Waiting for confirmation...');
 
-        if (!userInfo.joined) {
-          setError('You must be registered to unstake tokens. Please register first.');
-          return;
-        }
-      } catch (regError) {
-        console.error('Error checking registration:', regError);
-        setError('Unable to verify registration status. Please try again.');
-        return;
+      // Wait for approval confirmation
+    //   await new Promise(resolve => setTimeout(resolve, 2000));
+    //   console.log('✅ [handleUnstake] Approval confirmed, proceeding with unstake...');
+    //   setError('');
+    // } else {
+    //   console.log("✅ [handleUnstake] Sufficient allowance, no approval needed.");
+    // }
+
+    // Calculate USDT equivalent amount (token amount * token price)
+    const usdtEquivalent = parseFloat(tokenAmount) * parseFloat(tokenPrice);
+    const roundedUsdtEquivalent = parseFloat(usdtEquivalent.toFixed(6)); // Round to 6 decimals for USDT
+    console.log(`🔄 [handleUnstake] Unstaking ${tokenAmount} tokens for ${roundedUsdtEquivalent} USDT (plain amount)...`);
+
+    // Execute sellToken transaction with rounded plain USDT equivalent
+    const txHash = await safeMintTokenService.sellSelfMint(roundedUsdtEquivalent, wallet.account);
+    console.log('✅ [handleUnstake] Transaction successful! Hash:', txHash);
+
+    setSuccess(
+      `🎉 Unstake successful! Sold ${tokenAmount} tokens for ${roundedUsdtEquivalent} USDT. Tx: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`
+    );
+    setTokenAmount('');
+
+    // Refresh balances after successful unstake
+    console.log('🔄 [handleUnstake] Refreshing balances...');
+    setTimeout(() => {
+      refreshAllData();
+    }, 3000);
+
+  } catch (error) {
+    console.error('❌ [handleUnstake] Unstake error:', error);
+
+    let errorMessage = 'Unstake failed. Please try again.';
+    if (error.message) {
+      if (error.message.includes('User rejected') || error.message.includes('denied')) {
+        errorMessage = 'Transaction was cancelled by user';
+      } else if (error.message.includes('insufficient balance')) {
+        errorMessage = 'Insufficient token balance. Please check your wallet balance.';
+      } else if (error.message.includes('insufficient allowance')) {
+        errorMessage = 'Insufficient token allowance. Please approve tokens first.';
+      } else if (error.message.includes('approve')) {
+        errorMessage = 'Failed to approve tokens. Please try again.';
+      } else if (error.message.includes('gas')) {
+        errorMessage = 'Transaction failed due to gas issues. Please increase gas limit or try again.';
+      } else if (error.message.includes('network') || error.message.includes('connection')) {
+        errorMessage = 'Network error. Please check your connection and try again.';
+      } else if (error.message.includes('not registered')) {
+        errorMessage = 'You must be registered to unstake tokens. Please register first.';
+      } else if (error.message.includes('slippage')) {
+        errorMessage = 'Price changed during transaction. Please try again.';
+      } else if (error.message.includes('cannot be converted to a BigInt')) {
+        errorMessage = 'Invalid amount format. Please ensure the amount has no more than 6 decimal places.';
+      } else {
+        errorMessage = error.message;
       }
-
-      // Token → USDT unstake
-      console.log(`🔄 [Unstake] Unstaking ${tokenAmount} tokens for USDT...`);
-
-      // Calculate USDT equivalent amount (token amount * token price)
-      const usdtEquivalent = parseFloat(tokenAmount) * parseFloat(tokenPrice);
-      const amountInWei = parseUnits(usdtEquivalent.toString(), 6);
-      console.log('🔄 [Unstake] USDT equivalent amount in wei:', amountInWei.toString());
-
-      // Check token allowance for the staking contract
-      try {
-        const tokenAmountInWei = parseUnits(tokenAmount, 18); // SafeMint tokens have 18 decimals
-        const allowance = await safeMintTokenService.getAllowance(wallet.account, STAKING_CONTRACT_ADDRESS);
-
-        if (allowance < tokenAmountInWei) {
-          console.log('🔄 [Unstake] Insufficient allowance, requesting approval...');
-          setError('Approving tokens for unstake...');
-
-          // Request token approval
-          try {
-            setApproving(true);
-            const approvalTx = await safeMintTokenService.approve(STAKING_CONTRACT_ADDRESS, tokenAmountInWei, wallet.account);
-            console.log('✅ [Unstake] Approval transaction:', approvalTx);
-
-            setError('Approval submitted. Waiting for confirmation...');
-
-            // Wait for approval confirmation
-            await new Promise(resolve => setTimeout(resolve, 5000));
-
-            console.log('✅ [Unstake] Approval confirmed, proceeding with unstake...');
-            setError(''); // Clear approval message
-          } catch (approvalError) {
-            console.error('❌ [Unstake] Approval failed:', approvalError);
-            setError('Token approval failed. Please try again.');
-            return;
-          } finally {
-            setApproving(false);
-          }
-        }
-      } catch (allowanceError) {
-        console.error('Error checking token allowance:', allowanceError);
-        setError('Unable to check token allowance. Please try again.');
-        return;
-      }
-
-      // Execute sellToken transaction (unstake)
-      console.log('🔄 [Unstake] Calling sellToken function...');
-      const txHash = await stakingInteractions.sellToken(amountInWei, wallet.account);
-      console.log('✅ [Unstake] Transaction successful! Hash:', txHash);
-
-      setSuccess(`🎉 Unstake successful! Sold ${tokenAmount} tokens for ${usdtEquivalent.toFixed(6)} USDT. Tx: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`);
-      setTokenAmount('');
-
-      // Refresh balances after successful unstake
-      console.log('🔄 [Unstake] Refreshing balances...');
-      setTimeout(() => {
-        refreshAllData();
-      }, 3000);
-
-    } catch (error) {
-      console.error('❌ [Unstake] Unstake error:', error);
-
-      // Comprehensive error handling
-      let errorMessage = 'Unstake failed. Please try again.';
-
-      if (error.message) {
-        if (error.message.includes('insufficient allowance')) {
-          errorMessage = 'Insufficient token allowance. Please approve tokens for the contract.';
-        } else if (error.message.includes('insufficient balance')) {
-          errorMessage = 'Insufficient balance. Please check your wallet balance.';
-        } else if (error.message.includes('insufficient')) {
-          errorMessage = 'Insufficient balance or allowance. Please check your balance.';
-        } else if (error.message.includes('rejected') || error.message.includes('denied')) {
-          errorMessage = 'Transaction was rejected by user. Please try again.';
-        } else if (error.message.includes('gas')) {
-          errorMessage = 'Transaction failed due to gas issues. Please increase gas limit or try again.';
-        } else if (error.message.includes('network') || error.message.includes('connection')) {
-          errorMessage = 'Network error. Please check your connection and try again.';
-        } else if (error.message.includes('not registered')) {
-          errorMessage = 'You must be registered to unstake tokens. Please register first.';
-        } else if (error.message.includes('slippage')) {
-          errorMessage = 'Price changed during transaction. Please try again.';
-        } else {
-          errorMessage = error.message;
-        }
-      }
-
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
     }
-  };
 
+    setError(errorMessage);
+  } finally {
+    setLoading(false);
+    setApproving(false);
+  }
+};
 
 
   if (!wallet.isConnected) {

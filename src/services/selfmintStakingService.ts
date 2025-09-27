@@ -94,477 +94,7 @@ export const SAFEMINT_TOKEN_ABI = [
 ] as const;
 
 // Staking Contract ABI (fetched from https://testnet.bscscan.com/address/0xb54B2B0Bc772Dedb586DE2685C8941751bebb084#code)
-// export const STAKING_ABI = [
-//   {
-//     "inputs": [{"internalType": "address", "name": "_owner", "type": "address"}],
-//     "stateMutability": "nonpayable",
-//     "type": "constructor"
-//   },
-//   {
-//     "anonymous": false,
-//     "inputs": [
-//       {"indexed": false, "internalType": "uint256", "name": "stacke_Id", "type": "uint256"},
-//       {"indexed": false, "internalType": "address", "name": "user", "type": "address"},
-//       {"indexed": false, "internalType": "uint256", "name": "growthRate", "type": "uint256"},
-//       {"indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256"},
-//       {"indexed": false, "internalType": "uint256", "name": "timeStamp", "type": "uint256"}
-//     ],
-//     "name": "deposit_Satke",
-//     "type": "event"
-//   },
-//   {
-//     "anonymous": false,
-//     "inputs": [{"indexed": false, "internalType": "uint256", "name": "stacke_Id", "type": "uint256"}],
-//     "name": "forfeit_Ev",
-//     "type": "event"
-//   },
-//   {
-//     "anonymous": false,
-//     "inputs": [
-//       {"indexed": false, "internalType": "address", "name": "from_user", "type": "address"},
-//       {"indexed": false, "internalType": "address", "name": "to_user", "type": "address"},
-//       {"indexed": false, "internalType": "uint256", "name": "level", "type": "uint256"},
-//       {"indexed": false, "internalType": "uint256", "name": "payAmount", "type": "uint256"},
-//       {"indexed": false, "internalType": "uint256", "name": "types", "type": "uint256"}
-//     ],
-//     "name": "income_Ev",
-//     "type": "event"
-//   },
-//   {
-//     "anonymous": false,
-//     "inputs": [
-//       {"indexed": false, "internalType": "address", "name": "_user", "type": "address"},
-//       {"indexed": false, "internalType": "address", "name": "referralAddress", "type": "address"}
-//     ],
-//     "name": "regUserEv",
-//     "type": "event"
-//   },
-//   {
-//     "anonymous": false,
-//     "inputs": [
-//       {"indexed": false, "internalType": "address", "name": "_user", "type": "address"},
-//       {"indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256"}
-//     ],
-//     "name": "withdrwal_Stacking",
-//     "type": "event"
-//   },
-//   {
-//     "inputs": [],
-//     "name": "DAO_Count",
-//     "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [],
-//     "name": "DAO_TotalApprovals",
-//     "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [],
-//     "name": "DAO_VoteIsOn",
-//     "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [],
-//     "name": "DAO_Voting",
-//     "outputs": [],
-//     "stateMutability": "nonpayable",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [],
-//     "name": "VotingIsOn",
-//     "outputs": [],
-//     "stateMutability": "nonpayable",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "address", "name": "_user", "type": "address"}],
-//     "name": "activeUser",
-//     "outputs": [{"internalType": "bool", "name": "active", "type": "bool"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [],
-//     "name": "allStake",
-//     "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "address", "name": "user", "type": "address"}],
-//     "name": "avUnStake",
-//     "outputs": [{"internalType": "uint256", "name": "avGh", "type": "uint256"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "address", "name": "", "type": "address"}],
-//     "name": "bonusInfos",
-//     "outputs": [
-//       {"internalType": "uint256", "name": "referralGains", "type": "uint256"},
-//       {"internalType": "uint256", "name": "levelGains", "type": "uint256"},
-//       {"internalType": "uint256", "name": "growthGains", "type": "uint256"},
-//       {"internalType": "uint256", "name": "teamGrowthGains", "type": "uint256"},
-//       {"internalType": "uint256", "name": "leaderGains", "type": "uint256"},
-//       {"internalType": "uint256", "name": "developmentGains", "type": "uint256"},
-//       {"internalType": "uint256", "name": "teamLevelStake", "type": "uint256"},
-//       {"internalType": "uint256", "name": "lapsTeamStake", "type": "uint256"},
-//       {"internalType": "uint256", "name": "totalStake", "type": "uint256"},
-//       {"internalType": "uint256", "name": "totalUnStake", "type": "uint256"},
-//       {"internalType": "uint256", "name": "totalWithdrwan", "type": "uint256"},
-//       {"internalType": "uint256", "name": "inOutBuy", "type": "uint256"}
-//     ],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [],
-//     "name": "boostLevel",
-//     "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "uint256", "name": "usdAmount", "type": "uint256"}],
-//     "name": "buyToken",
-//     "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
-//     "stateMutability": "nonpayable",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "address", "name": "userAddress", "type": "address"}],
-//     "name": "directUser",
-//     "outputs": [{"internalType": "address[]", "name": "referrals", "type": "address[]"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [],
-//     "name": "distShare",
-//     "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [
-//       {"internalType": "address", "name": "contractAdd", "type": "address"},
-//       {"internalType": "uint256", "name": "runTime", "type": "uint256"},
-//       {"internalType": "bool", "name": "looprun", "type": "bool"}
-//     ],
-//     "name": "fetchOldData",
-//     "outputs": [],
-//     "stateMutability": "nonpayable",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "address", "name": "userAddress", "type": "address"}],
-//     "name": "findLeaderUser",
-//     "outputs": [
-//       {"internalType": "address[6]", "name": "ledAdd", "type": "address[6]"},
-//       {"internalType": "address[3]", "name": "devAdd", "type": "address[3]"}
-//     ],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "uint256", "name": "_amount", "type": "uint256"}],
-//     "name": "getPrice",
-//     "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [],
-//     "name": "levelDist",
-//     "outputs": [{"internalType": "uint8[21]", "name": "levelPer", "type": "uint8[21]"}],
-//     "stateMutability": "pure",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [
-//       {"internalType": "address", "name": "userAddress", "type": "address"},
-//       {"internalType": "uint256", "name": "Level", "type": "uint256"}
-//     ],
-//     "name": "makeLeader",
-//     "outputs": [],
-//     "stateMutability": "nonpayable",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [
-//       {"internalType": "uint256", "name": "amount", "type": "uint256"},
-//       {"internalType": "address", "name": "userAddress", "type": "address"}
-//     ],
-//     "name": "makeStake",
-//     "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
-//     "stateMutability": "nonpayable",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "uint256", "name": "amount", "type": "uint256"}],
-//     "name": "makeUnstake",
-//     "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
-//     "stateMutability": "nonpayable",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "address", "name": "_user", "type": "address"}],
-//     "name": "matureOrder",
-//     "outputs": [
-//       {"internalType": "uint256", "name": "activeOrder", "type": "uint256"},
-//       {"internalType": "uint256", "name": "lastOrder", "type": "uint256"},
-//       {"internalType": "uint256", "name": "unlock_Order", "type": "uint256"},
-//       {"internalType": "uint256", "name": "mature_Order", "type": "uint256"},
-//       {"internalType": "uint256", "name": "activeLimit", "type": "uint256"}
-//     ],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "address", "name": "user", "type": "address"}],
-//     "name": "rankQualify",
-//     "outputs": [
-//       {"internalType": "uint256", "name": "directs", "type": "uint256"},
-//       {"internalType": "uint256", "name": "level", "type": "uint256"},
-//       {"internalType": "uint256", "name": "strongTeam", "type": "uint256"},
-//       {"internalType": "uint256", "name": "totalTeam", "type": "uint256"},
-//       {"internalType": "uint256", "name": "fLevel", "type": "uint256"}
-//     ],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [],
-//     "name": "redeemRate",
-//     "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "address", "name": "referral", "type": "address"}],
-//     "name": "regUser",
-//     "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
-//     "stateMutability": "nonpayable",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [],
-//     "name": "releaseContract",
-//     "outputs": [],
-//     "stateMutability": "nonpayable",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "uint256[2]", "name": "_growthRate", "type": "uint256[2]"}],
-//     "name": "setGrowths",
-//     "outputs": [],
-//     "stateMutability": "nonpayable",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "uint256[]", "name": "_levelSatke", "type": "uint256[]"}],
-//     "name": "setLevelStakes",
-//     "outputs": [],
-//     "stateMutability": "nonpayable",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [
-//       {"internalType": "uint256", "name": "_teamDepth", "type": "uint256"},
-//       {"internalType": "uint256", "name": "_redeemRate", "type": "uint256"},
-//       {"internalType": "bool", "name": "_boostLevel", "type": "bool"}
-//     ],
-//     "name": "setPrams",
-//     "outputs": [],
-//     "stateMutability": "nonpayable",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "address", "name": "_shareAddress", "type": "address"}],
-//     "name": "setShareAddress",
-//     "outputs": [],
-//     "stateMutability": "nonpayable",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [],
-//     "name": "shareAddress",
-//     "outputs": [{"internalType": "address", "name": "", "type": "address"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "uint256", "name": "stake_Order", "type": "uint256"}],
-//     "name": "stakeGrowth",
-//     "outputs": [{"internalType": "uint256", "name": "orderGrowth", "type": "uint256"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-//     "name": "stakeInfos",
-//     "outputs": [
-//       {"internalType": "address", "name": "ownerAddress", "type": "address"},
-//       {"internalType": "uint256", "name": "orderValue", "type": "uint256"},
-//       {"internalType": "uint256", "name": "orderGrowth", "type": "uint256"},
-//       {"internalType": "uint256", "name": "orderID", "type": "uint256"},
-//       {"internalType": "uint256", "name": "orderTime", "type": "uint256"},
-//       {"internalType": "uint256", "name": "isMature", "type": "uint256"},
-//       {"internalType": "bool", "name": "isComplete", "type": "bool"}
-//     ],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [],
-//     "name": "teamDepth",
-//     "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [
-//       {"internalType": "address", "name": "user", "type": "address"},
-//       {"internalType": "uint256", "name": "totalTPR", "type": "uint256"}
-//     ],
-//     "name": "teamGrowthTime",
-//     "outputs": [{"internalType": "uint256", "name": "growthTime", "type": "uint256"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [],
-//     "name": "tokenAddress",
-//     "outputs": [{"internalType": "address", "name": "", "type": "address"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "address", "name": "_user", "type": "address"}],
-//     "name": "totalGains",
-//     "outputs": [{"internalType": "uint256", "name": "total", "type": "uint256"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [],
-//     "name": "totalReg",
-//     "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [
-//       {"internalType": "address", "name": "userAddress", "type": "address"},
-//       {"internalType": "bool", "name": "isMatureOrd", "type": "bool"}
-//     ],
-//     "name": "totalRemainTPR",
-//     "outputs": [
-//       {"internalType": "uint256", "name": "totalTPR", "type": "uint256"},
-//       {"internalType": "uint256", "name": "growthTPR", "type": "uint256"},
-//       {"internalType": "uint256", "name": "forfietOrder", "type": "uint256"}
-//     ],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "address", "name": "_user", "type": "address"}],
-//     "name": "unStakePotential",
-//     "outputs": [
-//       {"internalType": "uint256", "name": "remainLimit", "type": "uint256"},
-//       {"internalType": "uint256", "name": "growthLimit", "type": "uint256"},
-//       {"internalType": "uint256", "name": "active_Order", "type": "uint256"},
-//       {"internalType": "uint256", "name": "lastOrder", "type": "uint256"},
-//       {"internalType": "uint256", "name": "unlock_Order", "type": "uint256"},
-//       {"internalType": "uint256", "name": "mature_Order", "type": "uint256"},
-//       {"internalType": "uint256", "name": "totGain", "type": "uint256"},
-//       {"internalType": "uint256", "name": "OrderValue", "type": "uint256"},
-//       {"internalType": "uint256", "name": "orderGrowth", "type": "uint256"},
-//       {"internalType": "uint256", "name": "teamGrowth", "type": "uint256"},
-//       {"internalType": "uint256", "name": "teamLaps", "type": "uint256"}
-//     ],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [],
-//     "name": "usdAddress",
-//     "outputs": [{"internalType": "address", "name": "", "type": "address"}],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "address", "name": "", "type": "address"}],
-//     "name": "userInfos",
-//     "outputs": [
-//       {"internalType": "address", "name": "referral", "type": "address"},
-//       {"internalType": "uint256", "name": "totalTeam", "type": "uint256"},
-//       {"internalType": "uint256", "name": "strongTeam", "type": "uint256"},
-//       {"internalType": "uint256", "name": "userLevel", "type": "uint256"},
-//       {"internalType": "uint256", "name": "lastStake", "type": "uint256"},
-//       {"internalType": "uint256", "name": "forfeitStake", "type": "uint256"},
-//       {"internalType": "uint256", "name": "harvestTime", "type": "uint256"},
-//       {"internalType": "bool", "name": "isNewStake", "type": "bool"},
-//       {"internalType": "bool", "name": "isDAO", "type": "bool"},
-//       {"internalType": "bool", "name": "joined", "type": "bool"}
-//     ],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "address", "name": "user", "type": "address"}],
-//     "name": "userLiveStatus",
-//     "outputs": [
-//       {"internalType": "uint256", "name": "directs", "type": "uint256"},
-//       {"internalType": "uint256", "name": "level", "type": "uint256"},
-//       {"internalType": "uint256", "name": "strongLeg", "type": "uint256"},
-//       {"internalType": "uint256", "name": "totalTeam", "type": "uint256"},
-//       {"internalType": "uint256", "name": "growthVol", "type": "uint256"}
-//     ],
-//     "stateMutability": "view",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [{"internalType": "address", "name": "user", "type": "address"}],
-//     "name": "userSelfUpdate",
-//     "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
-//     "stateMutability": "nonpayable",
-//     "type": "function"
-//   },
-//   {
-//     "inputs": [
-//       {"internalType": "address", "name": "user", "type": "address"},
-//       {"internalType": "uint256", "name": "stakeCount", "type": "uint256"}
-//     ],
-//     "name": "userStakeView",
-//     "outputs": [
-//       {"internalType": "uint256", "name": "totalCount", "type": "uint256"},
-//       {
-//         "components": [
-//           {"internalType": "address", "name": "ownerAddress", "type": "address"},
-//           {"internalType": "uint256", "name": "orderValue", "type": "uint256"},
-//           {"internalType": "uint256", "name": "orderGrowth", "type": "uint256"},
-//           {"internalType": "uint256", "name": "orderID", "type": "uint256"},
-//           {"internalType": "uint256", "name": "orderTime", "type": "uint256"},
-//           {"internalType": "uint256", "name": "isMature", "type": "uint256"},
-//           {"internalType": "bool", "name": "isComplete", "type": "bool"}
-//         ],
-//         "internalType": "struct SELFMINT_STAKING.order",
-//         "name": "stakeInfo",
-//         "type": "tuple"
-//       }
-//     ],
-//     "stateMutability": "view",
-//     "type": "function"
-//   }
-// ] as const;
+;
 
 export const STAKING_ABI = [
   {
@@ -1623,14 +1153,46 @@ export const stakingInteractions = {
    * @param account - Wallet address
    * @returns Transaction hash
    */
-  async sellToken(tokenAmount: bigint, account: Address): Promise<string> {
+  async sellToken(usdtAmount: number, account: Address): Promise<string> {
     try {
-      console.log(`Selling tokens worth ${formatUnits(tokenAmount, 6)} USDT for ${account}`);
-      return await this.makeUnstake(tokenAmount, account);
+      console.log(`🔄 [sellToken] Selling tokens for ${usdtAmount} USDT (plain amount) for ${account}`);
+
+      // Get USDT decimals
+      const decimals = await readContract(config, {
+        abi: USDT_ABI,
+        address: USDT_ADDRESS,
+        functionName: "decimals",
+        chainId: 56, // BSC Mainnet
+      });
+      console.log("🔍 [sellToken] USDT Decimals:", decimals);
+
+      // Round USDT amount to 6 decimal places to ensure integer wei
+      const roundedUsdtAmount = parseFloat(usdtAmount.toFixed(6));
+      console.log("🔍 [sellToken] Rounded USDT amount:", roundedUsdtAmount);
+
+      // Convert plain USDT amount to wei
+      const amountInWei = parseUnits(roundedUsdtAmount.toString(), Number(decimals));
+      console.log("🔍 [sellToken] Amount in wei:", amountInWei.toString());
+
+      // Execute makeUnstake with wei amount
+      const txHash = await this.makeUnstake(amountInWei, account);
+      console.log(`✅ [sellToken] Unstake transaction successful: ${txHash}`);
+      return txHash;
     } catch (error: any) {
-      console.error(`Error selling tokens:`, error);
+      console.error('❌ [sellToken] Error selling tokens:', error);
+      if (error.cause?.data) {
+        const decodedError = decodeErrorResult({
+          abi: STAKING_ABI,
+          data: error.cause.data,
+        });
+        throw new Error(
+          `Sell token failed: ${decodedError.errorName || "Unknown error"} - ${
+            decodedError.args?.join(", ") || ""
+          }`
+        );
+      }
       throw new Error(
-        `Failed to sell tokens: ${error.message || "Unknown error"}`
+        `Failed to unstake tokens: ${error.message || "Unknown error"}`
       );
     }
   },

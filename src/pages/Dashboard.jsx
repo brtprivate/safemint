@@ -15,7 +15,7 @@ import {
 import { useWallet } from '../context/WalletContext';
 import { useChainId, useSwitchChain } from 'wagmi';
 import { formatUnits, parseUnits, decodeErrorResult } from 'viem';
-import { readContract, waitForTransactionReceipt } from '@wagmi/core';
+import { readContract, waitForTransactionReceipt, writeContract } from '@wagmi/core';
 import { config } from '../config/web3modal';
 import { stakingInteractions, USDT_ADDRESS, USDT_ABI, STAKING_ABI, STAKING_CONTRACT_ADDRESS } from '../services/selfmintStakingService';
 import { safeMintTokenService, SAFEMINT_TOKEN_ADDRESS, SAFEMINT_TOKEN_ABI } from '../services/safeMintTokenService';
@@ -682,71 +682,268 @@ const Dashboard = () => {
     }
   };
 
-  const handleBuyToken = async () => {
-    console.log("🪙 [handleBuyToken] Buy token button clicked");
+// const handleBuyToken = async () => {
+//   console.log("🪙 [handleBuyToken] Buy token button clicked");
 
-    if (!wallet.isConnected || !wallet.account) {
-      setError('Wallet not connected. Please connect your wallet.');
-      return;
+//   if (!wallet.isConnected || !wallet.account) {
+//     setError('Wallet not connected. Please connect your wallet.');
+//     return;
+//   }
+
+//   if (!buyTokenAmount || parseFloat(buyTokenAmount) <= 0) {
+//     setError('Please enter a valid amount to buy tokens');
+//     return;
+//   }
+
+//   if (chainId !== 56) {
+//     setError("Please switch to BSC Mainnet (Chain ID: 56) to buy tokens.");
+//     return;
+//   }
+
+//   try {
+//     setOrderLoading(true);
+//     setError('');
+//     setSuccess('');
+
+//     // Get USDT decimals
+//     const usdtDecimals = await readContract(config, {
+//       abi: USDT_ABI,
+//       address: USDT_ADDRESS,
+//       functionName: "decimals",
+//       chainId: 56,
+//     });
+
+//     const amountInWei = parseUnits(buyTokenAmount, Number(usdtDecimals));
+//  const approvalTx = await stakingInteractions.approveUSDT(amountInWei, wallet.account);
+//     // Check current allowance
+//     const allowance = await readContract(config, {
+//       abi: USDT_ABI,
+//       address: USDT_ADDRESS,
+//       functionName: 'allowance',
+//       args: [wallet.account, STAKING_CONTRACT_ADDRESS],
+//       chainId: 56,
+//     });
+
+//     // Approve if allowance is less than needed
+  
+//       console.log("🔄 [Buy] Sending approval transaction...");
+//       const approvalHash = await writeContract(config, {
+//         abi: USDT_ABI,
+//         address: USDT_ADDRESS,
+//         functionName: "approve",
+//         args: [STAKING_CONTRACT_ADDRESS, buyTokenAmount],
+//         account: wallet.account,
+//         chainId: 56,
+//       });
+
+//       await waitForTransactionReceipt(config, {
+//         hash: approvalHash,
+//         chainId: 56,
+//       });
+
+//       console.log("✅ USDT approved successfully");
+    
+
+//     // Call buy function
+//     const txHash = await stakingInteractions.buyToken(buyTokenAmount, wallet.account);
+
+//     setSuccess(
+//       `Successfully bought tokens with ${buyTokenAmount} USDT! Tx: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`
+//     );
+//     setBuyTokenAmount('');
+//     setTimeout(fetchMlmData, 3000);
+
+//   } catch (error) {
+//     console.error('❌ [handleBuyToken] Buy token process failed:', error);
+
+//     if (error.message?.includes('User rejected')) {
+//       setError('Transaction was cancelled by user');
+//     } else if (error.message?.includes('insufficient')) {
+//       setError('Insufficient USDT balance for this transaction');
+//     } else if (error.message?.includes('allowance')) {
+//       setError('Insufficient allowance. Please approve USDT first.');
+//     } else {
+//       setError(`Failed to buy tokens: ${error.message || 'Unknown error occurred'}`);
+//     }
+//   } finally {
+//     setOrderLoading(false);
+//   }
+// };
+// const handleBuyToken = async () => {
+//   console.log("🪙 [handleBuyToken] Buy token button clicked");
+
+//   if (!wallet.isConnected || !wallet.account) {
+//     setError('Wallet not connected. Please connect your wallet.');
+//     return;
+//   }
+
+//   if (!buyTokenAmount || parseFloat(buyTokenAmount) <= 0) {
+//     setError('Please enter a valid amount to buy tokens');
+//     return;
+//   }
+
+//   if (chainId !== 56) {
+//     setError("Please switch to BSC Mainnet (Chain ID: 56) to buy tokens.");
+//     return;
+//   }
+
+//   try {
+//     setOrderLoading(true);
+//     setError('');
+//     setSuccess('');
+
+//     // Step 1: Get USDT decimals
+//     const decimals = await readContract(config, {
+//       abi: USDT_ABI,
+//       address: USDT_ADDRESS,
+//       functionName: "decimals",
+//       chainId: 56,
+//     });
+//     console.log("🔍 [handleBuyToken] USDT Decimals:", decimals);
+
+//     // Convert plain amount to wei for allowance check
+//     const amountInWei = parseUnits(buyTokenAmount.toString(), Number(decimals));
+//     console.log("🔍 [handleBuyToken] Amount in wei (for allowance check):", amountInWei.toString());
+
+//     // Step 2: Check USDT allowance for the staking contract
+//     const allowance = await safeMintTokenService.getAllowance(
+//       wallet.account,
+//       STAKING_CONTRACT_ADDRESS
+//     );
+//     console.log("🔍 [handleBuyToken] Current USDT allowance:", formatUnits(allowance, Number(decimals)), "USDT");
+
+//     // Step 3: Approve USDT if allowance is insufficient
+//     if (allowance < amountInWei) {
+//       console.log(`🔄 [handleBuyToken] Approving ${buyTokenAmount} USDT for staking contract...`);
+//       const approvalTxHash = await safeMintTokenService.approve(
+//         STAKING_CONTRACT_ADDRESS,
+//         amountInWei,
+//         wallet.account
+//       );
+//       console.log(`✅ [handleBuyToken] Approval transaction successful: ${approvalTxHash}`);
+
+//       // Wait for a moment to ensure the approval is processed
+//       await new Promise(resolve => setTimeout(resolve, 2000));
+//     } else {
+//       console.log("✅ [handleBuyToken] Sufficient allowance, no approval needed.");
+//     }
+
+//     // Step 4: Execute buyToken with plain amount
+//     console.log(`🔄 [handleBuyToken] Executing buyToken with ${buyTokenAmount} USDT...`);
+//     const txHash = await stakingInteractions.buyToken(buyTokenAmount, wallet.account);
+
+//     setSuccess(
+//       `Successfully bought tokens with ${buyTokenAmount} USDT! Tx: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`
+//     );
+//     setBuyTokenAmount('');
+//     setTimeout(fetchMlmData, 3000);
+
+//   } catch (error) {
+//     console.error('❌ [handleBuyToken] Buy token process failed:', error);
+
+//     if (error.message?.includes('User rejected')) {
+//       setError('Transaction was cancelled by user');
+//     } else if (error.message?.includes('insufficient')) {
+//       setError('Insufficient USDT balance for this transaction');
+//     } else if (error.message?.includes('allowance')) {
+//       setError('Insufficient allowance. Please approve USDT first.');
+//     } else if (error.message?.includes('approve')) {
+//       setError('Failed to approve USDT. Please try again.');
+//     } else {
+//       setError(`Failed to buy tokens: ${error.message || 'Unknown error occurred'}`);
+//     }
+//   } finally {
+//     setOrderLoading(false);
+//   }
+// };
+
+const handleBuyToken = async () => {
+  console.log("🪙 [handleBuyToken] Buy token button clicked");
+
+  if (!wallet.isConnected || !wallet.account) {
+    setError('Wallet not connected. Please connect your wallet.');
+    return;
+  }
+
+  if (!buyTokenAmount || parseFloat(buyTokenAmount) <= 0) {
+    setError('Please enter a valid amount to buy tokens');
+    return;
+  }
+
+  if (chainId !== 56) {
+    setError("Please switch to BSC Mainnet (Chain ID: 56) to buy tokens.");
+    return;
+  }
+
+  try {
+    setOrderLoading(true);
+    setError('');
+    setSuccess('');
+
+    // Step 1: Get USDT decimals
+    const decimals = await readContract(config, {
+      abi: USDT_ABI,
+      address: USDT_ADDRESS,
+      functionName: "decimals",
+      chainId: 56,
+    });
+    console.log("🔍 [handleBuyToken] USDT Decimals:", decimals);
+
+    // Convert plain amount to wei for approval
+    const amountInWei = parseUnits(buyTokenAmount.toString(), Number(decimals));
+    console.log("🔍 [handleBuyToken] Amount in wei (for approval):", amountInWei.toString());
+
+    // Step 2: Check USDT allowance for the staking contract
+    const allowance = await safeMintTokenService.getAllowance(
+      wallet.account,
+      STAKING_CONTRACT_ADDRESS
+    );
+    console.log("🔍 [handleBuyToken] Current USDT allowance:", formatUnits(allowance, Number(decimals)), "USDT");
+
+    // Step 3: Approve USDT in wei if allowance is insufficient
+    if (allowance < amountInWei) {
+      console.log(`🔄 [handleBuyToken] Approving ${formatUnits(amountInWei, Number(decimals))} USDT (in wei) for staking contract...`);
+      const approvalTxHash = await safeMintTokenService.approve(
+        STAKING_CONTRACT_ADDRESS,
+        amountInWei, // Pass amount in wei
+        wallet.account
+      );
+      console.log(`✅ [handleBuyToken] Approval transaction successful: ${approvalTxHash}`);
+
+      // Wait for a moment to ensure the approval is processed
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    } else {
+      console.log("✅ [handleBuyToken] Sufficient allowance, no approval needed.");
     }
 
-    if (!buyTokenAmount || parseFloat(buyTokenAmount) <= 0) {
-      setError('Please enter a valid amount to buy tokens');
-      return;
+    // Step 4: Execute buyToken with plain amount
+    console.log(`🔄 [handleBuyToken] Executing buyToken with ${buyTokenAmount} USDT (plain amount)...`);
+    const txHash = await stakingInteractions.buyToken(buyTokenAmount, wallet.account);
+
+    setSuccess(
+      `Successfully bought tokens with ${buyTokenAmount} USDT! Tx: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`
+    );
+    setBuyTokenAmount('');
+    setTimeout(fetchMlmData, 3000);
+
+  } catch (error) {
+    console.error('❌ [handleBuyToken] Buy token process failed:', error);
+
+    if (error.message?.includes('User rejected')) {
+      setError('Transaction was cancelled by user');
+    } else if (error.message?.includes('insufficient')) {
+      setError('Insufficient USDT balance for this transaction');
+    } else if (error.message?.includes('allowance')) {
+      setError('Insufficient allowance. Please approve USDT first.');
+    } else if (error.message?.includes('approve')) {
+      setError('Failed to approve USDT. Please try again.');
+    } else {
+      setError(`Failed to buy tokens: ${error.message || 'Unknown error occurred'}`);
     }
-
-    if (chainId !== 56) {
-      setError("Please switch to BSC Mainnet (Chain ID: 56) to buy tokens.");
-      return;
-    }
-
-    try {
-      setOrderLoading(true);
-      setError('');
-      setSuccess('');
-
-      const decimals = await readContract(config, {
-        abi: SAFEMINT_TOKEN_ABI,
-        address: SAFEMINT_TOKEN_ADDRESS,
-        functionName: 'decimals',
-        chainId: 56,
-      });
-
-      const amountInWei = parseUnits(buyTokenAmount, Number(decimals));
-
-      const allowance = await readContract(config, {
-        abi: SAFEMINT_TOKEN_ABI,
-        address: SAFEMINT_TOKEN_ADDRESS,
-        functionName: 'allowance',
-        args: [wallet.account, STAKING_CONTRACT_ADDRESS],
-        chainId: 56,
-      });
-
-      if (allowance < amountInWei) {
-        const approvalTx = await safeMintTokenService.approve(STAKING_CONTRACT_ADDRESS, amountInWei, wallet.account);
-        await waitForTransactionReceipt(config, { hash: approvalTx, chainId: 56 });
-      }
-
-      const txHash = await stakingInteractions.buyToken(buyTokenAmount, wallet.account);
-      setSuccess(`Successfully bought tokens with ${buyTokenAmount} SafeMint tokens! Tx: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`);
-      setBuyTokenAmount('');
-
-      setTimeout(fetchMlmData, 3000);
-    } catch (error) {
-      console.error('❌ [handleBuyToken] Buy token process failed:', error);
-
-      if (error.message?.includes('User rejected')) {
-        setError('Transaction was cancelled by user');
-      } else if (error.message?.includes('insufficient')) {
-        setError('Insufficient SafeMint token balance for this transaction');
-      } else {
-        setError(`Failed to buy tokens: ${error.message || 'Unknown error occurred'}`);
-      }
-    } finally {
-      setOrderLoading(false);
-    }
-  };
-
+  } finally {
+    setOrderLoading(false);
+  }
+};
   if (!wallet.isConnected) {
     return (
       <Container maxWidth="xl" sx={{ py: { xs: 3, sm: 4 } }}>
@@ -2027,14 +2224,11 @@ const Dashboard = () => {
                     <LoadingSkeleton height={40} width={120} />
                   ) : (
                     `$${formatNumber(
-                      mlmData.referralEarn +
-                      mlmData.levelEarn +
-                      mlmData.growthEarn +
-                      mlmData.teamGrowthWallet +
-                      mlmData.leaderEarn +
-                      mlmData.developmentEarn
+                   mlmData.availableWithdrawal
                     )}`
                   )}
+                  {console.log("mlm data",mlmData)
+                  }
                 </Typography>
                 <Typography variant="body1" sx={{
                   color: 'text.secondary',

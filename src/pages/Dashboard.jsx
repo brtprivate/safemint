@@ -107,7 +107,9 @@ const Dashboard = () => {
     inOutBuy: 0,
     growthFuels: 0,
     activeOrders: 0,
-    teamLevelStake   : 0,
+    teamLevelStake: 0,
+    totalTPR: 0,
+    growthTPR: 0
   });
 
   const fetchMlmData = async () => {
@@ -141,7 +143,7 @@ const Dashboard = () => {
       setNotRegistered(false);
 
       console.log("📡 [fetchMlmData] Fetching all contract data in parallel...");
-      const [bonusInfo, rankQualify, directReferrals, unStakePotential, matureOrder] = await Promise.all([
+      const [bonusInfo, rankQualify, directReferrals, unStakePotential, matureOrder, totalRemainTPR] = await Promise.all([
         stakingInteractions.getBonusInfo(wallet.account).catch((err) => {
           console.error("❌ [fetchMlmData] getBonusInfo failed:", err);
           return {};
@@ -162,25 +164,20 @@ const Dashboard = () => {
           console.error("❌ [fetchMlmData] getMatureOrder failed:", err);
           return {};
         }),
+        stakingInteractions.getTotalRemainTPR(wallet.account, false).catch((err) => {
+          console.error("❌ [fetchMlmData] getTotalRemainTPR failed:", err);
+          return { totalTPR: 0n, growthTPR: 0n, forfietOrder: 0n };
+        }),
       ]);
 
-      console.log("📊 [fetchMlmData] Raw Contract Data:");
-      console.log("  📊 bonusInfo:", safeStringify(bonusInfo));
-      console.log("  📊 rankQualify:", safeStringify(rankQualify));
-      console.log("  📊 directReferrals:", safeStringify(directReferrals));
-      console.log("  📊 unStakePotential:", safeStringify(unStakePotential));
-      console.log("  📊 matureOrder:", safeStringify(matureOrder));
 
-      console.log("📡 [fetchMlmData] Fetching USDT decimals...");
       const decimals = await readContract(config, {
         abi: USDT_ABI,
         address: USDT_ADDRESS,
         functionName: 'decimals',
         chainId: 56,
       });
-      console.log("📊 [fetchMlmData] USDT Decimals fetched:", decimals);
 
-      console.log("🧮 [fetchMlmData] Processing and calculating data...");
 
       // Team Statistics Calculations
       const directTeam = directReferrals?.length || 0;
@@ -354,8 +351,9 @@ const Dashboard = () => {
       // Extract teamLevelStake from bonusInfo (index 6 in the contract response)
       const teamLevelStakeRaw = bonusInfo?.teamLevelStake || 0;
       const teamLevelStake = formatValue(teamLevelStakeRaw);
-      console.log("📊 [fetchMlmData] Team Level Stake:", teamLevelStake);
 
+      const totalTPR = formatValue(totalRemainTPR.totalTPR);
+      const growthTPR = formatValue(totalRemainTPR.growthTPR);
       const finalMlmData = {
         directTeam,
         strongTeam,
@@ -378,7 +376,11 @@ const Dashboard = () => {
         activeOrders,
         availableWithdrawal,
         teamLevelStake, // Add teamLevelStake to the final data
+        totalTPR,
+        growthTPR
       };
+      console.log("growthTPR", finalMlmData );
+      
 
       setMlmData(finalMlmData);
       setOrderHistory(orders);
@@ -428,9 +430,7 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    console.log("🔄 [useEffect] Wallet state changed");
-    console.log("🔄 [useEffect] Wallet connected:", wallet.isConnected);
-    console.log("🔄 [useEffect] Wallet account:", wallet.account);
+
 
     if (wallet.isConnected && wallet.account) {
       console.log("✅ [useEffect] Triggering data fetch due to wallet connection");
@@ -682,268 +682,97 @@ const Dashboard = () => {
     }
   };
 
-// const handleBuyToken = async () => {
-//   console.log("🪙 [handleBuyToken] Buy token button clicked");
 
-//   if (!wallet.isConnected || !wallet.account) {
-//     setError('Wallet not connected. Please connect your wallet.');
-//     return;
-//   }
 
-//   if (!buyTokenAmount || parseFloat(buyTokenAmount) <= 0) {
-//     setError('Please enter a valid amount to buy tokens');
-//     return;
-//   }
 
-//   if (chainId !== 56) {
-//     setError("Please switch to BSC Mainnet (Chain ID: 56) to buy tokens.");
-//     return;
-//   }
 
-//   try {
-//     setOrderLoading(true);
-//     setError('');
-//     setSuccess('');
+  const handleBuyToken = async () => {
+    console.log("🪙 [handleBuyToken] Buy token button clicked");
 
-//     // Get USDT decimals
-//     const usdtDecimals = await readContract(config, {
-//       abi: USDT_ABI,
-//       address: USDT_ADDRESS,
-//       functionName: "decimals",
-//       chainId: 56,
-//     });
+    if (!wallet.isConnected || !wallet.account) {
+      setError('Wallet not connected. Please connect your wallet.');
+      return;
+    }
 
-//     const amountInWei = parseUnits(buyTokenAmount, Number(usdtDecimals));
-//  const approvalTx = await stakingInteractions.approveUSDT(amountInWei, wallet.account);
-//     // Check current allowance
-//     const allowance = await readContract(config, {
-//       abi: USDT_ABI,
-//       address: USDT_ADDRESS,
-//       functionName: 'allowance',
-//       args: [wallet.account, STAKING_CONTRACT_ADDRESS],
-//       chainId: 56,
-//     });
+    if (!buyTokenAmount || parseFloat(buyTokenAmount) <= 0) {
+      setError('Please enter a valid amount to buy tokens');
+      return;
+    }
 
-//     // Approve if allowance is less than needed
-  
-//       console.log("🔄 [Buy] Sending approval transaction...");
-//       const approvalHash = await writeContract(config, {
-//         abi: USDT_ABI,
-//         address: USDT_ADDRESS,
-//         functionName: "approve",
-//         args: [STAKING_CONTRACT_ADDRESS, buyTokenAmount],
-//         account: wallet.account,
-//         chainId: 56,
-//       });
+    if (chainId !== 56) {
+      setError("Please switch to BSC Mainnet (Chain ID: 56) to buy tokens.");
+      return;
+    }
 
-//       await waitForTransactionReceipt(config, {
-//         hash: approvalHash,
-//         chainId: 56,
-//       });
+    try {
+      setOrderLoading(true);
+      setError('');
+      setSuccess('');
 
-//       console.log("✅ USDT approved successfully");
-    
+      // Step 1: Get USDT decimals
+      const decimals = await readContract(config, {
+        abi: USDT_ABI,
+        address: USDT_ADDRESS,
+        functionName: "decimals",
+        chainId: 56,
+      });
+      console.log("🔍 [handleBuyToken] USDT Decimals:", decimals);
 
-//     // Call buy function
-//     const txHash = await stakingInteractions.buyToken(buyTokenAmount, wallet.account);
+      // Convert plain amount to wei for approval
+      const amountInWei = parseUnits(buyTokenAmount.toString(), Number(decimals));
+      console.log("🔍 [handleBuyToken] Amount in wei (for approval):", amountInWei.toString());
 
-//     setSuccess(
-//       `Successfully bought tokens with ${buyTokenAmount} USDT! Tx: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`
-//     );
-//     setBuyTokenAmount('');
-//     setTimeout(fetchMlmData, 3000);
-
-//   } catch (error) {
-//     console.error('❌ [handleBuyToken] Buy token process failed:', error);
-
-//     if (error.message?.includes('User rejected')) {
-//       setError('Transaction was cancelled by user');
-//     } else if (error.message?.includes('insufficient')) {
-//       setError('Insufficient USDT balance for this transaction');
-//     } else if (error.message?.includes('allowance')) {
-//       setError('Insufficient allowance. Please approve USDT first.');
-//     } else {
-//       setError(`Failed to buy tokens: ${error.message || 'Unknown error occurred'}`);
-//     }
-//   } finally {
-//     setOrderLoading(false);
-//   }
-// };
-// const handleBuyToken = async () => {
-//   console.log("🪙 [handleBuyToken] Buy token button clicked");
-
-//   if (!wallet.isConnected || !wallet.account) {
-//     setError('Wallet not connected. Please connect your wallet.');
-//     return;
-//   }
-
-//   if (!buyTokenAmount || parseFloat(buyTokenAmount) <= 0) {
-//     setError('Please enter a valid amount to buy tokens');
-//     return;
-//   }
-
-//   if (chainId !== 56) {
-//     setError("Please switch to BSC Mainnet (Chain ID: 56) to buy tokens.");
-//     return;
-//   }
-
-//   try {
-//     setOrderLoading(true);
-//     setError('');
-//     setSuccess('');
-
-//     // Step 1: Get USDT decimals
-//     const decimals = await readContract(config, {
-//       abi: USDT_ABI,
-//       address: USDT_ADDRESS,
-//       functionName: "decimals",
-//       chainId: 56,
-//     });
-//     console.log("🔍 [handleBuyToken] USDT Decimals:", decimals);
-
-//     // Convert plain amount to wei for allowance check
-//     const amountInWei = parseUnits(buyTokenAmount.toString(), Number(decimals));
-//     console.log("🔍 [handleBuyToken] Amount in wei (for allowance check):", amountInWei.toString());
-
-//     // Step 2: Check USDT allowance for the staking contract
-//     const allowance = await safeMintTokenService.getAllowance(
-//       wallet.account,
-//       STAKING_CONTRACT_ADDRESS
-//     );
-//     console.log("🔍 [handleBuyToken] Current USDT allowance:", formatUnits(allowance, Number(decimals)), "USDT");
-
-//     // Step 3: Approve USDT if allowance is insufficient
-//     if (allowance < amountInWei) {
-//       console.log(`🔄 [handleBuyToken] Approving ${buyTokenAmount} USDT for staking contract...`);
-//       const approvalTxHash = await safeMintTokenService.approve(
-//         STAKING_CONTRACT_ADDRESS,
-//         amountInWei,
-//         wallet.account
-//       );
-//       console.log(`✅ [handleBuyToken] Approval transaction successful: ${approvalTxHash}`);
-
-//       // Wait for a moment to ensure the approval is processed
-//       await new Promise(resolve => setTimeout(resolve, 2000));
-//     } else {
-//       console.log("✅ [handleBuyToken] Sufficient allowance, no approval needed.");
-//     }
-
-//     // Step 4: Execute buyToken with plain amount
-//     console.log(`🔄 [handleBuyToken] Executing buyToken with ${buyTokenAmount} USDT...`);
-//     const txHash = await stakingInteractions.buyToken(buyTokenAmount, wallet.account);
-
-//     setSuccess(
-//       `Successfully bought tokens with ${buyTokenAmount} USDT! Tx: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`
-//     );
-//     setBuyTokenAmount('');
-//     setTimeout(fetchMlmData, 3000);
-
-//   } catch (error) {
-//     console.error('❌ [handleBuyToken] Buy token process failed:', error);
-
-//     if (error.message?.includes('User rejected')) {
-//       setError('Transaction was cancelled by user');
-//     } else if (error.message?.includes('insufficient')) {
-//       setError('Insufficient USDT balance for this transaction');
-//     } else if (error.message?.includes('allowance')) {
-//       setError('Insufficient allowance. Please approve USDT first.');
-//     } else if (error.message?.includes('approve')) {
-//       setError('Failed to approve USDT. Please try again.');
-//     } else {
-//       setError(`Failed to buy tokens: ${error.message || 'Unknown error occurred'}`);
-//     }
-//   } finally {
-//     setOrderLoading(false);
-//   }
-// };
-
-const handleBuyToken = async () => {
-  console.log("🪙 [handleBuyToken] Buy token button clicked");
-
-  if (!wallet.isConnected || !wallet.account) {
-    setError('Wallet not connected. Please connect your wallet.');
-    return;
-  }
-
-  if (!buyTokenAmount || parseFloat(buyTokenAmount) <= 0) {
-    setError('Please enter a valid amount to buy tokens');
-    return;
-  }
-
-  if (chainId !== 56) {
-    setError("Please switch to BSC Mainnet (Chain ID: 56) to buy tokens.");
-    return;
-  }
-
-  try {
-    setOrderLoading(true);
-    setError('');
-    setSuccess('');
-
-    // Step 1: Get USDT decimals
-    const decimals = await readContract(config, {
-      abi: USDT_ABI,
-      address: USDT_ADDRESS,
-      functionName: "decimals",
-      chainId: 56,
-    });
-    console.log("🔍 [handleBuyToken] USDT Decimals:", decimals);
-
-    // Convert plain amount to wei for approval
-    const amountInWei = parseUnits(buyTokenAmount.toString(), Number(decimals));
-    console.log("🔍 [handleBuyToken] Amount in wei (for approval):", amountInWei.toString());
-
-    // Step 2: Check USDT allowance for the staking contract
-    const allowance = await safeMintTokenService.getAllowance(
-      wallet.account,
-      STAKING_CONTRACT_ADDRESS
-    );
-    console.log("🔍 [handleBuyToken] Current USDT allowance:", formatUnits(allowance, Number(decimals)), "USDT");
-
-    // Step 3: Approve USDT in wei if allowance is insufficient
-    if (allowance < amountInWei) {
-      console.log(`🔄 [handleBuyToken] Approving ${formatUnits(amountInWei, Number(decimals))} USDT (in wei) for staking contract...`);
-      const approvalTxHash = await safeMintTokenService.approve(
-        STAKING_CONTRACT_ADDRESS,
-        amountInWei, // Pass amount in wei
-        wallet.account
+      // Step 2: Check USDT allowance for the staking contract
+      const allowance = await safeMintTokenService.getAllowance(
+        wallet.account,
+        STAKING_CONTRACT_ADDRESS
       );
-      console.log(`✅ [handleBuyToken] Approval transaction successful: ${approvalTxHash}`);
+      console.log("🔍 [handleBuyToken] Current USDT allowance:", formatUnits(allowance, Number(decimals)), "USDT");
 
-      // Wait for a moment to ensure the approval is processed
-      await new Promise(resolve => setTimeout(resolve, 2000));
-    } else {
-      console.log("✅ [handleBuyToken] Sufficient allowance, no approval needed.");
+      // Step 3: Approve USDT in wei if allowance is insufficient
+      if (allowance < amountInWei) {
+        console.log(`🔄 [handleBuyToken] Approving ${formatUnits(amountInWei, Number(decimals))} USDT (in wei) for staking contract...`);
+        const approvalTxHash = await safeMintTokenService.approve(
+          STAKING_CONTRACT_ADDRESS,
+          amountInWei, // Pass amount in wei
+          wallet.account
+        );
+        console.log(`✅ [handleBuyToken] Approval transaction successful: ${approvalTxHash}`);
+
+        // Wait for a moment to ensure the approval is processed
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      } else {
+        console.log("✅ [handleBuyToken] Sufficient allowance, no approval needed.");
+      }
+
+      // Step 4: Execute buyToken with plain amount
+      console.log(`🔄 [handleBuyToken] Executing buyToken with ${buyTokenAmount} USDT (plain amount)...`);
+      const txHash = await stakingInteractions.buyToken(buyTokenAmount, wallet.account);
+
+      setSuccess(
+        `Successfully bought tokens with ${buyTokenAmount} USDT! Tx: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`
+      );
+      setBuyTokenAmount('');
+      setTimeout(fetchMlmData, 3000);
+
+    } catch (error) {
+      console.error('❌ [handleBuyToken] Buy token process failed:', error);
+
+      if (error.message?.includes('User rejected')) {
+        setError('Transaction was cancelled by user');
+      } else if (error.message?.includes('insufficient')) {
+        setError('Insufficient USDT balance for this transaction');
+      } else if (error.message?.includes('allowance')) {
+        setError('Insufficient allowance. Please approve USDT first.');
+      } else if (error.message?.includes('approve')) {
+        setError('Failed to approve USDT. Please try again.');
+      } else {
+        setError(`Failed to buy tokens: ${error.message || 'Unknown error occurred'}`);
+      }
+    } finally {
+      setOrderLoading(false);
     }
-
-    // Step 4: Execute buyToken with plain amount
-    console.log(`🔄 [handleBuyToken] Executing buyToken with ${buyTokenAmount} USDT (plain amount)...`);
-    const txHash = await stakingInteractions.buyToken(buyTokenAmount, wallet.account);
-
-    setSuccess(
-      `Successfully bought tokens with ${buyTokenAmount} USDT! Tx: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`
-    );
-    setBuyTokenAmount('');
-    setTimeout(fetchMlmData, 3000);
-
-  } catch (error) {
-    console.error('❌ [handleBuyToken] Buy token process failed:', error);
-
-    if (error.message?.includes('User rejected')) {
-      setError('Transaction was cancelled by user');
-    } else if (error.message?.includes('insufficient')) {
-      setError('Insufficient USDT balance for this transaction');
-    } else if (error.message?.includes('allowance')) {
-      setError('Insufficient allowance. Please approve USDT first.');
-    } else if (error.message?.includes('approve')) {
-      setError('Failed to approve USDT. Please try again.');
-    } else {
-      setError(`Failed to buy tokens: ${error.message || 'Unknown error occurred'}`);
-    }
-  } finally {
-    setOrderLoading(false);
-  }
-};
+  };
   if (!wallet.isConnected) {
     return (
       <Container maxWidth="xl" sx={{ py: { xs: 3, sm: 4 } }}>
@@ -1474,7 +1303,7 @@ const handleBuyToken = async () => {
               { icon: <CustomSVGIcons.Users size={120} animated={true} />, title: 'Other Teams', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatNumber(mlmData.otherTeams), subtitle: 'Additional Team Members', color: 'info.main' },
               { icon: <CustomSVGIcons.BarChart3 size={120} animated={true} />, title: 'Levels', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatNumber(mlmData.levels), subtitle: 'Achievement Levels', color: 'warning.main' },
               { icon: <CustomSVGIcons.CheckCircle size={120} animated={true} />, title: 'Active Orders', value: isLoading ? <LoadingSkeleton height={40} width={80} /> : formatNumber(mlmData.activeOrders), subtitle: 'Current Active Orders', color: 'success.main' },
-             
+
             ].map((card, index) => (
               <Grid
                 item
@@ -1614,8 +1443,8 @@ const handleBuyToken = async () => {
               { icon: <CustomSVGIcons.Building2 size={120} animated={true} />, title: 'Total Withdrawn', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.totalWithdrawn), subtitle: 'Total Amount Withdrawn', color: 'error.main' },
               { icon: <CustomSVGIcons.Users2 size={120} animated={true} />, title: 'Team Growth Laps', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.teamGrowthLaps), subtitle: 'Team Growth Cycles', color: 'warning.main' },
               { icon: <CustomSVGIcons.Wallet size={120} animated={true} />, title: 'SafeMint Buy Potential', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.inOutBuy), subtitle: 'Buy Potential Value', color: 'info.main' },
-              { icon: <CustomSVGIcons.Fuel size={120} animated={true} />, title: 'Growth Fuels', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.growthFuels), subtitle: 'Team Growth Potential', color: 'success.main' },
-              { icon: <CustomSVGIcons.Battery size={120} animated={true} />, title: 'Total Fuels', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.totalFuels), subtitle: 'Combined Fuel Resources', color: 'primary.main' },
+              { icon: <CustomSVGIcons.Fuel size={120} animated={true} />, title: 'Growth Fuels', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.growthTPR), subtitle: 'Team Growth Potential', color: 'success.main' },
+              { icon: <CustomSVGIcons.Battery size={120} animated={true} />, title: 'Total Fuels', value: isLoading ? <LoadingSkeleton height={40} width={100} /> : formatCurrency(mlmData.totalTPR), subtitle: 'Combined Fuel Resources', color: 'primary.main' },
             ].map((card, index) => (
               <Grid
                 item
@@ -1844,69 +1673,69 @@ const handleBuyToken = async () => {
                   '100%': { opacity: 1, transform: 'translateX(0)' }
                 }
               }}>
-              {/* Decorative SVG Circle */}
-              <Box sx={{
-                position: 'absolute',
-                top: 16,
-                left: 16,
-                width: 12,
-                height: 12,
-                zIndex: 1
-              }}>
-                <svg width="12" height="12" viewBox="0 0 12 12">
-                  <circle
-                    cx="6"
-                    cy="6"
-                    r="5"
-                    fill="none"
-                    stroke="#2196f3"
-                    strokeWidth="1"
-                    opacity="0.6"
-                  >
-                    <animate
-                      attributeName="r"
-                      values="2;5;2"
-                      dur="2.8s"
-                      repeatCount="indefinite"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="0.8;0.2;0.8"
-                      dur="2.8s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                </svg>
-              </Box>
+                {/* Decorative SVG Circle */}
+                <Box sx={{
+                  position: 'absolute',
+                  top: 16,
+                  left: 16,
+                  width: 12,
+                  height: 12,
+                  zIndex: 1
+                }}>
+                  <svg width="12" height="12" viewBox="0 0 12 12">
+                    <circle
+                      cx="6"
+                      cy="6"
+                      r="5"
+                      fill="none"
+                      stroke="#2196f3"
+                      strokeWidth="1"
+                      opacity="0.6"
+                    >
+                      <animate
+                        attributeName="r"
+                        values="2;5;2"
+                        dur="2.8s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="0.8;0.2;0.8"
+                        dur="2.8s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                  </svg>
+                </Box>
 
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{
-                  color: 'primary.main',
-                  fontWeight: 700,
-                  mb: { xs: 2, sm: 3 },
-                  fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.35rem' },
-                  textAlign: { xs: 'center', sm: 'left' },
-                  letterSpacing: '-0.01em',
-                  pl: { xs: 0, sm: 3 }
-                }}
-              >
-                Trading & Staking
-              </Typography>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{
+                    color: 'primary.main',
+                    fontWeight: 700,
+                    mb: { xs: 2, sm: 3 },
+                    fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.35rem' },
+                    textAlign: { xs: 'center', sm: 'left' },
+                    letterSpacing: '-0.01em',
+                    pl: { xs: 0, sm: 3 }
+                  }}
+                >
+                  Trading & Staking
+                </Typography>
 
-              <TradingSection
-                buyAmount={buyAmount}
-                setBuyAmount={setBuyAmount}
-                sellAmount={sellAmount}
-                setSellAmount={setSellAmount}
-                buyTokenAmount={buyTokenAmount}
-                setBuyTokenAmount={setBuyTokenAmount}
-                onBuy={handleBuy}
-                onSell={handleSell}
-                onBuyToken={handleBuyToken}
-                orderLoading={orderLoading}
-              />
+                <TradingSection
+                  buyAmount={buyAmount}
+                  setBuyAmount={setBuyAmount}
+                  sellAmount={sellAmount}
+                  setSellAmount={setSellAmount}
+                  buyTokenAmount={buyTokenAmount}
+                  setBuyTokenAmount={setBuyTokenAmount}
+                  onBuy={handleBuy}
+                  onSell={handleSell}
+                  onBuyToken={handleBuyToken}
+                  orderLoading={orderLoading}
+                />
               </Card>
             </Box>
           </Grid>
@@ -1965,62 +1794,62 @@ const handleBuyToken = async () => {
                   '100%': { opacity: 1, transform: 'translateX(0)' }
                 }
               }}>
-              {/* Decorative SVG Circle */}
-              <Box sx={{
-                position: 'absolute',
-                top: 16,
-                left: 16,
-                width: 12,
-                height: 12,
-                zIndex: 1
-              }}>
-                <svg width="12" height="12" viewBox="0 0 12 12">
-                  <circle
-                    cx="6"
-                    cy="6"
-                    r="5"
-                    fill="none"
-                    stroke="#673ab7"
-                    strokeWidth="1"
-                    opacity="0.6"
-                  >
-                    <animate
-                      attributeName="r"
-                      values="4;6;4"
-                      dur="2.6s"
-                      repeatCount="indefinite"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="0.6;0.2;0.6"
-                      dur="2.6s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                </svg>
-              </Box>
+                {/* Decorative SVG Circle */}
+                <Box sx={{
+                  position: 'absolute',
+                  top: 16,
+                  left: 16,
+                  width: 12,
+                  height: 12,
+                  zIndex: 1
+                }}>
+                  <svg width="12" height="12" viewBox="0 0 12 12">
+                    <circle
+                      cx="6"
+                      cy="6"
+                      r="5"
+                      fill="none"
+                      stroke="#673ab7"
+                      strokeWidth="1"
+                      opacity="0.6"
+                    >
+                      <animate
+                        attributeName="r"
+                        values="4;6;4"
+                        dur="2.6s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="0.6;0.2;0.6"
+                        dur="2.6s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                  </svg>
+                </Box>
 
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{
-                  color: 'primary.main',
-                  fontWeight: 700,
-                  mb: { xs: 2, sm: 3 },
-                  fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.35rem' },
-                  textAlign: { xs: 'center', sm: 'left' },
-                  letterSpacing: '-0.01em',
-                  pl: { xs: 0, sm: 3 }
-                }}
-              >
-                Your Referral Code
-              </Typography>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{
+                    color: 'primary.main',
+                    fontWeight: 700,
+                    mb: { xs: 2, sm: 3 },
+                    fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.35rem' },
+                    textAlign: { xs: 'center', sm: 'left' },
+                    letterSpacing: '-0.01em',
+                    pl: { xs: 0, sm: 3 }
+                  }}
+                >
+                  Your Referral Code
+                </Typography>
 
-              <ReferralSection
-                account={wallet.account}
-                onCopy={() => setSuccess('Referral code copied to clipboard!')}
-                onShare={() => setSuccess('Referral shared successfully!')}
-              />
+                <ReferralSection
+                  account={wallet.account}
+                  onCopy={() => setSuccess('Referral code copied to clipboard!')}
+                  onShare={() => setSuccess('Referral shared successfully!')}
+                />
               </Card>
             </Box>
           </Grid>
@@ -2075,181 +1904,181 @@ const handleBuyToken = async () => {
                   animation: 'shimmer 3s ease-in-out infinite',
                 }
               }}>
-              {/* Decorative SVG Circle */}
-              <Box sx={{
-                position: 'absolute',
-                top: 16,
-                left: 16,
-                width: 12,
-                height: 12,
-                zIndex: 1
-              }}>
-                <svg width="12" height="12" viewBox="0 0 12 12">
-                  <circle
-                    cx="6"
-                    cy="6"
-                    r="5"
-                    fill="none"
-                    stroke="#4caf50"
-                    strokeWidth="1"
-                    opacity="0.6"
-                  >
-                    <animate
-                      attributeName="r"
-                      values="3;6;3"
-                      dur="2.4s"
-                      repeatCount="indefinite"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="0.7;0.2;0.7"
-                      dur="2.4s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                </svg>
-              </Box>
+                {/* Decorative SVG Circle */}
+                <Box sx={{
+                  position: 'absolute',
+                  top: 16,
+                  left: 16,
+                  width: 12,
+                  height: 12,
+                  zIndex: 1
+                }}>
+                  <svg width="12" height="12" viewBox="0 0 12 12">
+                    <circle
+                      cx="6"
+                      cy="6"
+                      r="5"
+                      fill="none"
+                      stroke="#4caf50"
+                      strokeWidth="1"
+                      opacity="0.6"
+                    >
+                      <animate
+                        attributeName="r"
+                        values="3;6;3"
+                        dur="2.4s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="0.7;0.2;0.7"
+                        dur="2.4s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                  </svg>
+                </Box>
 
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{
-                  fontWeight: 700,
-                  mb: { xs: 2, sm: 3 },
-                  textAlign: 'center',
-                  color: 'primary.main',
-                  fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.35rem' },
-                  letterSpacing: '-0.01em',
-                  pl: { xs: 0, sm: 3 }
-                }}
-              >
-                Withdrawal Information
-              </Typography>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{
+                    fontWeight: 700,
+                    mb: { xs: 2, sm: 3 },
+                    textAlign: 'center',
+                    color: 'primary.main',
+                    fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.35rem' },
+                    letterSpacing: '-0.01em',
+                    pl: { xs: 0, sm: 3 }
+                  }}
+                >
+                  Withdrawal Information
+                </Typography>
 
-              <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 3 }}>
+                  <Box sx={{
+                    backgroundColor: '#f8f9fa',
+                    p: { xs: 1.5, sm: 2 },
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    borderRadius: '12px 12px 0 0',
+                    borderBottom: '2px solid #e9ecef',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                  }}>
+                    <Typography variant="body2" sx={{ fontWeight: 700, color: 'text.primary', fontSize: { xs: '0.85rem', sm: '0.9rem' } }}>
+                      Earning Type
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 700, color: 'text.primary', fontSize: { xs: '0.85rem', sm: '0.9rem' } }}>
+                      Available Amount
+                    </Typography>
+                  </Box>
+
+                  <Box sx={{
+                    border: '1px solid #e9ecef',
+                    borderTop: 'none',
+                    borderRadius: '0 0 12px 12px',
+                    overflow: 'hidden',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+                  }}>
+                    {[
+                      { label: 'Referral Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.referralEarn },
+                      { label: 'Level Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.levelEarn },
+                      { label: 'Growth Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.growthEarn },
+                      { label: 'Team Growth Gains', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.teamGrowthWallet },
+                      { label: 'Leader Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.leaderEarn },
+                      { label: 'Development Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.developmentEarn },
+                    ].map((item, index, array) => (
+                      <Box
+                        key={item.label}
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          p: { xs: 1.5, sm: 2 },
+                          borderBottom: index < array.length - 1 ? '1px solid #f1f3f4' : 'none',
+                          transition: 'all 0.2s ease',
+                          '&:hover': {
+                            backgroundColor: '#f8f9fa'
+                          }
+                        }}
+                      >
+                        <Typography variant="body2" sx={{
+                          color: 'text.primary',
+                          fontSize: { xs: '0.8rem', sm: '0.9rem' },
+                          fontWeight: 500
+                        }}>
+                          {item.label}
+                        </Typography>
+                        <Typography variant="body2" sx={{
+                          fontWeight: 700,
+                          color: 'success.main',
+                          fontSize: { xs: '0.8rem', sm: '0.9rem' }
+                        }}>
+                          {typeof item.value === 'object' ? item.value : `+ $${formatNumber(item.value)}`}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
+
                 <Box sx={{
                   backgroundColor: '#f8f9fa',
-                  p: { xs: 1.5, sm: 2 },
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  borderRadius: '12px 12px 0 0',
-                  borderBottom: '2px solid #e9ecef',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-                }}>
-                  <Typography variant="body2" sx={{ fontWeight: 700, color: 'text.primary', fontSize: { xs: '0.85rem', sm: '0.9rem' } }}>
-                    Earning Type
-                  </Typography>
-                  <Typography variant="body2" sx={{ fontWeight: 700, color: 'text.primary', fontSize: { xs: '0.85rem', sm: '0.9rem' } }}>
-                    Available Amount
-                  </Typography>
-                </Box>
-
-                <Box sx={{
-                  border: '1px solid #e9ecef',
-                  borderTop: 'none',
-                  borderRadius: '0 0 12px 12px',
+                  p: { xs: 2, sm: 3 },
+                  borderRadius: 3,
+                  mb: 3,
+                  textAlign: 'center',
+                  border: '2px solid #e9ecef',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                  position: 'relative',
                   overflow: 'hidden',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
-                }}>
-                  {[
-                    { label: 'Referral Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.referralEarn },
-                    { label: 'Level Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.levelEarn },
-                    { label: 'Growth Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.growthEarn },
-                    { label: 'Team Growth Gains', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.teamGrowthWallet },
-                    { label: 'Leader Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.leaderEarn },
-                    { label: 'Development Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.developmentEarn },
-                  ].map((item, index, array) => (
-                    <Box
-                      key={item.label}
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        p: { xs: 1.5, sm: 2 },
-                        borderBottom: index < array.length - 1 ? '1px solid #f1f3f4' : 'none',
-                        transition: 'all 0.2s ease',
-                        '&:hover': {
-                          backgroundColor: '#f8f9fa'
-                        }
-                      }}
-                    >
-                      <Typography variant="body2" sx={{
-                        color: 'text.primary',
-                        fontSize: { xs: '0.8rem', sm: '0.9rem' },
-                        fontWeight: 500
-                      }}>
-                        {item.label}
-                      </Typography>
-                      <Typography variant="body2" sx={{
-                        fontWeight: 700,
-                        color: 'success.main',
-                        fontSize: { xs: '0.8rem', sm: '0.9rem' }
-                      }}>
-                        {typeof item.value === 'object' ? item.value : `+ $${formatNumber(item.value)}`}
-                      </Typography>
-                    </Box>
-                  ))}
-                </Box>
-              </Box>
-
-               <Box sx={{
-                backgroundColor: '#f8f9fa',
-                p: { xs: 2, sm: 3 },
-                borderRadius: 3,
-                mb: 3,
-                textAlign: 'center',
-                border: '2px solid #e9ecef',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                position: 'relative',
-                overflow: 'hidden',
-                '&::before': {
-                  content: '""',
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: '3px',
-                  background: 'linear-gradient(90deg, #4caf50 0%, #81c784 50%, #4caf50 100%)',
-                  backgroundSize: '200% 100%',
-                  animation: 'shimmer 2s ease-in-out infinite',
-                }
-              }}>
-                <Typography variant="h4" sx={{
-                  fontWeight: 800,
-                  color: 'primary.main',
-                  mb: 1,
-                  fontSize: { xs: '1.6rem', sm: '2.2rem', md: '2.8rem' },
-                  letterSpacing: '-0.02em'
-                }}>
-                  {isLoading ? (
-                    <LoadingSkeleton height={40} width={120} />
-                  ) : (
-                    `$${formatNumber(
-                   mlmData.availableWithdrawal
-                    )}`
-                  )}
-                  {console.log("mlm data",mlmData)
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: '3px',
+                    background: 'linear-gradient(90deg, #4caf50 0%, #81c784 50%, #4caf50 100%)',
+                    backgroundSize: '200% 100%',
+                    animation: 'shimmer 2s ease-in-out infinite',
                   }
-                </Typography>
-                <Typography variant="body1" sx={{
-                  color: 'text.secondary',
-                  fontWeight: 600,
-                  fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1.05rem' }
                 }}>
-                  Total Available for Withdrawal
-                </Typography>
-              </Box>
+                  <Typography variant="h4" sx={{
+                    fontWeight: 800,
+                    color: 'primary.main',
+                    mb: 1,
+                    fontSize: { xs: '1.6rem', sm: '2.2rem', md: '2.8rem' },
+                    letterSpacing: '-0.02em'
+                  }}>
+                    {isLoading ? (
+                      <LoadingSkeleton height={40} width={120} />
+                    ) : (
+                      `$${formatNumber(
+                        mlmData.availableWithdrawal
+                      )}`
+                    )}
+                    {console.log("mlm data", mlmData)
+                    }
+                  </Typography>
+                  <Typography variant="body1" sx={{
+                    color: 'text.secondary',
+                    fontWeight: 600,
+                    fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1.05rem' }
+                  }}>
+                    Total Available for Withdrawal
+                  </Typography>
+                </Box>
 
-             
-              <WithdrawSection
-                wallet={wallet}
-                chainId={chainId}
-                mlmData={mlmData}
-                stakingInteractions={stakingInteractions}
-                fetchMlmData={fetchMlmData}
-                config={config}
-                USDT_ABI={USDT_ABI}
-                USDT_ADDRESS={USDT_ADDRESS}
-              />
+
+                <WithdrawSection
+                  wallet={wallet}
+                  chainId={chainId}
+                  mlmData={mlmData}
+                  stakingInteractions={stakingInteractions}
+                  fetchMlmData={fetchMlmData}
+                  config={config}
+                  USDT_ABI={USDT_ABI}
+                  USDT_ADDRESS={USDT_ADDRESS}
+                />
               </Card>
             </Box>
           </Grid>
@@ -2304,62 +2133,62 @@ const handleBuyToken = async () => {
                   animation: 'shimmer 3s ease-in-out infinite',
                 }
               }}>
-              {/* Decorative SVG Circle */}
-              <Box sx={{
-                position: 'absolute',
-                top: 16,
-                left: 16,
-                width: 12,
-                height: 12,
-                zIndex: 1
-              }}>
-                <svg width="12" height="12" viewBox="0 0 12 12">
-                  <circle
-                    cx="6"
-                    cy="6"
-                    r="5"
-                    fill="none"
-                    stroke="#f44336"
-                    strokeWidth="1"
-                    opacity="0.6"
-                  >
-                    <animate
-                      attributeName="r"
-                      values="2;6;2"
-                      dur="3.2s"
-                      repeatCount="indefinite"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="0.8;0.2;0.8"
-                      dur="3.2s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                </svg>
-              </Box>
+                {/* Decorative SVG Circle */}
+                <Box sx={{
+                  position: 'absolute',
+                  top: 16,
+                  left: 16,
+                  width: 12,
+                  height: 12,
+                  zIndex: 1
+                }}>
+                  <svg width="12" height="12" viewBox="0 0 12 12">
+                    <circle
+                      cx="6"
+                      cy="6"
+                      r="5"
+                      fill="none"
+                      stroke="#f44336"
+                      strokeWidth="1"
+                      opacity="0.6"
+                    >
+                      <animate
+                        attributeName="r"
+                        values="2;6;2"
+                        dur="3.2s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="0.8;0.2;0.8"
+                        dur="3.2s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                  </svg>
+                </Box>
 
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{
-                  color: 'primary.main',
-                  fontWeight: 700,
-                  mb: { xs: 2, sm: 3 },
-                  fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.35rem' },
-                  textAlign: { xs: 'center', sm: 'left' },
-                  letterSpacing: '-0.01em',
-                  pl: { xs: 0, sm: 3 }
-                }}
-              >
-                Order History
-              </Typography>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{
+                    color: 'primary.main',
+                    fontWeight: 700,
+                    mb: { xs: 2, sm: 3 },
+                    fontSize: { xs: '1.1rem', sm: '1.2rem', md: '1.35rem' },
+                    textAlign: { xs: 'center', sm: 'left' },
+                    letterSpacing: '-0.01em',
+                    pl: { xs: 0, sm: 3 }
+                  }}
+                >
+                  Order History
+                </Typography>
 
-              <OrderHistoryTable
-                orderHistory={orderHistory}
-                orderLoading={orderLoading}
-                formatDate={formatDate}
-              />
+                <OrderHistoryTable
+                  orderHistory={orderHistory}
+                  orderLoading={orderLoading}
+                  formatDate={formatDate}
+                />
               </Card>
             </Box>
           </Grid>

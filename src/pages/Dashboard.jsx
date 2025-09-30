@@ -1983,7 +1983,7 @@ const Dashboard = () => {
                     {[
                       { label: 'Referral Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.referralEarn },
                       { label: 'Level Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.levelEarn },
-                      { label: 'Growth Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.growthEarn },
+                      { label: 'Growth Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.growthFuels },
                       { label: 'Team Growth Gains', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.teamGrowthWallet },
                       { label: 'Leader Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.leaderEarn },
                       { label: 'Development Earnings', value: isLoading ? <LoadingSkeleton height={16} width={60} /> : mlmData.developmentEarn },

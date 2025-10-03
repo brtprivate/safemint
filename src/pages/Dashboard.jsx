@@ -303,7 +303,7 @@ const Dashboard = () => {
       const totalUnStakeRaw = bonusInfo?.totalUnStake || 0;
       const totalOut = formatValue(totalUnStakeRaw);
 
-      const totalWithdrawnRaw = bonusInfo?.totalWithdrawn || 0;
+      const totalWithdrawnRaw = bonusInfo?.totalWithdrwan || 0;
       const totalWithdrawn = formatValue(totalWithdrawnRaw);
 
       const orderValueRaw = unStakePotential?.OrderValue || 0;

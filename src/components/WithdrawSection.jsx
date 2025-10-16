@@ -57,10 +57,10 @@ const WithdrawSection = ({ wallet, chainId, mlmData, stakingInteractions, fetchM
       return;
     }
 
-    if (amount > totalAvailable) {
-      setError('Amount exceeds available balance');
-      return;
-    }
+    // if (amount > totalAvailable) {
+    //   setError('Amount exceeds available balance');
+    //   return;
+    // }
 
     try {
       setOrderLoading(true);

@@ -15,6 +15,7 @@ import {
   usdcContractInteractions,
   approveUSDC,
 } from "./approvalContracct";
+import { safeMintTokenService, SAFEMINT_TOKEN_ADDRESS } from "./safeMintTokenService";
 
 // Export USDC_ABI for use in other files
 export { USDC_ABI };
@@ -89,6 +90,26 @@ export const SAFEMINT_TOKEN_ABI = [
     "name": "symbol",
     "outputs": [{"internalType": "string", "name": "", "type": "string"}],
     "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {"internalType": "address", "name": "spender", "type": "address"},
+      {"internalType": "uint256", "name": "amount", "type": "uint256"}
+    ],
+    "name": "approve",
+    "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {"internalType": "address", "name": "owner", "type": "address"},
+      {"internalType": "address", "name": "spender", "type": "address"}
+    ],
+    "name": "allowance",
+    "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+    "stateMutability": "view",
     "type": "function"
   }
 ] as const;
@@ -2021,6 +2042,109 @@ export const stakingInteractions = {
     } catch (error: any) {
       console.error('Error fetching earnings details:', error);
       return [];
+    }
+  },
+
+  /**
+   * Stake SafeMint tokens (approve + makeStake)
+   * @param amount - Amount to stake (in user-friendly format, e.g., "100")
+   * @param userAddress - Address to stake for
+   * @returns Transaction hash
+   */
+  async makeStakeWithSafeMint(amount: string, userAddress: Address): Promise<string> {
+    try {
+      console.log(`🪙 [makeStakeWithSafeMint] Staking ${amount} SafeMint tokens for ${userAddress}`);
+
+      // Get SafeMint token decimals
+      const decimals = await readContract(config, {
+        abi: SAFEMINT_TOKEN_ABI,
+        address: SAFEMINT_TOKEN_ADDRESS,
+        functionName: "decimals",
+        chainId: BSC_TESTNET_CHAIN_ID,
+        authorizationList: [],
+      });
+      console.log("SafeMint Token Decimals:", decimals);
+
+      // Convert user-friendly amount → wei
+      const amountInWei = parseUnits(amount, Number(decimals));
+      console.log(`Converted Amount: ${amountInWei.toString()} wei`);
+
+      // Check SafeMint token balance
+      const balance = await readContract(config, {
+        abi: SAFEMINT_TOKEN_ABI,
+        address: SAFEMINT_TOKEN_ADDRESS,
+        functionName: "balanceOf",
+        args: [userAddress],
+        chainId: BSC_TESTNET_CHAIN_ID,
+        authorizationList: [],
+      }) as bigint;
+
+      console.log("SafeMint Token Balance:", formatUnits(balance, Number(decimals)));
+      // if (balance < amountInWei) {
+      //   throw new Error(
+      //     `Insufficient SafeMint token balance. Available: ${formatUnits(balance, Number(decimals))} SMT, Required: ${amount} SMT`
+      //   );
+      // }
+
+      // Check current allowance
+      const allowance = await readContract(config, {
+        abi: SAFEMINT_TOKEN_ABI,
+        address: SAFEMINT_TOKEN_ADDRESS,
+        functionName: "allowance",
+        args: [userAddress, STAKING_CONTRACT_ADDRESS],
+        chainId: BSC_TESTNET_CHAIN_ID,
+        authorizationList: [],
+      }) as bigint;
+
+      console.log("Current Allowance:", formatUnits(allowance, Number(decimals)));
+      
+      // Approve SafeMint tokens if needed
+   
+        console.log("🔄 [makeStakeWithSafeMint] Approving SafeMint tokens...");
+        const approvalTxHash = await writeContract(config, {
+          abi: SAFEMINT_TOKEN_ABI,
+          address: SAFEMINT_TOKEN_ADDRESS,
+          functionName: "approve",
+          args: [STAKING_CONTRACT_ADDRESS, amountInWei],
+          chain: bscTestnet,
+          account: userAddress,
+        });
+        console.log("✅ [makeStakeWithSafeMint] Approval successful. Tx Hash:", approvalTxHash);
+        
+        // Wait for approval confirmation
+        console.log("⏳ [makeStakeWithSafeMint] Waiting for approval confirmation...");
+        await new Promise(resolve => setTimeout(resolve, 3000));
+      
+
+      // Execute makeStake transaction
+      console.log("🚀 [makeStakeWithSafeMint] Executing makeStake transaction...");
+      const txHash = await writeContract(config, {
+        abi: STAKING_ABI,
+        address: STAKING_CONTRACT_ADDRESS,
+        functionName: "makeStake",
+        args: [amount, userAddress],
+        chain: bscTestnet,
+        account: userAddress,
+      });
+
+      console.log(`✅ [makeStakeWithSafeMint] Stake transaction successful: ${txHash}`);
+      return txHash;
+    } catch (error: any) {
+      console.error("❌ [makeStakeWithSafeMint] Error staking SafeMint tokens:", error);
+      if (error.cause?.data) {
+        const decodedError = decodeErrorResult({
+          abi: STAKING_ABI,
+          data: error.cause.data,
+        });
+        throw new Error(
+          `SafeMint stake failed: ${decodedError.errorName || "Unknown error"} - ${
+            decodedError.args?.join(", ") || ""
+          }`
+        );
+      }
+      throw new Error(
+        `Failed to stake SafeMint tokens: ${error.message || "Unknown error"}`
+      );
     }
   },
 };

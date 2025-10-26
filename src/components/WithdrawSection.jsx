@@ -128,7 +128,7 @@ const WithdrawSection = ({ wallet, chainId, mlmData, stakingInteractions, fetchM
               boxShadow: 'none'
             }
           }}
-          disabled={orderLoading || totalAvailable <= 0}
+          disabled={orderLoading}
           onClick={handleWithdrawClick}
         >
           {orderLoading ? <CircularProgress size={24} color="inherit" /> : 'Withdraw Earnings'}

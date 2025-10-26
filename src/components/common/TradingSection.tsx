@@ -66,7 +66,7 @@ const TradingSection: React.FC<TradingSectionProps> = ({
         </Typography>
         <TextField
           fullWidth
-          label="Stake Amount (USDT)"
+          label="Stake Amount"
           type="number"
           value={buyAmount}
           onChange={(e) => {
@@ -101,7 +101,7 @@ const TradingSection: React.FC<TradingSectionProps> = ({
             fontWeight: 'bold'
           }}
         >
-          Stake USDT
+          Stake
         </Button>
       </Box>
 

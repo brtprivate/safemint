@@ -40,6 +40,7 @@ import CustomSVGIcons from '../components/icons/CustomSVGIcons';
 // Import RefreshCw from lucide-react (keeping this one as it's used in header)
 import { RefreshCw } from 'lucide-react';
 import WithdrawSection from '../components/WithdrawSection';
+import WalletAddressModal from '../components/WalletAddressModal';
 
 // Helper function to safely stringify objects with BigInt values
 const safeStringify = (obj, space = 2) => {
@@ -88,6 +89,8 @@ const Dashboard = () => {
   const [orderLoading, setOrderLoading] = useState(false);
   const [notRegistered, setNotRegistered] = useState(false);
   const [isFromReferralLink, setIsFromReferralLink] = useState(false);
+  const [showWalletModal, setShowWalletModal] = useState(false);
+  const [pendingStakeAmount, setPendingStakeAmount] = useState('');
   const [mlmData, setMlmData] = useState({
     directTeam: 0,
     strongTeam: 0,
@@ -505,19 +508,65 @@ const Dashboard = () => {
     console.log("🚀 [handleMakestake] Initiating stake process");
     console.log("🚀 [handleMakestake] Amount to stake:", amount, "USDT");
 
+    // Store the amount and show modal for wallet address selection
+    setPendingStakeAmount(amount);
+    setShowWalletModal(true);
+  };
+
+  const handleStakeWithWallet = async (walletAddress, stakeType) => {
+    console.log("🚀 [handleStakeWithWallet] Staking with wallet:", walletAddress);
+    console.log("🚀 [handleStakeWithWallet] Amount:", pendingStakeAmount, stakeType);
+    console.log("🚀 [handleStakeWithWallet] Stake Type:", stakeType);
+
     try {
-      console.log("📡 [handleMakestake] Calling makeStake function...");
-      const txHash = await stakingInteractions.makeStake(amount, wallet.account);
+      setShowWalletModal(false);
+      setOrderLoading(true);
+      setError('');
+      setSuccess('');
 
-      console.log("✅ [handleMakestake] Stake transaction successful!");
-      console.log("✅ [handleMakestake] Transaction hash:", txHash);
-      setSuccess(`Staked ${amount} USDT successfully! Tx: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`);
+      let txHash;
+      
+      if (stakeType === 'SafeMint') {
+        console.log("🪙 [handleStakeWithWallet] Using SafeMint token staking...");
+        txHash = await stakingInteractions.makeStakeWithSafeMint(pendingStakeAmount, walletAddress);
+        setSuccess(`Staked ${pendingStakeAmount} SafeMint tokens successfully! Tx: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`);
+      } else {
+        console.log("💰 [handleStakeWithWallet] Using USDT token staking...");
+        
+        // First do USDT approval
+        console.log("🔄 [handleStakeWithWallet] Approving USDT...");
+        const decimals = await readContract(config, {
+          abi: USDT_ABI,
+          address: USDT_ADDRESS,
+          functionName: "decimals",
+          chainId: 56,
+        });
 
-      console.log("⏳ [handleMakestake] Scheduling data refresh...");
+        const amountInWei = parseUnits(pendingStakeAmount, Number(decimals));
+        const approvalTx = await stakingInteractions.approveUSDT(amountInWei, walletAddress);
+        console.log("✅ [handleStakeWithWallet] USDT Approval successful. Tx Hash:", approvalTx);
+
+        // Wait for approval confirmation
+        console.log("⏳ [handleStakeWithWallet] Waiting for approval confirmation...");
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
+        // Then do the stake
+        console.log("🚀 [handleStakeWithWallet] Executing stake...");
+        txHash = await stakingInteractions.makeStake(pendingStakeAmount, walletAddress);
+        setSuccess(`Staked ${pendingStakeAmount} USDT successfully! Tx: ${txHash.slice(0, 10)}...${txHash.slice(-8)}`);
+      }
+
+      console.log("✅ [handleStakeWithWallet] Stake transaction successful!");
+      console.log("✅ [handleStakeWithWallet] Transaction hash:", txHash);
+
+      console.log("⏳ [handleStakeWithWallet] Scheduling data refresh...");
       setTimeout(fetchMlmData, 3000);
     } catch (error) {
-      console.error("❌ [handleMakestake] Stake failed:", error);
+      console.error("❌ [handleStakeWithWallet] Stake failed:", error);
       setError(`Stake failed: ${error.message || error}`);
+    } finally {
+      setOrderLoading(false);
+      setPendingStakeAmount('');
     }
   };
 
@@ -596,50 +645,18 @@ const Dashboard = () => {
     }
 
     if (!buyAmount || parseFloat(buyAmount) <= 0) {
-      setError("Please enter a valid amount to buy");
+      setError("Please enter a valid amount to stake");
       return;
     }
 
-    try {
-      setOrderLoading(true);
-      setError("");
-      setSuccess("");
-
-      if (chainId !== 56) {
-        setError("Please switch to BSC Mainnet (Chain ID: 56) to stake.");
-        return;
-      }
-
-      const userInfo = await stakingInteractions.getUserInfo(wallet.account);
-      if (!userInfo.joined) {
-        setError("User is not registered. Please register first.");
-        return;
-      }
-
-      const decimals = await readContract(config, {
-        abi: USDT_ABI,
-        address: USDT_ADDRESS,
-        functionName: "decimals",
-        chainId: 56,
-      });
-
-      const amountInWei = parseUnits(buyAmount, Number(decimals));
-
-      console.log("🔄 [Buy] Sending approval transaction...");
-      const approvalTx = await stakingInteractions.approveUSDT(amountInWei, wallet.account);
-      console.log("✅ [Buy] Approval successful. Tx Hash:", approvalTx);
-
-      setTimeout(() => {
-        console.log("⏳ [Buy] Proceeding to stake after approval...");
-        handleMakestake(buyAmount);
-      }, 5000);
-
-    } catch (error) {
-      console.error("❌ [Buy] Unexpected error:", error);
-      setError(`Unexpected error: ${error.message || "Unknown error"}`);
-    } finally {
-      setOrderLoading(false);
+    if (chainId !== 56) {
+      setError("Please switch to BSC Mainnet (Chain ID: 56) to stake.");
+      return;
     }
+
+    // Just open the modal - approval will happen in modal
+    setPendingStakeAmount(buyAmount);
+    setShowWalletModal(true);
   };
 
   const handleSell = async () => {
@@ -2196,6 +2213,15 @@ const Dashboard = () => {
         </Grid>
 
       </Container>
+
+      {/* Wallet Address Modal for Staking */}
+      <WalletAddressModal
+        open={showWalletModal}
+        onClose={() => setShowWalletModal(false)}
+        onConfirm={handleStakeWithWallet}
+        currentWalletAddress={wallet.account || ''}
+        isLoading={orderLoading}
+      />
     </Box>
   );
 };
